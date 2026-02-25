@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CowboyFriend</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_calf">New Calf</string>
+    <string name="cattle_tour">Cattle Tour</string>
+    <string name="settings">Settings</string>
+    <string name="number_calf">Number of calf</string>
+    <string name="gender_calf">Gender of calf</string>
+    <string name="number_of_mom">Number of mom</string>
+    <string name="take_picture">Take a picture</string>
+</resources>

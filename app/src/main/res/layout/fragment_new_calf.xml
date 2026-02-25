@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_dynamic_neutral80"
+
+    tools:context=".NewCalfActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDate"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tvTakePicture"
+        android:text="22/6"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTakePicture"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ciTakePicture"
+        android:text="@string/take_picture"
+        />
+
+    <ImageView
+        android:id="@+id/ivTakePicture"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="des"
+        app:layout_constraintTop_toTopOf="@+id/tvTakePicture"
+        app:layout_constraintBottom_toBottomOf="@+id/ciTakePicture"
+        app:layout_constraintStart_toEndOf="@+id/tvTakePicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciTakePicture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_calf"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toBottomOf="@+id/tvTakePicture"
+        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfCalf"
+        app:layout_constraintStart_toStartOf="parent"
+
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvNumberOfCalf"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tvGenderOfCalf"
+        android:text="@string/number_calf"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etNumberOfCalf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfCalf"
+        android:ems="12"
+        android:inputType="numberDecimal"
+        android:background="@drawable/shape_bottom_border"
+
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciNumberOfCalf"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_calf"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="@+id/etNumberOfCalf"
+        app:layout_constraintBottom_toBottomOf="@+id/etNumberOfCalf"
+        app:layout_constraintStart_toEndOf="@+id/etNumberOfCalf"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvGenderOfCalf"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfMom"
+        android:text="@string/gender_calf"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etGenderOfCalf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenderOfCalf"
+        android:ems="12"
+        android:inputType="text"
+        android:background="@drawable/shape_bottom_border"
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciGenderOfCalf"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_calf"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="@+id/etGenderOfCalf"
+        app:layout_constraintBottom_toBottomOf="@+id/etGenderOfCalf"
+        app:layout_constraintStart_toEndOf="@+id/etGenderOfCalf"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvNumberOfMom"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenderOfCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/number_of_mom"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etNumberOfMom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
+        android:ems="12"
+        android:inputType="numberDecimal"
+        android:background="@drawable/shape_bottom_border"
+
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciNumberOfMom"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_calf"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="@+id/etNumberOfMom"
+        app:layout_constraintBottom_toBottomOf="@+id/etNumberOfMom"
+        app:layout_constraintStart_toEndOf="@+id/etNumberOfMom"
+        />
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
