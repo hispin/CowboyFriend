@@ -5,5 +5,19 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="title">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="button_style">
+        <item name="android:layout_marginStart">5dp</item>
+    </style>
+
+    <style name="edittext_style">
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
     <style name="Theme.CowboyFriend" parent="Base.Theme.CowboyFriend" />
 </resources>

@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.global.getStringFromCalendar
 import de.hdodenhof.circleimageview.CircleImageView
+import java.lang.Long
 import java.util.Calendar
 import java.util.Locale
 
@@ -253,10 +254,11 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
+        //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,  Long(2000))
         // Set longer silence detection
-        //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
-        //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
-        //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 50000000)
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000L)
         try {
             resultSpeakLauncher.launch(recognizerIntent)
         } catch (a: ActivityNotFoundException) {
