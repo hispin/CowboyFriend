@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
+    //TODO make general kotlin_version
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 
@@ -36,7 +39,10 @@ android {
     kotlinOptions {
         jvmTarget="11"
     }
-//    buildFeatures {
+    buildFeatures {
+        viewBinding=true
+    }
+    //    buildFeatures {
 //        compose=true
 //    }
 }
@@ -48,9 +54,28 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    //implementation(libs.firebase.common.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.circleimageview)
+    //implementation(libs.firebase.firestore)
     //implementation (libs.circleimageview)
+    //goole
+
+    //implementation("libs.androidx.credential")
+    //superbase
+    //implementation(platform(libs.supabase.bom))
+    //implementation(libs.auth.kt)
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.4.1"))
+    //implementation(libs.bom)
+    implementation(libs.postgrest.kt)
+    implementation(libs.supabase.postgrest.kt)
+    implementation(libs.auth.kt)
+    implementation("io.ktor:ktor-client-android:3.4.1")
+    //implementation(libs.ktor.client.android)
 }

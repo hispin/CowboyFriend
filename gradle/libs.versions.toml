@@ -1,26 +1,45 @@
 [versions]
-agp = "8.11.2"
+agp = "9.1.0"
+bom = "3.4.1"
 circleimageview = "3.1.0"
-kotlin = "1.9.0"
+firebaseBom = "34.10.0"
+kotlin = "2.2.10"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+ktorClientAndroid = "3.4.1"
 material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
+firebaseCommonKtx = "22.0.1"
+firebaseFirestore = "26.1.1"
+annotation = "1.6.0"
+lifecycleLivedataKtx = "2.10.0"
+lifecycleViewmodelKtx = "2.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
+bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "bom" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
+supabase-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

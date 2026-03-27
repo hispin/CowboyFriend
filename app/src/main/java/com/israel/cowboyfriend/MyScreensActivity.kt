@@ -2,6 +2,8 @@ package com.israel.cowboyfriend
 
 import android.content.Context
 import android.content.res.Configuration
+import android.net.http.HttpResponseCache
+import android.net.http.HttpResponseCache.install
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -16,13 +18,36 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.auth.User
+import com.google.firebase.firestore.firestore
 import com.israel.cowboyfriend.UI.CattleTourFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
 import com.israel.cowboyfriend.UI.SettingsFragment
+import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.classes.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.classes.NonSwipeAbleViewPager
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
+//import io.github.jan.supabase.auth.Auth
+
+
+
+
+//val supabase = createSupabaseClient(
+//    supabaseUrl = "https://ymgsasxfgfyagppltvdy.supabase.co",
+//    supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZ3Nhc3hmZ2Z5YWdwcGx0dmR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjg1MTIsImV4cCI6MjA4OTk0NDUxMn0.FcH0j_Ec83MzcE73rV_EfH5BA5xxpNQyGBY-4Wxm1yk"
+//) {
+//
+//    HttpResponseCache.install(Postgrest) // For database interactions
+//    HttpResponseCache.install(Auth)     // For authentication
+//    install(SessionSource.Storage)   // For file storage
+//}
 
 class MyScreensActivity : AppCompatActivity() {
 
@@ -30,6 +55,8 @@ class MyScreensActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager
     var vPager: NonSwipeAbleViewPager? = null
     private var currentItemTopMenu = 0
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -45,6 +72,40 @@ class MyScreensActivity : AppCompatActivity() {
         }
         initViews()
         configTabs()
+
+        val db = Firebase.firestore
+        var n = 10
+
+        //Thread{
+        setSupabase()
+          //  }
+    }
+
+
+
+
+
+    private  fun setSupabase() {
+        val supabase = createSupabaseClient(
+                supabaseUrl = "https://ymgsasxfgfyagppltvdy.supabase.co",
+                 supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZ3Nhc3hmZ2Z5YWdwcGx0dmR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjg1MTIsImV4cCI6MjA4OTk0NDUxMn0.FcH0j_Ec83MzcE73rV_EfH5BA5xxpNQyGBY-4Wxm1yk"
+        ) {
+
+            install(Postgrest) // For database interactions
+
+//        install(SessionSource.Storage)   // For file storage
+        }
+        runBlocking {
+           try {
+               val users=supabase.from("CowDetails").select().decodeList<CowDetails>()
+
+               //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
+               val num=10
+           }catch (ex: Exception){
+               print(ex)
+           }
+        }
+
     }
 
 

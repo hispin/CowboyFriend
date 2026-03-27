@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "475837757194",
+    "project_id": "cowboy-friend",
+    "storage_bucket": "cowboy-friend.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475837757194:android:2d594a0d57a1687c2decf3",
+        "android_client_info": {
+          "package_name": "com.israel.cowboyfriend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-LnHpe2-rrhUAfjfiqy60IjPy-Q29Vbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
