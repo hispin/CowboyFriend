@@ -27,6 +27,10 @@ import com.israel.cowboyfriend.UI.SettingsFragment
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.classes.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.classes.NonSwipeAbleViewPager
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -51,6 +55,7 @@ import java.util.Locale
 
 class MyScreensActivity : AppCompatActivity() {
 
+    private lateinit var supabase: SupabaseClient
     private var collectionPagerAdapter: CollectionPagerAdapter?=null
     private lateinit var viewPager: ViewPager
     var vPager: NonSwipeAbleViewPager? = null
@@ -71,40 +76,95 @@ class MyScreensActivity : AppCompatActivity() {
             insets
         }
         initViews()
-        configTabs()
 
-        val db = Firebase.firestore
-        var n = 10
+
+        //val db = Firebase.firestore
+        //var n = 10
 
         //Thread{
         setSupabase()
           //  }
+
+        login()
+
+        //selsect()
+    }
+
+
+    private fun selsect() {
+        runBlocking {
+            try {
+
+               val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
+//
+//               //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
+               val num=10
+
+            }catch (ex: Exception){
+                print(ex)
+            }
+        }
     }
 
 
 
+    private fun login() {
+        runBlocking {
+            try {
+
+                var user=supabase.auth.currentSessionOrNull()
+
+                supabase.auth.signInWith(Email) {
+                    email = "hag.swead@gmail.com"
+                    password = "ringo1234"
+                }
+
+                user=supabase.auth.currentSessionOrNull()
+
+                configTabs()
+
+                //val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
+
+                //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
+                //val num=10
+            }catch (ex: Exception){
+                print(ex)
+            }
+        }
+    }
 
 
     private  fun setSupabase() {
-        val supabase = createSupabaseClient(
+        supabase = createSupabaseClient(
                 supabaseUrl = "https://ymgsasxfgfyagppltvdy.supabase.co",
                  supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZ3Nhc3hmZ2Z5YWdwcGx0dmR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjg1MTIsImV4cCI6MjA4OTk0NDUxMn0.FcH0j_Ec83MzcE73rV_EfH5BA5xxpNQyGBY-4Wxm1yk"
         ) {
 
             install(Postgrest) // For database interactions
-
+            install(Auth)
 //        install(SessionSource.Storage)   // For file storage
         }
-        runBlocking {
-           try {
-               val users=supabase.from("CowDetails").select().decodeList<CowDetails>()
-
-               //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
-               val num=10
-           }catch (ex: Exception){
-               print(ex)
-           }
-        }
+//        runBlocking {
+//           try {
+//
+//               var user=supabase.auth.currentSessionOrNull()
+//
+//               supabase.auth.signInWith(Email) {
+//                   email = "hag.swead@gmail.com"
+//                   password = "ringo1234"
+//               }
+//
+//               user=supabase.auth.currentSessionOrNull()
+//
+//
+//               val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
+//
+//               //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
+//               val num=10
+//           }catch (ex: Exception){
+//               print(ex)
+//           }
+//        }
 
     }
 

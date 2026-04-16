@@ -23,12 +23,12 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.global.getStringFromCalendar
+import com.israel.cowboyfriend.viewmodel.AddCowViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.hdodenhof.circleimageview.CircleImageView
-import java.lang.Long
 import java.util.Calendar
 import java.util.Locale
 
@@ -48,6 +48,11 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var ciTakePicture:CircleImageView?=null
     private var ivTakePicture:ImageView?=null
     private var tvDate:TextView?=null
+    //private val addCowViewModel: AddCowViewModel by activityViewModels()
+    //private val addCowViewModel by viewModels<AddCowViewModel>()
+    //val addCowViewModel: AddCowViewModel=HiltViewModel()
+    private var ciSave: CircleImageView?=null
+
 
 
 
@@ -209,6 +214,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         ciTakePicture =view?.findViewById(R.id.ciTakePicture)
         ivTakePicture =view?.findViewById(R.id.ivTakePicture)
         tvDate=view?.findViewById(R.id.tvDate)
+        ciSave=view?.findViewById(R.id.ciSave)
+
 
         tvDate?.text=getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy", requireActivity())
 
@@ -224,6 +231,10 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
         ciTakePicture?.setOnClickListener {
             takePicture()
+        }
+
+        ciSave?.setOnClickListener {
+            //addCowViewModel.onCreateCow(etNumberOfCalf?.text.toString().toIntOrNull(),etNumberOfMom?.text.toString().toIntOrNull(),etGenderOfCalf?.text.toString())
         }
 
     }

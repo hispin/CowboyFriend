@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,4 +79,8 @@ dependencies {
     implementation(libs.auth.kt)
     implementation("io.ktor:ktor-client-android:3.4.1")
     //implementation(libs.ktor.client.android)
+    implementation("javax.inject:javax.inject:1@jar")
+    //implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
 }
