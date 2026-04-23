@@ -24,15 +24,16 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
+import com.israel.cowboyfriend.DB.DBService
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.global.getStringFromCalendar
-import com.israel.cowboyfriend.viewmodel.AddCowViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.israel.cowboyfriend.interfaces.CowRepositoryCB
+import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.Calendar
 import java.util.Locale
 
-
+@AndroidEntryPoint
 class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
     private var uri: Uri? = null
@@ -234,6 +235,17 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         }
 
         ciSave?.setOnClickListener {
+            DBService.getInstance().insert(etNumberOfCalf?.text.toString().toIntOrNull(),etNumberOfMom?.text.toString().toIntOrNull(),etGenderOfCalf?.text.toString(),
+                object :
+                CowRepositoryCB {
+                override fun onRequestResult(result: Int) {
+                    if(result==1){
+                        print("success")
+                    }
+                    else
+                        print("error")
+                }
+            })
             //addCowViewModel.onCreateCow(etNumberOfCalf?.text.toString().toIntOrNull(),etNumberOfMom?.text.toString().toIntOrNull(),etGenderOfCalf?.text.toString())
         }
 

@@ -2,8 +2,6 @@ package com.israel.cowboyfriend
 
 import android.content.Context
 import android.content.res.Configuration
-import android.net.http.HttpResponseCache
-import android.net.http.HttpResponseCache.install
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -18,23 +16,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.auth.User
-import com.google.firebase.firestore.firestore
+import com.israel.cowboyfriend.DB.DBService
 import com.israel.cowboyfriend.UI.CattleTourFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
 import com.israel.cowboyfriend.UI.SettingsFragment
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.classes.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.classes.NonSwipeAbleViewPager
+import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
@@ -109,41 +100,66 @@ class MyScreensActivity : AppCompatActivity() {
 
 
     private fun login() {
-        runBlocking {
-            try {
 
-                var user=supabase.auth.currentSessionOrNull()
-
-                supabase.auth.signInWith(Email) {
-                    email = "hag.swead@gmail.com"
-                    password = "ringo1234"
-                }
-
-                user=supabase.auth.currentSessionOrNull()
-
+        DBService.getInstance().login (object :
+          CowRepositoryCB {
+            override fun onRequestResult(result: Int) {
+            if(result==1){
                 configTabs()
-
-                //val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
-
-                //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
-                //val num=10
-            }catch (ex: Exception){
-                print(ex)
             }
-        }
+            else
+                print("error")
+            }
+          }
+        )
+//            {
+////            if(it==1){
+////                configTabs()
+////            }
+////            else
+////                print("error")
+////        }
+
+
+//        runBlocking {
+//
+//            val service =DBService.getInstance("12345").login()
+//
+//            try {
+//
+//                var user=supabase.auth.currentSessionOrNull()
+//
+//                supabase.auth.signInWith(Email) {
+//                    email = "hag.swead@gmail.com"
+//                    password = "ringo1234"
+//                }
+//
+//                user=supabase.auth.currentSessionOrNull()
+//
+//                configTabs()
+//
+//                //val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
+//
+//                //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
+//                //val num=10
+//            }catch (ex: Exception){
+//                print(ex)
+//            }
+//        }
     }
 
 
     private  fun setSupabase() {
-        supabase = createSupabaseClient(
-                supabaseUrl = "https://ymgsasxfgfyagppltvdy.supabase.co",
-                 supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZ3Nhc3hmZ2Z5YWdwcGx0dmR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjg1MTIsImV4cCI6MjA4OTk0NDUxMn0.FcH0j_Ec83MzcE73rV_EfH5BA5xxpNQyGBY-4Wxm1yk"
-        ) {
-
-            install(Postgrest) // For database interactions
-            install(Auth)
-//        install(SessionSource.Storage)   // For file storage
-        }
+        DBService.getInstance().setSupabase()
+//        supabase = createSupabaseClient(
+//                supabaseUrl = "https://ymgsasxfgfyagppltvdy.supabase.co",
+//                 supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZ3Nhc3hmZ2Z5YWdwcGx0dmR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjg1MTIsImV4cCI6MjA4OTk0NDUxMn0.FcH0j_Ec83MzcE73rV_EfH5BA5xxpNQyGBY-4Wxm1yk"
+//        ) {
+//
+//            install(Postgrest) // For database interactions
+//            install(Auth)
+////        install(SessionSource.Storage)   // For file storage
+//        }
 //        runBlocking {
 //           try {
 //
