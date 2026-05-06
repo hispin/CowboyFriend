@@ -1,9 +1,11 @@
 package com.israel.cowboyfriend.DB
 
-import android.R.attr.apiKey
+import android.content.Context
+import android.net.Uri
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.interfaces.CowRepositoryCBselect
+import com.israel.cowboyfriend.interfaces.CowStorageRespose
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -12,10 +14,17 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.storage.upload
 import kotlinx.coroutines.runBlocking
+import kotlinx.io.files.FileNotFoundException
+import java.io.File
+import java.util.UUID
 
 class DBService {
     private constructor ()
+
 
     private lateinit var supabase: SupabaseClient
 
@@ -40,6 +49,7 @@ class DBService {
 
             install(Postgrest) // For database interactions
             install(Auth)
+            install(Storage)
 //        install(SessionSource.Storage)   // For file storage
         }
     }
@@ -93,7 +103,13 @@ class DBService {
     /**
      * insert a new cow
      */
-    fun insert(number:Int?, number_mom: Int?, gender: String, cowRepositoryCallback: CowRepositoryCB) {
+    fun insert(
+        number: Int?,
+        number_mom: Int?,
+        gender: String,
+        image_url: String,
+        cowRepositoryCallback: CowRepositoryCB
+    ) {
         runBlocking {
             try {
 
@@ -102,12 +118,14 @@ class DBService {
                 val cow =CowDetails(
                     number=number,
                     number_mom=number_mom,
-                    gender=gender
+                    gender=gender,
+                    image_url=image_url
                 )
                 val cowDto =CowDto(
                     number =  cow.number,
                     number_mom = cow.number_mom,
-                    gender = cow.gender
+                    gender = cow.gender,
+                    image_url=cow.image_url
                 )
                 var result=supabase.postgrest.from("CowDetails").insert(cowDto)
                 val n=0
@@ -117,6 +135,75 @@ class DBService {
                 print(ex)
                 cowRepositoryCallback.onRequestResult(0)
             }
+        }
+    }
+
+    fun uploadCowImage(src: Uri?, context: Context, cowStorageRespose: CowStorageRespose) {
+        runBlocking {
+            var trgUrl=""
+            //trgUrl.replace('/',':')
+           // supabase.storage.from("avatars").uploadToSignedUrl(path = "avatar.jpg", token = "token-from-createSignedUploadUrl", data = bytes)
+//or on JVM:
+            try {
+                val user1=supabase.auth.currentSessionOrNull()?.user?.email
+                trgUrl=UUID.randomUUID().toString()+"/image"
+                val url1=supabase.storage.from("CowsAndCalf").createSignedUploadUrl("$trgUrl.jpg")
+
+                ////////////////////////
+                lateinit var outputFile: File
+                val inputStream = context.contentResolver.openInputStream(src!!)
+                inputStream?.use { input ->
+                    // Option 1: Read all bytes (best for small files)
+//                    val bytes = input.readBytes()
+//
+//                    val url2=supabase.storage.from("CowsAndCalf").uploadToSignedUrl(
+//                        path="$trgUrl.jpg", token=url1.token, data = bytes
+//                        )
+//                    var n =0
+
+                    // Option 2: Copy to a local file
+                    outputFile = File(context.cacheDir, "temp_file")
+                    outputFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                //val options = cnewUrlontext.UpdateOptions().upsert(true)
+//                val url2=supabase.storage.from("CowsAndCalf").uploadToSignedUrl(
+//                    path="$trgUrl.jpg", token=url1.token, file = outputFile
+//                )
+                val newUrl=supabase.storage.from("CowsAndCalf").upload(
+                    path="$trgUrl.jpg", file = outputFile
+                )
+                cowStorageRespose.onRequestResult(newUrl.key.toString())
+                //var n =0
+
+                ////////////////////////
+
+
+
+
+            }catch (ex: Exception){
+                print(ex.message.toString())
+            }
+
+        }
+    }
+
+    fun getByteFromUri(uri: Uri,context: Context){
+        try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            inputStream?.use { input ->
+                // Option 1: Read all bytes (best for small files)
+                val bytes = input.readBytes()
+
+                // Option 2: Copy to a local file
+//                val outputFile = File(cacheDir, "temp_file")
+//                outputFile.outputStream().use { output ->
+//                    input.copyTo(output)
+//                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace() // Handle case where URI is invalid or inaccessible
         }
     }
 }

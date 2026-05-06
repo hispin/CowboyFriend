@@ -77,6 +77,10 @@ dependencies {
     implementation(libs.postgrest.kt)
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.auth.kt)
+    // Add Storage module
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+
+
     implementation("io.ktor:ktor-client-android:3.4.1")
     //implementation(libs.ktor.client.android)
     implementation("javax.inject:javax.inject:1@jar")

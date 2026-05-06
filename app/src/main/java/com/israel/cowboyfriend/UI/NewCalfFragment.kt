@@ -26,8 +26,10 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.fragment.app.Fragment
 import com.israel.cowboyfriend.DB.DBService
 import com.israel.cowboyfriend.R
+import com.israel.cowboyfriend.global.baseUrl
 import com.israel.cowboyfriend.global.getStringFromCalendar
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
+import com.israel.cowboyfriend.interfaces.CowStorageRespose
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.Calendar
@@ -202,8 +204,11 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             }
         }
 
+
         return view
     }
+
+
 
     private fun initView(view: View?) {
         ciNumberOfCalf=view?.findViewById(R.id.ciNumberOfCalf)
@@ -235,18 +240,32 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         }
 
         ciSave?.setOnClickListener {
-            DBService.getInstance().insert(etNumberOfCalf?.text.toString().toIntOrNull(),etNumberOfMom?.text.toString().toIntOrNull(),etGenderOfCalf?.text.toString(),
+
+            DBService.getInstance().uploadCowImage(uri,requireContext(),
                 object :
-                CowRepositoryCB {
-                override fun onRequestResult(result: Int) {
-                    if(result==1){
-                        print("success")
+                CowStorageRespose {
+                    override fun onRequestResult(url: String) {
+                        var myUrl=baseUrl+""+url
+                        insertCowDetails(myUrl)
+                        var n=0
                     }
-                    else
-                        print("error")
-                }
-            })
-            //addCowViewModel.onCreateCow(etNumberOfCalf?.text.toString().toIntOrNull(),etNumberOfMom?.text.toString().toIntOrNull(),etGenderOfCalf?.text.toString())
+
+                    private fun insertCowDetails(myUrl: String) {
+                        DBService.getInstance().insert(etNumberOfCalf?.text.toString().toIntOrNull(),etNumberOfMom?.text.toString().toIntOrNull(),etGenderOfCalf?.text.toString(),myUrl,
+                            object : CowRepositoryCB {
+                                override fun onRequestResult(result: Int) {
+                                    if(result==1){
+                                        print("success")
+                                    }
+                                    else
+                                        print("error")
+                                }
+                            })
+                    }
+
+                })
+
+
         }
 
     }
