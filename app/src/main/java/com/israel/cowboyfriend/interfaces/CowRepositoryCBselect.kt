@@ -1,7 +1,7 @@
 package com.israel.cowboyfriend.interfaces
 
-import com.israel.cowboyfriend.classes.CowDetails
+import com.israel.cowboyfriend.DB.CowDto
 
 interface CowRepositoryCBselect {
-    fun onRequestResult(cows: ArrayList<CowDetails>?)
+    fun onRequestResult(cows: ArrayList<CowDto>?)
 }

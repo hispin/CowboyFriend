@@ -1,5 +1,6 @@
 package com.israel.cowboyfriend.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.auth.User;
+import com.bumptech.glide.Glide;
 import com.israel.cowboyfriend.R;
 import com.israel.cowboyfriend.classes.CowDetails;
 import com.israel.cowboyfriend.interfaces.InterOnItemClickListener;
@@ -31,7 +32,7 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
      * by RecyclerView.
      */
 
-    public MyCowAdapter(ArrayList<CowDetails> cows, InterOnItemClickListener listener) {
+    public MyCowAdapter(ArrayList<CowDetails> cows, Context context, InterOnItemClickListener listener) {
         this.cows = cows;
         this.listener = listener;
     }
@@ -44,7 +45,7 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_cow, parent, false);
 
-        return new MyViewHolder(view);
+        return new MyViewHolder(view,parent.getContext());
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -68,14 +69,16 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         TextView tvCalfName ;
         TextView tvMonNum ;
         TextView tvGender ;
-        ImageView ivUserImg;
+        ImageView ivCowImg;
+        Context context;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             tvCalfName = itemView.findViewById(R.id.tvCowNum);
             tvMonNum = itemView.findViewById(R.id.tvMonNum);
             tvGender  = itemView.findViewById(R.id.tvGender);
-            //ivUserImg = itemView.findViewById(R.id.ivUserImg);
+            ivCowImg = itemView.findViewById(R.id.ivCowImg);
+            this.context = context;
         }
 
         public void bind(final CowDetails item, final InterOnItemClickListener listener) {
@@ -84,11 +87,30 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             tvGender.setText(item.getGender());
             //ivUserImg.setImageBitmap(item.getBitmap());
             //ivUserImg.setImageResource(item.getDrawable());
+            showImage(item, ivCowImg);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(item);
                 }
             });
+        }
+
+        /**
+         * show items of cows
+         * @param item
+         * @param ivCowImg
+         */
+        public void showImage(CowDetails item, ImageView ivCowImg){
+            try {
+                Glide.with(context)
+                        .load(item.getImage_url())
+                        //.placeholder(R.drawable.logo_unit_image_placeholder)
+                        //.error(R.drawable.logo_unit_image_placeholder)
+                        .circleCrop()
+                        .into(ivCowImg);
+            } catch(Exception e1) {
+                e1.printStackTrace();
+            }
         }
 
     }

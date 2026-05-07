@@ -26,12 +26,14 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.fragment.app.Fragment
 import com.israel.cowboyfriend.DB.DBService
 import com.israel.cowboyfriend.R
+import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.global.baseUrl
 import com.israel.cowboyfriend.global.getStringFromCalendar
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.interfaces.CowStorageRespose
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
+import io.github.jan.supabase.auth.auth
 import java.util.Calendar
 import java.util.Locale
 
@@ -247,12 +249,22 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                     override fun onRequestResult(url: String) {
                         var myUrl=baseUrl+""+url
                         insertCowDetails(myUrl)
-                        var n=0
                     }
 
-                    private fun insertCowDetails(myUrl: String) {
-                        DBService.getInstance().insert(etNumberOfCalf?.text.toString().toIntOrNull(),etNumberOfMom?.text.toString().toIntOrNull(),etGenderOfCalf?.text.toString(),myUrl,
-                            object : CowRepositoryCB {
+                    /**
+                     * insert cow to database
+                     */
+              private fun insertCowDetails(myUrl: String) {
+
+                     val supabase=   DBService.getInstance().getSupabase()
+
+                     if(supabase==null) return
+
+                        val cow =CowDetails(number=etNumberOfCalf?.text.toString().toIntOrNull(), number_mom=etNumberOfMom?.text.toString().toIntOrNull()
+                         , gender=etGenderOfCalf?.text.toString(), image_url=myUrl, user_id=supabase.auth.currentSessionOrNull()?.user?.email
+                     )
+
+                     DBService.getInstance().insertCowDetails(cow,object : CowRepositoryCB {
                                 override fun onRequestResult(result: Int) {
                                     if(result==1){
                                         print("success")
@@ -261,7 +273,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                         print("error")
                                 }
                             })
-                    }
+                     }
 
                 })
 

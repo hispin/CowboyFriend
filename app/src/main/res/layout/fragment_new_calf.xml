@@ -14,8 +14,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvDate"
         style="@style/title"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tvTakePicture"
         android:text="22/6"
@@ -26,9 +27,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvTakePicture"
         style="@style/title"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate"
+        app:layout_constraintTop_toTopOf="@+id/ivTakePicture"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/ciTakePicture"
+
         android:text="@string/take_picture"
         />
 
@@ -37,10 +38,10 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:contentDescription="des"
-        app:layout_constraintTop_toTopOf="@+id/tvTakePicture"
-        app:layout_constraintBottom_toBottomOf="@+id/ciTakePicture"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfCalf"
         app:layout_constraintStart_toEndOf="@+id/tvTakePicture"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
         android:visibility="visible"
 
         />
@@ -53,7 +54,6 @@
         app:civ_border_color="#FF000000"
         tools:ignore="MissingConstraints"
         app:layout_constraintTop_toBottomOf="@+id/tvTakePicture"
-        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfCalf"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/button_style"
         />
@@ -165,8 +165,8 @@
 
     <FrameLayout
         android:id="@+id/frSave"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -16,8 +16,8 @@ android {
         applicationId="com.israel.cowboyfriend"
         minSdk=26
         targetSdk=36
-        versionCode=1
-        versionName="1.0"
+        versionCode=2
+        versionName="2.0"
 
         testInstrumentationRunner="androidx.test.runner.AndroidJUnitRunner"
     }
@@ -87,4 +87,7 @@ dependencies {
     //implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
     implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")
     implementation("androidx.fragment:fragment-ktx:1.8.9")
+
+    //Image Processing
+    implementation("com.github.bumptech.glide:glide:5.0.7")
 }
