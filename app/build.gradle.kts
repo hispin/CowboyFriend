@@ -16,8 +16,8 @@ android {
         applicationId="com.israel.cowboyfriend"
         minSdk=26
         targetSdk=36
-        versionCode=2
-        versionName="2.0"
+        versionCode=3
+        versionName="3.0"
 
         testInstrumentationRunner="androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +42,7 @@ android {
     buildFeatures {
         viewBinding=true
     }
-    //    buildFeatures {
+//    buildFeatures {
 //        compose=true
 //    }
 }
@@ -64,24 +64,23 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.circleimageview)
-    //implementation(libs.firebase.firestore)
-    //implementation (libs.circleimageview)
-    //goole
 
-    //implementation("libs.androidx.credential")
-    //superbase
-    //implementation(platform(libs.supabase.bom))
-    //implementation(libs.auth.kt)
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.4.1"))
+
+    ///////supbase libraries
+    // Core Supabase BOM (Bill of Materials)
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.6.0"))
     //implementation(libs.bom)
     implementation(libs.postgrest.kt)
+
+    // Add specific modules you need
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.auth.kt)
-    // Add Storage module
     implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt:3.6.0")
 
+    implementation(libs.ktor.client.okhttp)
+    /////////////////
 
-    implementation("io.ktor:ktor-client-android:3.4.1")
     //implementation(libs.ktor.client.android)
     implementation("javax.inject:javax.inject:1@jar")
     //implementation("androidx.hilt:hilt-navigation-compose:1.3.0")

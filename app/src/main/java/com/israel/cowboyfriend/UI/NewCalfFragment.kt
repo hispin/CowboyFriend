@@ -24,13 +24,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
-import com.israel.cowboyfriend.DB.DBService
+import androidx.lifecycle.ViewModelProvider
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.classes.CowDetails
+import com.israel.cowboyfriend.global.UIHelper
 import com.israel.cowboyfriend.global.baseUrl
 import com.israel.cowboyfriend.global.getStringFromCalendar
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.interfaces.CowStorageRespose
+import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import io.github.jan.supabase.auth.auth
@@ -53,11 +55,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var ciTakePicture:CircleImageView?=null
     private var ivTakePicture:ImageView?=null
     private var tvDate:TextView?=null
-    //private val addCowViewModel: AddCowViewModel by activityViewModels()
-    //private val addCowViewModel by viewModels<AddCowViewModel>()
-    //val addCowViewModel: AddCowViewModel=HiltViewModel()
     private var ciSave: CircleImageView?=null
-
+    private var myViewModelSupbase: MyViewModelSupbase? = null
 
 
 
@@ -187,7 +186,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         textToSpeech = TextToSpeech(requireActivity(), this)
     }
 
-    override fun onCreateView(
+   override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -206,6 +205,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             }
         }
 
+        myViewModelSupbase = ViewModelProvider(requireActivity())[MyViewModelSupbase::class.java]
 
         return view
     }
@@ -243,7 +243,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
         ciSave?.setOnClickListener {
 
-            DBService.getInstance().uploadCowImage(uri,requireContext(),
+            myViewModelSupbase?.uploadCowImage(uri,requireContext(),
                 object :
                 CowStorageRespose {
                     override fun onRequestResult(url: String) {
@@ -256,7 +256,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                      */
               private fun insertCowDetails(myUrl: String) {
 
-                     val supabase=   DBService.getInstance().getSupabase()
+                     val supabase=   myViewModelSupbase?.getSupabase()
 
                      if(supabase==null) return
 
@@ -264,15 +264,16 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                          , gender=etGenderOfCalf?.text.toString(), image_url=myUrl, user_id=supabase.auth.currentSessionOrNull()?.user?.email
                      )
 
-                     DBService.getInstance().insertCowDetails(cow,object : CowRepositoryCB {
-                                override fun onRequestResult(result: Int) {
-                                    if(result==1){
-                                        print("success")
-                                    }
-                                    else
-                                        print("error")
-                                }
-                            })
+                     myViewModelSupbase?.insertCowDetails(cow,object : CowRepositoryCB {
+                         override fun onRequestResult(result: Int) {
+                             if(result==1){
+                                 print("success")
+                                 UIHelper.showToast(requireActivity(),"success")
+                             }
+                             else
+                                 print("error")
+                         }
+                     })
                      }
 
                 })

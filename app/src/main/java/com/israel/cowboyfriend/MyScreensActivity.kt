@@ -8,15 +8,16 @@ import android.view.View
 import android.view.View.OnTouchListener
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.israel.cowboyfriend.DB.DBService
 import com.israel.cowboyfriend.UI.CattleTourFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
 import com.israel.cowboyfriend.UI.SettingsFragment
@@ -24,10 +25,12 @@ import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.classes.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.classes.NonSwipeAbleViewPager
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
+import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
+import kotlin.jvm.java
 
 //import io.github.jan.supabase.auth.Auth
 
@@ -51,9 +54,12 @@ class MyScreensActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager
     var vPager: NonSwipeAbleViewPager? = null
     private var currentItemTopMenu = 0
+    //private var myViewModelSupbase: MyViewModelSupbase=viewModel()
+    private var myViewModelSupbase: MyViewModelSupbase? = null
 
 
 
+    @Composable
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setAppAsHebrow()
@@ -67,18 +73,14 @@ class MyScreensActivity : AppCompatActivity() {
             insets
         }
         initViews()
+        myViewModelSupbase = ViewModelProvider(this)[MyViewModelSupbase::class.java]
 
-
-        //val db = Firebase.firestore
-        //var n = 10
-
-        //Thread{
         setSupabase()
-          //  }
 
         login()
 
-        //selsect()
+        myViewModelSupbase?.setListenerRealtimeCowDetails()//this)
+
     }
 
 
@@ -101,86 +103,25 @@ class MyScreensActivity : AppCompatActivity() {
 
     private fun login() {
 
-        DBService.getInstance().login (object :
+        myViewModelSupbase?.login (object :
           CowRepositoryCB {
             override fun onRequestResult(result: Int) {
-            if(result==1){
-                configTabs()
-            }
-            else
-                print("error")
+                if(result==1){
+                    myViewModelSupbase?.setListenerRealtimeCowDetails()
+                    configTabs()
+                }
+                else
+                    print("error")
             }
           }
         )
-//            {
-////            if(it==1){
-////                configTabs()
-////            }
-////            else
-////                print("error")
-////        }
 
-
-//        runBlocking {
-//
-//            val service =DBService.getInstance("12345").login()
-//
-//            try {
-//
-//                var user=supabase.auth.currentSessionOrNull()
-//
-//                supabase.auth.signInWith(Email) {
-//                    email = "hag.swead@gmail.com"
-//                    password = "ringo1234"
-//                }
-//
-//                user=supabase.auth.currentSessionOrNull()
-//
-//                configTabs()
-//
-//                //val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
-//
-//                //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
-//                //val num=10
-//            }catch (ex: Exception){
-//                print(ex)
-//            }
-//        }
     }
 
 
     private  fun setSupabase() {
-        DBService.getInstance().setSupabase()
-//        supabase = createSupabaseClient(
-//                supabaseUrl = "https://ymgsasxfgfyagppltvdy.supabase.co",
-//                 supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZ3Nhc3hmZ2Z5YWdwcGx0dmR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjg1MTIsImV4cCI6MjA4OTk0NDUxMn0.FcH0j_Ec83MzcE73rV_EfH5BA5xxpNQyGBY-4Wxm1yk"
-//        ) {
-//
-//            install(Postgrest) // For database interactions
-//            install(Auth)
-////        install(SessionSource.Storage)   // For file storage
-//        }
-//        runBlocking {
-//           try {
-//
-//               var user=supabase.auth.currentSessionOrNull()
-//
-//               supabase.auth.signInWith(Email) {
-//                   email = "hag.swead@gmail.com"
-//                   password = "ringo1234"
-//               }
-//
-//               user=supabase.auth.currentSessionOrNull()
-//
-//
-//               val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
-//
-//               //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
-//               val num=10
-//           }catch (ex: Exception){
-//               print(ex)
-//           }
-//        }
+
+        myViewModelSupbase?.setSupabase()
 
     }
 

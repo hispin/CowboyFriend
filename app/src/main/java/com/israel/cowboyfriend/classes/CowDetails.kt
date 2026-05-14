@@ -1,9 +1,9 @@
 package com.israel.cowboyfriend.classes
 
 data class CowDetails (
-    val number: Int?,
-    val number_mom: Int?,
-    val gender: String?,
-    val image_url: String?,
-    val user_id: String?
+    var number: Int?,
+    var number_mom: Int?,
+    var gender: String?,
+    var image_url: String?,
+    var user_id: String?
 )

@@ -5,20 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.israel.cowboyfriend.DB.CowDto
-import com.israel.cowboyfriend.DB.DBService
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.adapter.MyCowAdapter
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.interfaces.CowRepositoryCBselect
 import com.israel.cowboyfriend.interfaces.InterOnItemClickListener
+import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 
 class CattleTourFragment : Fragment() {
 
     private var rcShowCows: RecyclerView? =null
+    private var myViewModelSupbase: MyViewModelSupbase? = null
+    private var myCowsAdapter: MyCowAdapter?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,19 +36,44 @@ class CattleTourFragment : Fragment() {
 
         initViews(view)
 
+        myViewModelSupbase = ViewModelProvider(requireActivity())[MyViewModelSupbase::class.java]
+
+
+        setObservers()
+
         getCowDetails()
 
         return view
     }
 
+    /**
+     * set observers
+     */
+    private fun setObservers() {
+        myViewModelSupbase?._cowsDetails?.observe(requireActivity()) {
+            if(it!=null) {
+                showCowsDetails(it as ArrayList<CowDetails>?)
+            }
+        }
+    }
+
+
     private fun initViews(view: View) {
         rcShowCows=view.findViewById(R.id.rcShowCows)
     }
 
-    private fun getCowDetails() {
-        DBService.getInstance().getCowsDetails(object :
+    /**
+     * get details of all cows
+     */
+    private fun getCowDetails(){
+        myViewModelSupbase?.getCowsDetails()
+    }
+
+    private fun getCowDetails1() {
+
+        myViewModelSupbase?.getCowsDetails(object :
             CowRepositoryCBselect {
-            private lateinit var myCowsAdapter: MyCowAdapter
+
 
             override fun onRequestResult(cowsDto: ArrayList<CowDto>?) {
 
@@ -63,23 +91,31 @@ class CattleTourFragment : Fragment() {
                 }
                 showCowsDetails(cowsDetails)
             }
-
-            private fun showCowsDetails(cows: ArrayList<CowDetails>?) {
-                myCowsAdapter=MyCowAdapter(cows,requireActivity(), object : InterOnItemClickListener {
-                    public override fun onItemClick(item: CowDetails) {
-
-                    }
-                })
-                rcShowCows?.setLayoutManager(LinearLayoutManager(getActivity()))
-                rcShowCows?.setAdapter(myCowsAdapter)
-                rcShowCows?.setHasFixedSize(true)
-                //add dividing line between items in list
-                val dividerItemDecoration =DividerItemDecoration(
-                    requireActivity(), LinearLayoutManager(activity).orientation
-                )
-                rcShowCows?.addItemDecoration(dividerItemDecoration)
-            }
         })
+    }
+
+    /**
+     * show details of all cows
+     */
+    private fun showCowsDetails(cows: ArrayList<CowDetails>?) {
+        if(myCowsAdapter==null) {
+            myCowsAdapter=MyCowAdapter(cows, requireActivity(), object : InterOnItemClickListener {
+                public override fun onItemClick(item: CowDetails) {
+
+                }
+            })
+            rcShowCows?.setLayoutManager(LinearLayoutManager(getActivity()))
+            rcShowCows?.setAdapter(myCowsAdapter)
+            rcShowCows?.setHasFixedSize(true)
+            //add dividing line between items in list
+            val dividerItemDecoration=DividerItemDecoration(
+                requireActivity(), LinearLayoutManager(activity).orientation
+            )
+            rcShowCows?.addItemDecoration(dividerItemDecoration)
+        }else{
+            myCowsAdapter?.setCows(cows)
+            myCowsAdapter?.notifyDataSetChanged()
+        }
     }
 
 }

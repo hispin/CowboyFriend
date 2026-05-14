@@ -1,8 +1,13 @@
-package com.israel.cowboyfriend.DB
+package com.israel.cowboyfriend.viewmodel
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.israel.cowboyfriend.DB.CowDto
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.interfaces.CowRepositoryCBselect
@@ -18,37 +23,31 @@ import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.upload
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.util.UUID
 
-class DBService {
-    private constructor ()
 
+class MyViewModelSupbase (application: Application) : AndroidViewModel(application) {
 
     private lateinit var supabase: SupabaseClient
-
-    companion object {
-        @Volatile
-        private var instance: DBService?=null
-
-        fun getInstance(): DBService {
-            return instance ?: synchronized(this) {
-                instance ?: DBService().also { instance=it }
-            }
-        }
+    //private var cowsDto:ArrayList<CowDto> ?=null
+    var _cowsDetails = MutableLiveData<List<CowDetails>>()
+    var cowsDetails:ArrayList<CowDetails>?=null
 
 
-    }
-
+    /**
+     * set supabase
+     */
     fun setSupabase() {
         supabase=createSupabaseClient(
             supabaseUrl="https://ymgsasxfgfyagppltvdy.supabase.co",
@@ -59,6 +58,7 @@ class DBService {
             install(Auth)
             install(Storage)
             install(Realtime)
+//        install(SessionSource.Storage)   // For file storage
         }
     }
 
@@ -66,8 +66,11 @@ class DBService {
         return supabase
     }
 
+    /**
+     * log in
+     */
     fun login(cowRepositoryCallback: CowRepositoryCB) {
-        runBlocking {
+        viewModelScope.launch {
             try {
 
                 var user=supabase.auth.currentSessionOrNull()
@@ -94,8 +97,7 @@ class DBService {
                 cowRepositoryCallback.onRequestResult(0)
             }
         }
-   }
-
+    }
 
     /**
      * get details of all cows
@@ -108,6 +110,38 @@ class DBService {
             }catch (ex: Exception){
                 print(ex)
                 cowRepositoryCBselect.onRequestResult(ArrayList(emptyList()))
+            }
+        }
+    }
+
+    /**
+     * get details of all cows
+     */
+    fun getCowsDetails() {
+
+        runBlocking {
+            try {
+                cowsDetails=ArrayList()
+
+                val cowsDto=supabase.from("CowDetails").select().decodeList<CowDto>()
+
+                val iterator=cowsDto.iterator()
+
+                while (iterator.hasNext()) {
+                    val item=iterator.next()
+                    val cow=CowDetails(
+                        number=item.number,
+                        number_mom=item.number_mom,
+                        gender=item.gender,
+                        image_url=item.image_url,
+                        user_id=item.user_id
+                    )
+                    cowsDetails?.add(cow)
+                }
+                _cowsDetails.value=cowsDetails?.toList()
+            } catch (ex: Exception) {
+                print(ex)
+                //cowRepositoryCBselect.onRequestResult(ArrayList(emptyList()))
             }
         }
     }
@@ -181,21 +215,31 @@ class DBService {
         }
     }
 
+    /**
+     * set listener realtime to table CowDetails
+     */
+    fun setListenerRealtimeCowDetails(){//scope: CoroutineScope) {
 
-    fun setListenerToInsert1(){//scope: CoroutineScope) {
-        runBlocking {
+        viewModelScope.launch {
             try {
                 val channel=supabase.channel(channelId="table-changes")
-                val dataFlow=channel.postgresChangeFlow<PostgresAction>(schema="public")
+                val dataFlow=channel.postgresChangeFlow<PostgresAction>(schema="public"){
+                    table="CowDetails"
+                }
                 dataFlow.onEach {
                     when(it){
                         is PostgresAction.Insert->{
+                            val cow = it.decodeRecord<CowDto>()
+                            insertToCowsListUI(cow)
                             Log.d("chatInfo", "insert list")
                         }
                         is PostgresAction.Delete->{
+
                             Log.d("chatInfo", "delete list")
                         }
                         is PostgresAction.Update->{
+                            val cow = it.decodeRecord<CowDto>()
+                            updateCowsList(cow)
                             Log.d("chatInfo", "updated list")
                         }
                         is PostgresAction.Select->{
@@ -203,53 +247,43 @@ class DBService {
                         }
                         else -> {}
                     }
-                }.launchIn(CoroutineScope(context=currentCoroutineContext()))
+                }.launchIn(CoroutineScope(coroutineContext))
                 channel.subscribe()
             } catch (ex: Exception) {
-
+                 ex.printStackTrace()
             }
         }
     }
 
 
-    fun setListenerToInsert() {
+    /**
+     * insert to list of cows UI
+     */
+    fun insertToCowsListUI(cow: CowDto) {
+        cowsDetails?.add(
+            CowDetails(
+                number=cow.number, number_mom=cow.number_mom
+                , gender=cow.gender, image_url=cow.image_url, user_id=cow.user_id
+            )
+        )
+        _cowsDetails.value=cowsDetails?.toList()
+    }
 
+    /**
+     * update list of cows
+     */
+    fun updateCowsList(cow: CowDto) {
+        val iterator=cowsDetails?.iterator()
 
-
-
-//        // 1. Initialize the channel
-//
-//        // Create a channel with a specific ID
-//
-        runBlocking {
-//
-        try {
-            val channel=supabase.channel(channelId="table-changes")
-//
-//
-//
-//// 2. Create a flow specifically for INSERT actions
-            val insertFlow=channel.postgresChangeFlow<PostgresAction.Insert>(schema="public") {
-                table="CowDetails"
+        while (iterator?.hasNext() == true) {
+            val item=iterator.next()
+            if(item.number==cow.number && item.user_id.equals(cow.user_id)) {
+                item.image_url=cow.image_url
+                item.number_mom=cow.number_mom
+                item.gender=cow.gender
             }
-//
-//// 3. Collect the flow in a coroutine scope
-            insertFlow.onEach { action ->
-                var n=10
-                Log.d("chatInfo", "updated list")
-                // Access the inserted data via action.record
-                // println("New record inserted: ${action.record}")
-            }.launchIn(CoroutineScope(context=currentCoroutineContext()))
-//
-//
-//
-//// 4. Subscribe to start listening
-            channel.subscribe()
-        }catch (ex: Exception){
-            print(ex.message.toString())
         }
-        }
-
+        _cowsDetails.value=cowsDetails?.toList()
     }
 
 }

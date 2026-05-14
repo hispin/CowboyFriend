@@ -9,4 +9,16 @@
     <string name="gender_calf">מין העגל</string>
     <string name="number_of_mom">מספר האמא</string>
     <string name="take_picture">צלם תמונה</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">אימייל</string>
+    <string name="prompt_password">סיסמה</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">שם משתמש שגוי</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"ההתחברות נכשלה"</string>
+    <string name="title_calf_number">מספר העגל: %1$s</string>
+    <string name="title_mom_number">מספר האמא: %1$s</string>
+    <string name="title_calf_gender">מין העגל: %1$s</string>
 </resources>

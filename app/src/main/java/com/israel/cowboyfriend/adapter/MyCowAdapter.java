@@ -38,6 +38,10 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
     }
 
 
+    public void setCows(ArrayList<CowDetails> cows) {
+        this.cows = cows;
+    }
+
     // Create new views (invoked by the layout manager)
     @NonNull
     @Override
@@ -82,11 +86,9 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         }
 
         public void bind(final CowDetails item, final InterOnItemClickListener listener) {
-            tvCalfName.setText(item.getNumber()+"");
-            tvMonNum.setText(item.getNumber_mom()+"");
-            tvGender.setText(item.getGender());
-            //ivUserImg.setImageBitmap(item.getBitmap());
-            //ivUserImg.setImageResource(item.getDrawable());
+            tvCalfName.setText(String.format(context.getString(R.string.title_calf_number), item.getNumber()+""));
+            tvMonNum.setText(String.format(context.getString(R.string.title_mom_number), item.getNumber_mom()+""));
+            tvGender.setText(String.format(context.getString(R.string.title_calf_gender), item.getGender()));
             showImage(item, ivCowImg);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
