@@ -1,7 +1,10 @@
 package com.israel.cowboyfriend
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -9,6 +12,7 @@ import android.view.View.OnTouchListener
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,11 +23,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.israel.cowboyfriend.UI.CattleTourFragment
+import com.israel.cowboyfriend.UI.MapmobFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
 import com.israel.cowboyfriend.UI.SettingsFragment
 import com.israel.cowboyfriend.classes.CowDetails
-import com.israel.cowboyfriend.classes.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.classes.NonSwipeAbleViewPager
+import com.israel.cowboyfriend.global.MAIN_MENU_NUM_ITEM
+import com.israel.cowboyfriend.global.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 import io.github.jan.supabase.SupabaseClient
@@ -77,9 +83,56 @@ class MyScreensActivity : AppCompatActivity() {
 
         setSupabase()
 
-        login()
+        myViewModelSupbase?.setListenerRealtimeCowDetails()//
 
-        myViewModelSupbase?.setListenerRealtimeCowDetails()//this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setLocationPermission()
+        } else {
+            login()
+        }
+
+    }
+
+    /**
+     * set location permission
+     */
+    private fun setLocationPermission() {
+        /*
+     * Request location permission, so that we can get the location of the
+     * device. The result of the permission request is handled by a callback,
+     * onRequestPermissionsResult.
+     */
+        if (ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            //setExternalPermission()
+            login()
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
+        }
+    }
+
+    /**
+     * call back of location permission
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+                login()
+                //setExternalPermission()
+            }
+        }
 
     }
 
@@ -190,6 +243,8 @@ class MyScreensActivity : AppCompatActivity() {
         tabs.getTabAt(2)?.icon =
             ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_sensor_tab)
 
+        tabs.getTabAt(3)?.icon =
+            ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_sensor_tab)
 
         viewPager.currentItem = currentItemTopMenu
 
@@ -231,6 +286,13 @@ class MyScreensActivity : AppCompatActivity() {
                         putInt("ARG_OBJECT", position + 1)
                     }
                 }
+                3 -> {
+                    fragment =MapmobFragment()
+                    fragment.arguments = Bundle().apply {
+                        // Our object is just an integer :-P
+                        putInt("ARG_OBJECT", position + 1)
+                    }
+                }
 
             }
             return fragment!!
@@ -244,6 +306,7 @@ class MyScreensActivity : AppCompatActivity() {
                 0 -> resources.getString(R.string.new_calf)
                 1 -> resources.getString(R.string.cattle_tour)
                 2 -> resources.getString(R.string.settings)
+                3 -> resources.getString(R.string.map_title)
                 else -> "nothing"
             }
 

@@ -16,8 +16,8 @@ android {
         applicationId="com.israel.cowboyfriend"
         minSdk=26
         targetSdk=36
-        versionCode=3
-        versionName="3.0"
+        versionCode=4
+        versionName="4.0"
 
         testInstrumentationRunner="androidx.test.runner.AndroidJUnitRunner"
     }
@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.runtime)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,4 +90,9 @@ dependencies {
 
     //Image Processing
     implementation("com.github.bumptech.glide:glide:5.0.7")
+
+    //map box
+    implementation("com.mapbox.maps:android-ndk27:11.14.4")
+    implementation("com.mapbox.mapboxsdk:mapbox-sdk-geojson:6.9.0")
+    implementation("com.google.android.gms:play-services-maps:20.0.0")
 }

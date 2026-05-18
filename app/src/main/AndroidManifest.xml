@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Include this permission to grab user's general location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Include only if your app benefits from precise location access. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
     <queries>
         <intent>
@@ -48,6 +56,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+        <service
+            android:name=".services.ServiceFindSingleLocation"
+            android:exported="false"
+            android:foregroundServiceType="location" /> <!-- <receiver android:name=".ScreenOnOffReceiver"> -->
     </application>
 
 </manifest>
