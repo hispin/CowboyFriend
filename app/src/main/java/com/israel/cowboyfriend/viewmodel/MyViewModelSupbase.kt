@@ -134,7 +134,8 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                         number_mom=item.number_mom,
                         gender=item.gender,
                         image_url=item.image_url,
-                        user_id=item.user_id
+                        user_id=item.user_id,
+                        comment = item.comment
                     )
                     cowsDetails?.add(cow)
                 }
@@ -160,7 +161,8 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                     number_mom = cow.number_mom,
                     gender = cow.gender,
                     image_url=cow.image_url,
-                    user_id =cow.user_id
+                    user_id =cow.user_id,
+                    comment = cow.comment
                 )
                 val result=supabase.postgrest.from("CowDetails").insert(cowDto)
                 cowRepositoryCallback.onRequestResult(1)
@@ -263,7 +265,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
         cowsDetails?.add(
             CowDetails(
                 number=cow.number, number_mom=cow.number_mom
-                , gender=cow.gender, image_url=cow.image_url, user_id=cow.user_id
+                ,gender=cow.gender, image_url=cow.image_url, user_id=cow.user_id, comment = cow.comment
             )
         )
         _cowsDetails.value=cowsDetails?.toList()
@@ -281,6 +283,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                 item.image_url=cow.image_url
                 item.number_mom=cow.number_mom
                 item.gender=cow.gender
+                item.comment=cow.comment
             }
         }
         _cowsDetails.value=cowsDetails?.toList()

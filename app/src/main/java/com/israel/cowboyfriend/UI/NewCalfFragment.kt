@@ -6,6 +6,8 @@ import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
@@ -16,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -42,6 +45,7 @@ import java.util.Locale
 @AndroidEntryPoint
 class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
+    private var myTextOrder: String?=null
     private var uri: Uri? = null
     private var textToSpeech:TextToSpeech?=null
     private var etCurrent:EditText? = null
@@ -57,7 +61,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var tvDate:TextView?=null
     private var ciSave: CircleImageView?=null
     private var myViewModelSupbase: MyViewModelSupbase? = null
-
+    private var etComments: EditText?=null
+    private var ciComments: CircleImageView?=null
+    private var progress_bar: ProgressBar?=null
 
 
     private val UTTERANCE_ID = "my_unique_utterance_id"
@@ -223,6 +229,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         ivTakePicture =view?.findViewById(R.id.ivTakePicture)
         tvDate=view?.findViewById(R.id.tvDate)
         ciSave=view?.findViewById(R.id.ciSave)
+        etComments=view?.findViewById(R.id.etComments)
+        ciComments=view?.findViewById(R.id.ciComments)
+        progress_bar=view?.findViewById(R.id.progress_bar)
 
 
         tvDate?.text=getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy", requireActivity())
@@ -236,49 +245,58 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         ciNumberOfMom?.setOnClickListener {
             speakNow("בחר מספר של האמא",etNumberOfMom,true)
         }
+        ciComments?.setOnClickListener {
+            speakNow("הערה",etComments,false)
+        }
 
         ciTakePicture?.setOnClickListener {
             takePicture()
         }
 
         ciSave?.setOnClickListener {
+            progress_bar?.visibility=View.VISIBLE
+            // delay to enable visible the progress bar
+            Handler(Looper.getMainLooper()).postDelayed({
+                    myViewModelSupbase?.uploadCowImage(uri,requireContext(),
+                        object :
+                        CowStorageRespose {
+                            override fun onRequestResult(url: String) {
+                                var myUrl=baseUrl+""+url
+                                insertCowDetails(myUrl)
+                            }
 
-            myViewModelSupbase?.uploadCowImage(uri,requireContext(),
-                object :
-                CowStorageRespose {
-                    override fun onRequestResult(url: String) {
-                        var myUrl=baseUrl+""+url
-                        insertCowDetails(myUrl)
-                    }
+                            /**
+                             * insert cow to database
+                             */
+                      private fun insertCowDetails(myUrl: String) {
 
-                    /**
-                     * insert cow to database
-                     */
-              private fun insertCowDetails(myUrl: String) {
+                             val supabase=   myViewModelSupbase?.getSupabase()
 
-                     val supabase=   myViewModelSupbase?.getSupabase()
+                             if(supabase==null) return
 
-                     if(supabase==null) return
+                                val cow =CowDetails(number=etNumberOfCalf?.text.toString().toIntOrNull(), number_mom=etNumberOfMom?.text.toString().toIntOrNull()
+                                 , gender=etGenderOfCalf?.text.toString(), image_url=myUrl, user_id=supabase.auth.currentSessionOrNull()?.user?.email, comment=etComments?.text.toString()
+                             )
 
-                        val cow =CowDetails(number=etNumberOfCalf?.text.toString().toIntOrNull(), number_mom=etNumberOfMom?.text.toString().toIntOrNull()
-                         , gender=etGenderOfCalf?.text.toString(), image_url=myUrl, user_id=supabase.auth.currentSessionOrNull()?.user?.email
-                     )
+                             myViewModelSupbase?.insertCowDetails(cow,object : CowRepositoryCB {
 
-                     myViewModelSupbase?.insertCowDetails(cow,object : CowRepositoryCB {
-                         override fun onRequestResult(result: Int) {
-                             if(result==1){
-                                 print("success")
-                                 UIHelper.showToast(requireActivity(),"success")
+                                 override fun onRequestResult(result: Int) {
+                                     if(result==1){
+                                         progress_bar?.visibility=View.GONE
+                                         print("success")
+                                         UIHelper.showToast(requireActivity(),"success")
+                                     }
+                                     else {
+                                         progress_bar?.visibility=View.GONE
+                                         print("error")
+                                         UIHelper.showToast(requireActivity(),"failed")
+                                     }
+                                 }
+                             })
                              }
-                             else
-                                 print("error")
-                         }
-                     })
-                     }
 
-                })
-
-
+                        })
+            }, 500)
         }
 
     }
@@ -304,16 +322,16 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private fun openDialogToEnterCalfNumber(){
 
         val recognizerIntent=Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "הכנס מספר עגל")
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, myTextOrder)
         recognizerIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
         //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,  Long(2000))
         // Set longer silence detection
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000L)
+        //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
+        //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
+        //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000L)
         try {
             resultSpeakLauncher.launch(recognizerIntent)
         } catch (a: ActivityNotFoundException) {
@@ -325,6 +343,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
     //convert text to speak
     fun speakNow(text: String, etCurrent: EditText?,hasToBeNumber:Boolean) {
+        this.myTextOrder = text
         this.hasToBeNumber = hasToBeNumber
         this.etCurrent=etCurrent
         val params = Bundle()

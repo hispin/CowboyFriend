@@ -126,7 +126,8 @@ class DBService {
                     number_mom = cow.number_mom,
                     gender = cow.gender,
                     image_url=cow.image_url,
-                    user_id =cow.user_id
+                    user_id =cow.user_id,
+                    comment = cow.comment
                 )
                 val result=supabase.postgrest.from("CowDetails").insert(cowDto)
                 cowRepositoryCallback.onRequestResult(1)

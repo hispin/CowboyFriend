@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
@@ -36,6 +37,7 @@ import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.addOnMapLongClickListener
@@ -44,6 +46,7 @@ import com.mapbox.maps.viewannotation.ViewAnnotationManager
 
 class MapmobFragment : Fragment() , OnMoveListener{
 
+    private var pointAnnotationOptions: PointAnnotationOptions?=null
     private var fbRefresh: FloatingActionButton? = null
     private var myLocate: LatLng? = null
     private var mapView: MapView? = null
@@ -88,7 +91,12 @@ class MapmobFragment : Fragment() , OnMoveListener{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             activity?.registerReceiver(usbReceiver, filter, AppCompatActivity.RECEIVER_EXPORTED)
         } else {
-            activity?.registerReceiver(usbReceiver, filter)
+            ContextCompat.registerReceiver(
+                requireActivity(),
+                usbReceiver,
+                filter,
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
         }
     }
 
@@ -260,13 +268,77 @@ class MapmobFragment : Fragment() , OnMoveListener{
                         myMapboxMap?.setCamera(cameraPosition)
                     }
                 //show all markers
-                //showMarkers()
+                showMarkers()
 
             }
 
         }
 
     }
+
+    /**
+     * show all markers
+     */
+    fun showMarkers() {
+
+        //remove all markers
+        pointAnnotationManager?.deleteAll()
+        pointAnnotation = null
+
+        //clear the markers
+        //markersList = ArrayList<Feature>()
+
+        //show current location marker
+        showCurrentLocationMarker()
+    }
+
+    /**
+     * show marker of current location if exist
+     */
+    private fun showCurrentLocationMarker() {
+
+        if (activity == null) {
+            return
+        }
+
+        if (mapView == null) {
+            return
+        }
+
+        if (myLocate == null) {
+            return
+        }
+
+        if (myLocate != null) {
+
+            if (pointAnnotation == null && pointAnnotationOptions == null) {
+                // Set options for the resulting symbol layer.
+                pointAnnotationOptions = PointAnnotationOptions()
+                    // Define a geographic coordinate.
+                    .withPoint(Point.fromLngLat(myLocate?.longitude!!, myLocate?.latitude!!))
+                    // Specify the bitmap you assigned to the point annotation
+                    // The bitmap will be added to map style automatically.
+                    .withIconImage(
+                        BitmapFactory.decodeResource(
+                            requireActivity().resources, R.mipmap.ic_my_locate
+                        )
+                    )
+                // Add the resulting pointAnnotation to the map.
+                pointAnnotation =pointAnnotationOptions?.let { pointAnnotationManager?.create(it) }
+            } else {
+                //if pointAnnotation is already exist then update the current markers location
+                pointAnnotation?.point =
+                    Point.fromLngLat(myLocate?.longitude!!, myLocate?.latitude!!)
+                if (pointAnnotation != null) {
+                    pointAnnotationManager?.update(pointAnnotation!!)
+                }
+            }
+
+
+        }
+
+    }
+
 
     override fun onMove(detector: MoveGestureDetector): Boolean {
         return false

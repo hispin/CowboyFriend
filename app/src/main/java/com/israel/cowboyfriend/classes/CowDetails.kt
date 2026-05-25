@@ -5,5 +5,6 @@ data class CowDetails (
     var number_mom: Int?,
     var gender: String?,
     var image_url: String?,
-    var user_id: String?
+    var user_id: String?,
+    var comment: String?
 )

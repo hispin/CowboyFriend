@@ -21,5 +21,8 @@
     <string name="title_calf_number">מספר העגל: %1$s</string>
     <string name="title_mom_number">מספר האמא: %1$s</string>
     <string name="title_calf_gender">מין העגל: %1$s</string>
+    <string name="title_comment">הערה: %1$s</string>
     <string name="map_title">מפה</string>
+    <string name="comments">הערות</string>
+    <string name="no_comment">אין הערה</string>
 </resources>

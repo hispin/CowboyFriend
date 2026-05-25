@@ -20,6 +20,9 @@
     <string name="title_calf_number">number of calf: %1$s</string>
     <string name="title_mom_number">number of mom: %1$s</string>
     <string name="title_calf_gender">gender of calf: %1$s</string>
+    <string name="title_comment">comment: %1$s</string>
     <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoidG9tZXJjaG9lbiIsImEiOiJja2psYWJ0M201N3ZuMnJucW4zNWZqYzNvIn0.fZ3nmtGLC2X-PKfuNY5wfQ</string>
     <string name="map_title">Map</string>
+    <string name="comments">Comments</string>
+    <string name="no_comment">no comment</string>
 </resources>

@@ -9,5 +9,6 @@ class CowDto (
     @SerialName("number_mom") val number_mom: Int?,
     @SerialName("gender") val gender: String?,
     @SerialName("image_url") val image_url: String?,
-    @SerialName("user_id") val user_id: String?
+    @SerialName("user_id") val user_id: String?,
+    @SerialName("comment") val comment: String?
     )

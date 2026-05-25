@@ -85,7 +85,7 @@ class CattleTourFragment : Fragment() {
                     val item = iterator.next()
                     val cow =CowDetails(
                         number=item.number, number_mom=item.number_mom
-                        , gender=item.gender, image_url=item.image_url, user_id=item.user_id
+                        , gender=item.gender, image_url=item.image_url, user_id=item.user_id, comment = item.comment
                     )
                     cowsDetails.add(cow)
                 }

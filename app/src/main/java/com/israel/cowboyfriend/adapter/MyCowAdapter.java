@@ -74,6 +74,7 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         TextView tvMonNum ;
         TextView tvGender ;
         ImageView ivCowImg;
+        TextView tvComment;
         Context context;
 
         public MyViewHolder(@NonNull View itemView, Context context) {
@@ -82,6 +83,7 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             tvMonNum = itemView.findViewById(R.id.tvMonNum);
             tvGender  = itemView.findViewById(R.id.tvGender);
             ivCowImg = itemView.findViewById(R.id.ivCowImg);
+            tvComment = itemView.findViewById(R.id.tvComment);
             this.context = context;
         }
 
@@ -89,6 +91,11 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             tvCalfName.setText(String.format(context.getString(R.string.title_calf_number), item.getNumber()+""));
             tvMonNum.setText(String.format(context.getString(R.string.title_mom_number), item.getNumber_mom()+""));
             tvGender.setText(String.format(context.getString(R.string.title_calf_gender), item.getGender()));
+            if(item.getComment()!=null) {
+                tvComment.setText(String.format(context.getString(R.string.title_comment), item.getComment()));
+            }else {
+                tvComment.setText(String.format(context.getString(R.string.title_comment), context.getString(R.string.no_comment)));
+            }
             showImage(item, ivCowImg);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {

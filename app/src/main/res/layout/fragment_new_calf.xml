@@ -135,7 +135,7 @@
         style="@style/title"
         app:layout_constraintTop_toBottomOf="@+id/tvGenderOfCalf"
         app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
-        app:layout_constraintBottom_toTopOf="@+id/frSave"
+        app:layout_constraintBottom_toTopOf="@+id/tvComments"
         android:text="@string/number_of_mom"
         />
     <androidx.appcompat.widget.AppCompatEditText
@@ -163,11 +163,50 @@
         style="@style/button_style"
         />
 
+<!--    comments-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvComments"
+        style="@style/title"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        app:layout_constraintBottom_toTopOf="@+id/frSave"
+        android:text="@string/comments"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etComments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvComments"
+        android:ems="12"
+        android:inputType="text|textMultiLine"
+        android:background="@drawable/shape_bottom_border"
+        style="@style/edittext_style"
+        android:lines="3"
+        android:minLines="3"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciComments"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_calf"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="@+id/etComments"
+        app:layout_constraintBottom_toBottomOf="@+id/etComments"
+        app:layout_constraintStart_toEndOf="@+id/etComments"
+        style="@style/button_style"
+        />
     <FrameLayout
         android:id="@+id/frSave"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
+        app:layout_constraintTop_toBottomOf="@+id/etComments"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -195,6 +234,21 @@
     </FrameLayout>
 
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:visibility="invisible" />
 
 
 
