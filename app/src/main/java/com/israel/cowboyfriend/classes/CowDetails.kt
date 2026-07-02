@@ -6,5 +6,10 @@ data class CowDetails (
     var gender: String?,
     var image_url: String?,
     var user_id: String?,
-    var comment: String?
-)
+    var comment: String?,
+    var latitude: Double?,
+    var longitude: Double?
+){
+    var isCorpse: Boolean=false
+}
+

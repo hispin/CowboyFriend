@@ -10,5 +10,8 @@ class CowDto (
     @SerialName("gender") val gender: String?,
     @SerialName("image_url") val image_url: String?,
     @SerialName("user_id") val user_id: String?,
-    @SerialName("comment") val comment: String?
+    @SerialName("comment") val comment: String?,
+    @SerialName("latitude") val latitude: Double?,
+    @SerialName("longitude") val longitude: Double?,
+    @SerialName("corpse") val corpse: Boolean?
     )

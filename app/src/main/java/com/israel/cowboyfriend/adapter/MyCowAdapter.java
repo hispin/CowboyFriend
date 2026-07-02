@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -76,6 +78,8 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         ImageView ivCowImg;
         TextView tvComment;
         Context context;
+        CheckBox cbCorpse;
+        Button btnSave;
 
         public MyViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -84,6 +88,8 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             tvGender  = itemView.findViewById(R.id.tvGender);
             ivCowImg = itemView.findViewById(R.id.ivCowImg);
             tvComment = itemView.findViewById(R.id.tvComment);
+            cbCorpse = itemView.findViewById(R.id.cbCorpse);
+            btnSave = itemView.findViewById(R.id.btnSave);
             this.context = context;
         }
 
@@ -97,11 +103,29 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
                 tvComment.setText(String.format(context.getString(R.string.title_comment), context.getString(R.string.no_comment)));
             }
             showImage(item, ivCowImg);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
+            cbCorpse.setChecked(item.isCorpse());
+            btnSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    item.setCorpse(cbCorpse.isChecked());
                     listener.onItemClick(item);
                 }
             });
+//            cbCorpse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(@NonNull CompoundButton compoundButton, boolean result) {
+//                    Log.d("testCorpse", "onCheckedChanged:"+result);
+//
+//                    //item.setCorpse(result);
+//                    //btnSave.setVisibility(View.VISIBLE);
+//
+//                }
+//            });
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override public void onClick(View v) {
+//                    //listener.onItemClick(item);
+//                }
+//            });
         }
 
         /**

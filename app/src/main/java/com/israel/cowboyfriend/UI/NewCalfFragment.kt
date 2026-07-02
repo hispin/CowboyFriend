@@ -2,9 +2,14 @@ package com.israel.cowboyfriend.UI
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.BroadcastReceiver
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +21,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -26,15 +32,20 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.classes.CowDetails
+import com.israel.cowboyfriend.global.CURRENT_LOCATION
+import com.israel.cowboyfriend.global.GET_CURRENT_SINGLE_LOCATION_KEY
 import com.israel.cowboyfriend.global.UIHelper
 import com.israel.cowboyfriend.global.baseUrl
 import com.israel.cowboyfriend.global.getStringFromCalendar
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.interfaces.CowStorageRespose
+import com.israel.cowboyfriend.services.ServiceFindSingleLocation
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
@@ -64,7 +75,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var etComments: EditText?=null
     private var ciComments: CircleImageView?=null
     private var progress_bar: ProgressBar?=null
-
+    private var tvLocationLatitude: TextView?=null
+    private var tvLocationLongitude: TextView?=null
+    private var btnSaveLocation: Button?=null
 
     private val UTTERANCE_ID = "my_unique_utterance_id"
 
@@ -186,6 +199,13 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        setFilter()
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //initialize text to speech
@@ -232,6 +252,13 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         etComments=view?.findViewById(R.id.etComments)
         ciComments=view?.findViewById(R.id.ciComments)
         progress_bar=view?.findViewById(R.id.progress_bar)
+        tvLocationLatitude=view?.findViewById(R.id.tvLocationLatitude)
+        tvLocationLongitude=view?.findViewById(R.id.tvLocationLongitude)
+        btnSaveLocation=view?.findViewById(R.id.btnSaveLocation)
+        btnSaveLocation?.setOnClickListener {
+            btnSaveLocation?.text=requireActivity().resources.getString(R.string.load)
+            gotoMySingleLocation()
+        }
 
 
         tvDate?.text=getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy", requireActivity())
@@ -274,11 +301,15 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
                              if(supabase==null) return
 
-                                val cow =CowDetails(number=etNumberOfCalf?.text.toString().toIntOrNull(), number_mom=etNumberOfMom?.text.toString().toIntOrNull()
-                                 , gender=etGenderOfCalf?.text.toString(), image_url=myUrl, user_id=supabase.auth.currentSessionOrNull()?.user?.email, comment=etComments?.text.toString()
+                             val lat: Double?= tvLocationLatitude?.text.toString().toDoubleOrNull()
+                             val long: Double?= tvLocationLongitude?.text.toString().toDoubleOrNull()
+
+                             val cow =CowDetails(number=etNumberOfCalf?.text.toString().toIntOrNull(), number_mom=etNumberOfMom?.text.toString().toIntOrNull()
+                                 , gender=etGenderOfCalf?.text.toString(), image_url=myUrl, user_id=supabase.auth.currentSessionOrNull()?.user?.email, comment=etComments?.text.toString(),lat,
+                                 long
                              )
 
-                             myViewModelSupbase?.insertCowDetails(cow,object : CowRepositoryCB {
+                             myViewModelSupbase?.dbInsertCowDetails(cow,object : CowRepositoryCB {
 
                                  override fun onRequestResult(result: Int) {
                                      if(result==1){
@@ -357,7 +388,53 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             textToSpeech?.stop()
             textToSpeech?.shutdown()
         }
+        activity?.unregisterReceiver(brdReceiver)
         super.onDestroy()
+    }
+
+    /**
+     * get current location from gps
+     */
+    private fun gotoMySingleLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity?.startForegroundService(Intent(context, ServiceFindSingleLocation::class.java))
+        } else {
+            activity?.startService(Intent(context, ServiceFindSingleLocation::class.java))
+        }
+    }
+
+    /**
+     * define broadcast receiver for getting current location
+     */
+    private val brdReceiver = object : BroadcastReceiver() {
+        override fun onReceive(arg0: Context, inn: Intent) {
+            //accept currentAlarm
+            if (inn.action == GET_CURRENT_SINGLE_LOCATION_KEY) {
+                val location: Location? = inn.getParcelableExtra(CURRENT_LOCATION)
+                if (location != null) {
+                    tvLocationLatitude?.text = location.latitude.toString()
+                    tvLocationLongitude?.text = location.longitude.toString()
+                    btnSaveLocation?.text=requireActivity().resources.getString(R.string.save_location)
+
+                } else {
+                    Toast.makeText(activity, "error in location2", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun setFilter() {
+        val filter = IntentFilter(GET_CURRENT_SINGLE_LOCATION_KEY)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(brdReceiver, filter, AppCompatActivity.RECEIVER_EXPORTED)
+        } else {
+            ContextCompat.registerReceiver(
+                requireActivity(),
+                brdReceiver,
+                filter,
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        }
     }
 
 }

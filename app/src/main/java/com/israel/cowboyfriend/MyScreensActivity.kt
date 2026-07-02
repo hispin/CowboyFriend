@@ -17,11 +17,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.israel.cowboyfriend.UI.CattleTourFragment
 import com.israel.cowboyfriend.UI.MapmobFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
@@ -56,9 +60,9 @@ import kotlin.jvm.java
 class MyScreensActivity : AppCompatActivity() {
 
     private lateinit var supabase: SupabaseClient
-    private var collectionPagerAdapter: CollectionPagerAdapter?=null
-    private lateinit var viewPager: ViewPager
-    var vPager: NonSwipeAbleViewPager? = null
+    private var collectionPagerAdapter: CollectionPagerAdapter1?=null
+    private lateinit var viewPager: ViewPager2
+    //var vPager: ViewPager? = null
     private var currentItemTopMenu = 0
     //private var myViewModelSupbase: MyViewModelSupbase=viewModel()
     private var myViewModelSupbase: MyViewModelSupbase? = null
@@ -210,49 +214,39 @@ class MyScreensActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        vPager = findViewById(R.id.vPager)
+        //vPager = findViewById(R.id.vPager)
         viewPager = findViewById(R.id.vPager)
+        viewPager.setUserInputEnabled(false)
     }
 
     private fun configTabs() {
 
         val tabs = findViewById<TabLayout>(R.id.tab_layout)
 
-        collectionPagerAdapter = CollectionPagerAdapter(supportFragmentManager)
+        collectionPagerAdapter = CollectionPagerAdapter1(this)
         viewPager.adapter = collectionPagerAdapter
-        viewPager.offscreenPageLimit = 0
-        //prevent change screen by drag
-        viewPager.setOnTouchListener(object : OnTouchListener {
-
-
-            override fun onTouch(v: View, event: MotionEvent): Boolean {
-                return true
-            }
-        })
 
         //relate the tab layout to viewpager because we need to add the icons
-        tabs.setupWithViewPager(vPager)
-        tabs.getTabAt(0)?.icon = ContextCompat.getDrawable(
-            this@MyScreensActivity,
-            R.drawable.selected_sensor_tab
-        )
-        tabs.getTabAt(1)?.icon = ContextCompat.getDrawable(
-            this@MyScreensActivity,
-            R.drawable.selected_sensor_tab
-        )
-        tabs.getTabAt(2)?.icon =
-            ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_sensor_tab)
+        //haggay tabs.setupWithViewPager(viewPager)
 
-        tabs.getTabAt(3)?.icon =
-            ContextCompat.getDrawable(this@MyScreensActivity, R.drawable.selected_sensor_tab)
+        TabLayoutMediator(tabs, viewPager,
+            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+                //            //set the title text of top menu
+            when (position) {
+                0 -> tab.text=resources.getString(R.string.new_calf)
+                1 -> tab.text=resources.getString(R.string.cattle_tour)
+                2 -> tab.text=resources.getString(R.string.settings)
+                3 -> tab.text=resources.getString(R.string.map_title)
+                else -> "nothing"
+            }
+            }).attach()
 
-        viewPager.currentItem = currentItemTopMenu
-
-
+//        TabLayoutMediator(tabs, viewPager) { tab, position ->
+//            tab.text="OBJECT ${(position + 1)}"
+//        }.attach()
     }
 
-    // Since this is an object collection, use a FragmentStatePagerAdapter,
-// and NOT a FragmentPagerAdapter.
+    /////////////////////////////
     inner class CollectionPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(
         fm,
         BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
@@ -311,6 +305,115 @@ class MyScreensActivity : AppCompatActivity() {
             }
 
         }
+
+    }
+
+
+
+
+    //////////////////////////////
+
+
+    // Since this is an object collection, use a FragmentStatePagerAdapter,
+// and NOT a FragmentPagerAdapter.
+    inner class CollectionPagerAdapter1(fm: FragmentActivity) : FragmentStateAdapter(
+        fm
+    ) {
+
+        //override fun getCount(): Int = MAIN_MENU_NUM_ITEM
+
+//        override fun getItem(position: Int): Fragment {
+//
+//            var fragment: Fragment? = null
+//            //set event of click ic_on top menu
+//            when (position) {
+//                0 -> {
+//                    fragment = NewCalfFragment()
+//                    fragment.arguments = Bundle().apply {
+//                        // Our object is just an integer :-P
+//                        putInt("ARG_OBJECT", position + 1)
+//                    }
+//                }
+//                1 -> {
+//                    fragment = CattleTourFragment()//MapSensorsFragment()//MapmobFragment()
+//                    fragment.arguments = Bundle().apply {
+//                        // Our object is just an integer :-P
+//                        putInt("ARG_OBJECT", position + 1)
+//                    }
+//                }
+//                2 -> {
+//                    fragment = SettingsFragment()
+//                    fragment.arguments = Bundle().apply {
+//                        // Our object is just an integer :-P
+//                        putInt("ARG_OBJECT", position + 1)
+//                    }
+//                }
+//                3 -> {
+//                    fragment =MapmobFragment()
+//                    fragment.arguments = Bundle().apply {
+//                        // Our object is just an integer :-P
+//                        putInt("ARG_OBJECT", position + 1)
+//                    }
+//                }
+//
+//            }
+//            return fragment!!
+//
+//        }
+
+//        override fun getPageTitle(position: Int): CharSequence {
+//
+//            //set the title text of top menu
+//            return when (position) {
+//                0 -> resources.getString(R.string.new_calf)
+//                1 -> resources.getString(R.string.cattle_tour)
+//                2 -> resources.getString(R.string.settings)
+//                3 -> resources.getString(R.string.map_title)
+//                else -> "nothing"
+//            }
+//
+//        }
+
+        override fun createFragment(position: Int): Fragment {
+
+            var fragment: Fragment? = null
+            //set event of click ic_on top menu
+            when (position) {
+                0 -> {
+                    fragment = NewCalfFragment()
+                    fragment.arguments = Bundle().apply {
+                        // Our object is just an integer :-P
+                        putInt("ARG_OBJECT", position + 1)
+                    }
+                }
+                1 -> {
+                    fragment = CattleTourFragment()//MapSensorsFragment()//MapmobFragment()
+                    fragment.arguments = Bundle().apply {
+                        // Our object is just an integer :-P
+                        putInt("ARG_OBJECT", position + 1)
+                    }
+                }
+                2 -> {
+                    fragment = SettingsFragment()
+                    fragment.arguments = Bundle().apply {
+                        // Our object is just an integer :-P
+                        putInt("ARG_OBJECT", position + 1)
+                    }
+                }
+                3 -> {
+                    fragment =MapmobFragment()
+                    fragment.arguments = Bundle().apply {
+                        // Our object is just an integer :-P
+                        putInt("ARG_OBJECT", position + 1)
+                    }
+                }
+
+            }
+            return fragment!!
+
+        }
+
+        override fun getItemCount(): Int = MAIN_MENU_NUM_ITEM
 
     }
 

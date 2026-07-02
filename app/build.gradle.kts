@@ -16,8 +16,8 @@ android {
         applicationId="com.israel.cowboyfriend"
         minSdk=26
         targetSdk=36
-        versionCode=5
-        versionName="5.0"
+        versionCode=6
+        versionName="6.0"
 
         testInstrumentationRunner="androidx.test.runner.AndroidJUnitRunner"
     }
@@ -95,4 +95,7 @@ dependencies {
     implementation("com.mapbox.maps:android-ndk27:11.14.4")
     implementation("com.mapbox.mapboxsdk:mapbox-sdk-geojson:6.9.0")
     implementation("com.google.android.gms:play-services-maps:20.0.0")
+
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("com.google.android.material:material:1.14.0")
 }

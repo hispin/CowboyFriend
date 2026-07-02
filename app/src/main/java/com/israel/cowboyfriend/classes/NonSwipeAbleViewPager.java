@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 
 import androidx.viewpager.widget.ViewPager;
 
+//import androidx.viewpager2.widget.ViewPager2;
+
 public class NonSwipeAbleViewPager extends ViewPager {
 
     public NonSwipeAbleViewPager(Context context) {

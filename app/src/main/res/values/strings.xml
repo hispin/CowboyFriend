@@ -25,4 +25,10 @@
     <string name="map_title">Map</string>
     <string name="comments">Comments</string>
     <string name="no_comment">no comment</string>
+    <string name="location_latitude">latitude</string>
+    <string name="location_longtitude">longtitude</string>
+    <string name="save_location">save location</string>
+    <string name="load">load</string>
+    <string name="corpse">corpse</string>
+    <string name="save">save</string>
 </resources>

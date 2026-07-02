@@ -117,7 +117,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
     /**
      * get details of all cows
      */
-    fun getCowsDetails() {
+    fun dbGetCowsDetails() {
 
         runBlocking {
             try {
@@ -135,8 +135,13 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                         gender=item.gender,
                         image_url=item.image_url,
                         user_id=item.user_id,
-                        comment = item.comment
+                        comment = item.comment,
+                        latitude = item.latitude,
+                        longitude = item.longitude
                     )
+                    if(item.corpse!=null) {
+                        cow.isCorpse=item.corpse
+                    }
                     cowsDetails?.add(cow)
                 }
                 _cowsDetails.value=cowsDetails?.toList()
@@ -148,9 +153,35 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
     }
 
     /**
+     * update a new cow
+     */
+    fun dbUpdateCowDetails(
+        cow: CowDetails
+    ) {
+        runBlocking {
+            try {
+
+                if(cow.number!=null){
+                    val result=supabase.postgrest.from("CowDetails").update({ set("corpse", cow.isCorpse)} ) {
+                        filter {
+                            // Target rows where column 'id' equals 554
+                            eq("number", cow.number!!)
+                            //eq("id", 7)
+                        }
+                    }
+                }
+                //dbGetCowsDetails()
+            }catch (ex: Exception) {
+                print(ex)
+                //cowRepositoryCallback.onRequestResult(0)
+            }
+        }
+    }
+
+    /**
      * insert a new cow
      */
-    fun insertCowDetails(
+    fun dbInsertCowDetails(
         cow: CowDetails,
         cowRepositoryCallback: CowRepositoryCB
     ) {
@@ -162,7 +193,10 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                     gender = cow.gender,
                     image_url=cow.image_url,
                     user_id =cow.user_id,
-                    comment = cow.comment
+                    comment = cow.comment,
+                    latitude = cow.latitude,
+                    longitude = cow.longitude,
+                    corpse = cow.isCorpse
                 )
                 val result=supabase.postgrest.from("CowDetails").insert(cowDto)
                 cowRepositoryCallback.onRequestResult(1)
@@ -231,17 +265,19 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                 dataFlow.onEach {
                     when(it){
                         is PostgresAction.Insert->{
-                            val cow = it.decodeRecord<CowDto>()
-                            insertToCowsListUI(cow)
+                            //val cow = it.decodeRecord<CowDto>()
+                            //insertToCowsListUI(cow)
+                            //dbGetCowsDetails()
                             Log.d("chatInfo", "insert list")
                         }
                         is PostgresAction.Delete->{
-
+                            //dbGetCowsDetails()
                             Log.d("chatInfo", "delete list")
                         }
                         is PostgresAction.Update->{
-                            val cow = it.decodeRecord<CowDto>()
-                            updateCowsList(cow)
+                            //val cow = it.decodeRecord<CowDto>()
+                            //updateCowsList(cow)
+                            dbGetCowsDetails()
                             Log.d("chatInfo", "updated list")
                         }
                         is PostgresAction.Select->{
@@ -265,7 +301,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
         cowsDetails?.add(
             CowDetails(
                 number=cow.number, number_mom=cow.number_mom
-                ,gender=cow.gender, image_url=cow.image_url, user_id=cow.user_id, comment = cow.comment
+                ,gender=cow.gender, image_url=cow.image_url, user_id=cow.user_id, comment = cow.comment,latitude = cow.latitude, longitude = cow.longitude
             )
         )
         _cowsDetails.value=cowsDetails?.toList()

@@ -1,6 +1,8 @@
 package com.israel.cowboyfriend.UI
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,7 +68,7 @@ class CattleTourFragment : Fragment() {
      * get details of all cows
      */
     private fun getCowDetails(){
-        myViewModelSupbase?.getCowsDetails()
+        myViewModelSupbase?.dbGetCowsDetails()
     }
 
     private fun getCowDetails1() {
@@ -85,7 +87,7 @@ class CattleTourFragment : Fragment() {
                     val item = iterator.next()
                     val cow =CowDetails(
                         number=item.number, number_mom=item.number_mom
-                        , gender=item.gender, image_url=item.image_url, user_id=item.user_id, comment = item.comment
+                        , gender=item.gender, image_url=item.image_url, user_id=item.user_id, comment = item.comment, latitude = item.latitude, longitude = item.longitude
                     )
                     cowsDetails.add(cow)
                 }
@@ -101,7 +103,10 @@ class CattleTourFragment : Fragment() {
         if(myCowsAdapter==null) {
             myCowsAdapter=MyCowAdapter(cows, requireActivity(), object : InterOnItemClickListener {
                 public override fun onItemClick(item: CowDetails) {
-
+                    // delay to enable visible the progress bar
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        myViewModelSupbase?.dbUpdateCowDetails(item)
+                    }, 500)
                 }
             })
             rcShowCows?.setLayoutManager(LinearLayoutManager(getActivity()))

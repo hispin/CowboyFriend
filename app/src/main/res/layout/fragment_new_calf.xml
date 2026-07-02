@@ -171,7 +171,7 @@
         style="@style/title"
         app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
         app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
-        app:layout_constraintBottom_toTopOf="@+id/frSave"
+        app:layout_constraintBottom_toTopOf="@+id/tvLocationLatitude"
         android:text="@string/comments"
         />
     <androidx.appcompat.widget.AppCompatEditText
@@ -189,6 +189,7 @@
         android:scrollHorizontally="false"
         android:scrollbars="vertical"
         />
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ciComments"
         android:layout_width="50dp"
@@ -202,11 +203,50 @@
         app:layout_constraintStart_toEndOf="@+id/etComments"
         style="@style/button_style"
         />
+
+    <!--    comments-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLocationLatitude"
+        style="@style/title"
+        android:textColor="@color/black"
+        android:hint="@string/location_latitude"
+        app:layout_constraintTop_toBottomOf="@+id/etComments"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        app:layout_constraintBottom_toTopOf="@+id/frSave"
+        android:textColorHint="@color/black"
+        android:ems="6"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLocationLongitude"
+        style="@style/title"
+        android:ems="6"
+        android:textColorHint="@color/black"
+        android:hint="@string/location_longtitude"
+        app:layout_constraintTop_toTopOf="@+id/tvLocationLatitude"
+        app:layout_constraintStart_toEndOf="@+id/tvLocationLatitude"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLocationLatitude"
+        android:layout_marginStart="24dp"
+        />
+    <Button
+        android:id="@+id/btnSaveLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_location"
+        app:layout_constraintTop_toTopOf="@+id/tvLocationLongitude"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLocationLongitude"
+        app:layout_constraintStart_toEndOf="@+id/tvLocationLongitude"
+        android:layout_marginStart="24dp"
+        />
+
     <FrameLayout
         android:id="@+id/frSave"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:layout_constraintTop_toBottomOf="@+id/etComments"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocationLatitude"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">

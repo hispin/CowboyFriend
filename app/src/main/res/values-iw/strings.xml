@@ -25,4 +25,10 @@
     <string name="map_title">מפה</string>
     <string name="comments">הערות</string>
     <string name="no_comment">אין הערה</string>
+    <string name="location_latitude">latitude</string>
+    <string name="location_longtitude">longtitude</string>
+    <string name="save_location">שמור מיקום</string>
+    <string name="load">טוען</string>
+    <string name="corpse">פגר</string>
+    <string name="save">שמור</string>
 </resources>
