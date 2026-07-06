@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="140dp"
     android:orientation="horizontal"
     android:background="@color/common_google_signin_btn_text_dark_disabled"
-    android:weightSum="5"
+    android:weightSum="6"
+    android:id="@+id/llContainer"
     >
     <FrameLayout
         android:layout_width="0dp"
@@ -22,7 +23,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:orientation="vertical"
         android:gravity="center"
         >
@@ -48,33 +49,61 @@
             android:layout_weight="1"
             android:gravity="center"
             />
+        <TextView
+            android:id="@+id/tvLastDateLocation"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="start"
         >
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:orientation="horizontal"
             android:layout_weight="1"
-            >o
+            >
+
+            <Button
+                android:id="@+id/btnSaveLastSeen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:text="@string/seen_today"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tvLastSeen"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            >
         <CheckBox
             android:id="@+id/cbCorpse"
             android:textColor="@color/black"
             android:text="@string/corpse"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             />
             <Button
                 android:id="@+id/btnSave"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textSize="10sp"
                 android:text="@string/save"
                 />

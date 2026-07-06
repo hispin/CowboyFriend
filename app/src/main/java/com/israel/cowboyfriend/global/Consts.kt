@@ -9,3 +9,5 @@ package com.israel.cowboyfriend.global
    const val CURRENT_LONGTUDE_PREF = "currentLongtudePref"
    const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0
    const val MAIN_MENU_NUM_ITEM = 4
+   const val CORPSE_TYPE= 0
+   const val LAST_SEEN_AT_TYPE= 1

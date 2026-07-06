@@ -16,8 +16,8 @@ android {
         applicationId="com.israel.cowboyfriend"
         minSdk=26
         targetSdk=36
-        versionCode=6
-        versionName="6.0"
+        versionCode=7
+        versionName="7.0"
 
         testInstrumentationRunner="androidx.test.runner.AndroidJUnitRunner"
     }
@@ -98,4 +98,7 @@ dependencies {
 
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("com.google.android.material:material:1.14.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0") // Use the latest version
+
 }

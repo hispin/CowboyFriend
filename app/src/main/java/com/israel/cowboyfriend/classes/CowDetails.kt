@@ -8,8 +8,11 @@ data class CowDetails (
     var user_id: String?,
     var comment: String?,
     var latitude: Double?,
-    var longitude: Double?
+    var longitude: Double?,
+    var location_updated_at: Long?,
+    var last_seen_at: Long?
 ){
     var isCorpse: Boolean=false
+    var id: Int?=null
 }
 

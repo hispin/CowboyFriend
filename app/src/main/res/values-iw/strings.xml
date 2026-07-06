@@ -22,6 +22,7 @@
     <string name="title_mom_number">מספר האמא: %1$s</string>
     <string name="title_calf_gender">מין העגל: %1$s</string>
     <string name="title_comment">הערה: %1$s</string>
+    <string name="title_last_date_location">תאריך מיקום אחרון: %1$s</string>
     <string name="map_title">מפה</string>
     <string name="comments">הערות</string>
     <string name="no_comment">אין הערה</string>
@@ -31,4 +32,9 @@
     <string name="load">טוען</string>
     <string name="corpse">פגר</string>
     <string name="save">שמור</string>
+    <string name="seen_today">נצפה היום</string>
+    <string name="title_last_seen">נצפה לאחרונה: %1$s</string>
+    <string name="last_not_seen">לא נראה לאחרונה</string>
+    <string name="cow_details">פרטי הפרה</string>
+    <string name="no_corpse">לא פגר</string>
 </resources>

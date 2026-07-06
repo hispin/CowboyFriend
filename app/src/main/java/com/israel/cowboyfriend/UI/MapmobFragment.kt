@@ -14,6 +14,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -38,6 +41,8 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
+import com.mapbox.maps.ViewAnnotationAnchor
+import com.mapbox.maps.ViewAnnotationOptions
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
@@ -49,6 +54,9 @@ import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.addOnMapLongClickListener
 import com.mapbox.maps.plugin.gestures.addOnMoveListener
 import com.mapbox.maps.viewannotation.ViewAnnotationManager
+import com.mapbox.maps.viewannotation.annotationAnchor
+import com.mapbox.maps.viewannotation.geometry
+import com.mapbox.maps.viewannotation.viewAnnotationOptions
 
 class MapmobFragment : Fragment() , OnMoveListener{
     private var fbRefresh: FloatingActionButton? = null
@@ -66,6 +74,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
     private var pointAnnotation: PointAnnotation? = null
     private var pointAnnotationOptions: PointAnnotationOptions?=null
     //////////////
+    private var currentPopup: View? = null
 
 
 
@@ -74,7 +83,12 @@ class MapmobFragment : Fragment() , OnMoveListener{
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(
+    override fun onPause() {
+        super.onPause()
+        currentPopup?.let { viewAnnotationManager?.removeViewAnnotation(it) }
+    }
+
+        override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -362,7 +376,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
                     // The bitmap will be added to map style automatically.
                     .withIconImage(
                         BitmapFactory.decodeResource(
-                            requireActivity().resources, R.mipmap.ic_my_locate
+                            requireActivity().resources, R.drawable.ic_cowbow
                         )
                     )
                 // Add the resulting pointAnnotation to the map.
@@ -386,7 +400,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
      * add one marker to the map
      */
     private fun addMarker(
-        cows: CowDetails,
+        cow: CowDetails,
     ): Feature? {
 
         if(requireActivity()==null) return null
@@ -397,7 +411,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
         // Set options for the resulting symbol layer.
         val pointAnnotationOptions: PointAnnotationOptions=PointAnnotationOptions()
             // Define a geographic coordinate.
-            .withPoint(Point.fromLngLat(cows.longitude!!, cows.latitude!!))
+            .withPoint(Point.fromLngLat(cow.longitude!!, cow.latitude!!))
             // Specify the bitmap you assigned to the point annotation
             // The bitmap will be added to map style automatically.
             .withIconImage(
@@ -405,7 +419,12 @@ class MapmobFragment : Fragment() , OnMoveListener{
                     requireActivity().resources, myIcon
                 )
             )
-        //pointAnnotationOptions.textField = "$cameraName:$type"
+        val msg=if(cow.isCorpse)
+            requireActivity().getString(R.string.corpse)
+        else{
+            requireActivity().getString(R.string.no_corpse)
+        }
+        pointAnnotationOptions.textField = "${cow.number}:${msg}"
 
         //set transparent to hide preview text (without click)
         //TODO to learn how to hide annotation view text
@@ -417,37 +436,37 @@ class MapmobFragment : Fragment() , OnMoveListener{
 
 
                 // Remove existing popup if any
-//                viewAnnotationManager?.removeAllViewAnnotations()
-//
-//                currentPopup = createPopup(annotation)
-//
-//
-//                val options: ViewAnnotationOptions?
-//                options = viewAnnotationOptions {
-//                    geometry(
-//                        Point.fromLngLat(
-//                            annotation.point.longitude(),
-//                            annotation.point.latitude()
-//                        )
-//                    )
-//                    allowOverlap(false)
-//                    annotationAnchor { anchor(ViewAnnotationAnchor.BOTTOM) }
-//                    //visible(false)
-//                }
-//
-//                val lp = LinearLayout.LayoutParams(
-//                    WRAP_CONTENT,
-//                    WRAP_CONTENT
-//                )
-//                currentPopup?.layoutParams = lp
-//
-//
-//                if (currentPopup != null) {
-//                    // Add the popup as a ViewAnnotation
-//                    viewAnnotationManager?.addViewAnnotation(currentPopup!!, options)
-//                }
-//
-//
+                viewAnnotationManager?.removeAllViewAnnotations()
+
+                currentPopup = createPopup(annotation)
+
+
+                val options: ViewAnnotationOptions?
+                options = viewAnnotationOptions {
+                    geometry(
+                        Point.fromLngLat(
+                            annotation.point.longitude(),
+                            annotation.point.latitude()
+                        )
+                    )
+                    allowOverlap(false)
+                    annotationAnchor { anchor(ViewAnnotationAnchor.BOTTOM_RIGHT) }
+                    //visible(false)
+                }
+
+                val lp = LinearLayout.LayoutParams(
+                    WRAP_CONTENT,
+                    WRAP_CONTENT
+                )
+                currentPopup?.layoutParams = lp
+
+
+                if (currentPopup != null) {
+                    // Add the popup as a ViewAnnotation
+                    viewAnnotationManager?.addViewAnnotation(currentPopup!!, options)
+                }
+
+
                 return true
             }
         })
@@ -459,7 +478,8 @@ class MapmobFragment : Fragment() , OnMoveListener{
     }
 
     override fun onMoveBegin(detector: MoveGestureDetector) {
-        //TODO("Not yet implemented")
+        if (viewAnnotationManager != null && currentPopup != null)
+            viewAnnotationManager?.removeViewAnnotation(currentPopup!!)
     }
 
     override fun onMoveEnd(detector: MoveGestureDetector) {
@@ -492,5 +512,22 @@ class MapmobFragment : Fragment() , OnMoveListener{
      */
     private fun getCowDetails(){
         myViewModelSupbase?.dbGetCowsDetails()
+    }
+
+    /**
+     * create popup for sensor (with marker) info
+     */
+    private fun createPopup(annotation: PointAnnotation): View {
+        // Inflate the popup layout
+        val layoutInflater =
+            requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popup: View = layoutInflater.inflate(R.layout.popup_marker, null)
+
+
+        val arr = annotation.textField.toString().split(":")
+        popup.findViewById<TextView>(R.id.tvCameraName1).text = arr[0]
+        popup.findViewById<TextView>(R.id.tvCameraType1).text = arr[1]
+
+        return popup
     }
 }

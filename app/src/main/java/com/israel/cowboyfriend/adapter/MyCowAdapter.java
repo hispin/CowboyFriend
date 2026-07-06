@@ -1,5 +1,9 @@
 package com.israel.cowboyfriend.adapter;
 
+import static com.israel.cowboyfriend.global.ConstsKt.CORPSE_TYPE;
+import static com.israel.cowboyfriend.global.ConstsKt.LAST_SEEN_AT_TYPE;
+import static com.israel.cowboyfriend.global.SysMethodDateKt.getStringFromCalendar;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +24,7 @@ import com.israel.cowboyfriend.classes.CowDetails;
 import com.israel.cowboyfriend.interfaces.InterOnItemClickListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder> {
@@ -57,7 +64,7 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind(cows.get(position), listener);
+        holder.bind(cows.get(position), listener,position);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -80,6 +87,10 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         Context context;
         CheckBox cbCorpse;
         Button btnSave;
+        TextView tvLastDateLocation;
+        Button btnSaveLastSeen;
+        TextView tvLastSeen;
+        LinearLayout llContainer;
 
         public MyViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -90,10 +101,14 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             tvComment = itemView.findViewById(R.id.tvComment);
             cbCorpse = itemView.findViewById(R.id.cbCorpse);
             btnSave = itemView.findViewById(R.id.btnSave);
+            tvLastDateLocation = itemView.findViewById(R.id.tvLastDateLocation);
+            btnSaveLastSeen = itemView.findViewById(R.id.btnSaveLastSeen);
+            tvLastSeen = itemView.findViewById(R.id.tvLastSeen);
+            llContainer = itemView.findViewById(R.id.llContainer);
             this.context = context;
         }
 
-        public void bind(final CowDetails item, final InterOnItemClickListener listener) {
+        public void bind(final CowDetails item, final InterOnItemClickListener listener, int position) {
             tvCalfName.setText(String.format(context.getString(R.string.title_calf_number), item.getNumber()+""));
             tvMonNum.setText(String.format(context.getString(R.string.title_mom_number), item.getNumber_mom()+""));
             tvGender.setText(String.format(context.getString(R.string.title_calf_gender), item.getGender()));
@@ -108,9 +123,43 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
                 @Override
                 public void onClick(View view) {
                     item.setCorpse(cbCorpse.isChecked());
-                    listener.onItemClick(item);
+                    listener.onItemClick(item,CORPSE_TYPE,position);
                 }
             });
+
+            btnSaveLastSeen.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    item.setLast_seen_at(Calendar.getInstance().getTimeInMillis());
+                    listener.onItemClick(item,LAST_SEEN_AT_TYPE,position);
+                }
+            });
+
+            if(item.getLocation_updated_at()!=null){
+                Calendar date = Calendar.getInstance();
+                date.setTimeInMillis(item.getLocation_updated_at());
+                String dateString=getStringFromCalendar(date, "dd/MM/yy", context);
+                tvLastDateLocation.setText(String.format(context.getString(R.string.title_last_date_location), dateString));
+            }
+
+            if(item.getLast_seen_at()!=null){
+                Calendar date = Calendar.getInstance();
+                date.setTimeInMillis(item.getLast_seen_at());
+                String dateString=getStringFromCalendar(date, "dd/MM/yy", context);
+                tvLastSeen.setText(String.format(context.getString(R.string.title_last_seen), dateString));
+                Calendar cal = Calendar.getInstance();
+                if(date.get(Calendar.DAY_OF_MONTH)==cal.get(Calendar.DAY_OF_MONTH)
+                && date.get(Calendar.MONTH)==cal.get(Calendar.MONTH)
+                && date.get(Calendar.YEAR)==cal.get(Calendar.YEAR)){
+                    llContainer.setBackgroundColor(ContextCompat.getColor(
+                            context,
+                            R.color.green1
+                    ));
+                }
+            }else{
+                tvLastSeen.setText(context.getString(R.string.last_not_seen));
+            }
+
 //            cbCorpse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //                @Override
 //                public void onCheckedChanged(@NonNull CompoundButton compoundButton, boolean result) {

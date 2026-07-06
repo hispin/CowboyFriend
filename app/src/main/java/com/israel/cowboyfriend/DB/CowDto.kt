@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class CowDto (
+    //@SerialName("id") val id: Int?,
     @SerialName("number") val number: Int?,
     @SerialName("number_mom") val number_mom: Int?,
     @SerialName("gender") val gender: String?,
@@ -13,5 +14,7 @@ class CowDto (
     @SerialName("comment") val comment: String?,
     @SerialName("latitude") val latitude: Double?,
     @SerialName("longitude") val longitude: Double?,
-    @SerialName("corpse") val corpse: Boolean?
+    @SerialName("location_updated_at") val location_updated_at: Long?,
+    @SerialName("corpse") val corpse: Boolean?,
+    @SerialName("last_seen_at") val last_seen_at: Long?
     )

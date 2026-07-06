@@ -11,11 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.israel.cowboyfriend.DB.CowDto
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.adapter.MyCowAdapter
 import com.israel.cowboyfriend.classes.CowDetails
-import com.israel.cowboyfriend.interfaces.CowRepositoryCBselect
 import com.israel.cowboyfriend.interfaces.InterOnItemClickListener
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 
@@ -24,6 +23,7 @@ class CattleTourFragment : Fragment() {
     private var rcShowCows: RecyclerView? =null
     private var myViewModelSupbase: MyViewModelSupbase? = null
     private var myCowsAdapter: MyCowAdapter?=null
+    private var fbRefreshCows: FloatingActionButton?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +62,11 @@ class CattleTourFragment : Fragment() {
 
     private fun initViews(view: View) {
         rcShowCows=view.findViewById(R.id.rcShowCows)
+        fbRefreshCows=view.findViewById(R.id.fbRefreshCows)
+        fbRefreshCows?.setOnClickListener {
+            myCowsAdapter=null
+            getCowDetails()
+        }
     }
 
     /**
@@ -71,41 +76,46 @@ class CattleTourFragment : Fragment() {
         myViewModelSupbase?.dbGetCowsDetails()
     }
 
-    private fun getCowDetails1() {
+//    private fun getCowDetails1() {
+//
+//        myViewModelSupbase?.getCowsDetails(object :
+//            CowRepositoryCBselect {
+//
+//
+//            override fun onRequestResult(cowsDto: ArrayList<CowDto>?) {
+//
+//                val cowsDetails =ArrayList<CowDetails>()
+//
+//                val iterator = cowsDto?.iterator()
+//
+//                while (iterator?.hasNext() == true) {
+//                    val item = iterator.next()
+//                    val cow =CowDetails(
+//                        number=item.number, number_mom=item.number_mom
+//                        , gender=item.gender, image_url=item.image_url, user_id=item.user_id, comment = item.comment, latitude = item.latitude, longitude = item.longitude
+//                    )
+//                    cowsDetails.add(cow)
+//                }
+//                showCowsDetails(cowsDetails)
+//            }
+//        })
+//    }
 
-        myViewModelSupbase?.getCowsDetails(object :
-            CowRepositoryCBselect {
-
-
-            override fun onRequestResult(cowsDto: ArrayList<CowDto>?) {
-
-                val cowsDetails =ArrayList<CowDetails>()
-
-                val iterator = cowsDto?.iterator()
-
-                while (iterator?.hasNext() == true) {
-                    val item = iterator.next()
-                    val cow =CowDetails(
-                        number=item.number, number_mom=item.number_mom
-                        , gender=item.gender, image_url=item.image_url, user_id=item.user_id, comment = item.comment, latitude = item.latitude, longitude = item.longitude
-                    )
-                    cowsDetails.add(cow)
-                }
-                showCowsDetails(cowsDetails)
-            }
-        })
-    }
-
+    var lastPosition: Int?=null
     /**
      * show details of all cows
      */
     private fun showCowsDetails(cows: ArrayList<CowDetails>?) {
+
         if(myCowsAdapter==null) {
             myCowsAdapter=MyCowAdapter(cows, requireActivity(), object : InterOnItemClickListener {
-                public override fun onItemClick(item: CowDetails) {
+
+
+                override fun onItemClick(item: CowDetails, type: Int, position: Int) {
+                    lastPosition = position
                     // delay to enable visible the progress bar
                     Handler(Looper.getMainLooper()).postDelayed({
-                        myViewModelSupbase?.dbUpdateCowDetails(item)
+                        myViewModelSupbase?.dbUpdateCowDetails(item,type)
                     }, 500)
                 }
             })
@@ -119,7 +129,9 @@ class CattleTourFragment : Fragment() {
             rcShowCows?.addItemDecoration(dividerItemDecoration)
         }else{
             myCowsAdapter?.setCows(cows)
-            myCowsAdapter?.notifyDataSetChanged()
+            if(lastPosition!=null) {
+                myCowsAdapter?.notifyItemChanged(lastPosition!!)
+            }
         }
     }
 

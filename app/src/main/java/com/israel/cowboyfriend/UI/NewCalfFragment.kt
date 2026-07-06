@@ -304,10 +304,34 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                              val lat: Double?= tvLocationLatitude?.text.toString().toDoubleOrNull()
                              val long: Double?= tvLocationLongitude?.text.toString().toDoubleOrNull()
 
-                             val cow =CowDetails(number=etNumberOfCalf?.text.toString().toIntOrNull(), number_mom=etNumberOfMom?.text.toString().toIntOrNull()
-                                 , gender=etGenderOfCalf?.text.toString(), image_url=myUrl, user_id=supabase.auth.currentSessionOrNull()?.user?.email, comment=etComments?.text.toString(),lat,
-                                 long
-                             )
+                             var cow:CowDetails?=null
+                             if(lat!=null && long!=null) {
+                                 cow=CowDetails(
+                                     number=etNumberOfCalf?.text.toString().toIntOrNull(),
+                                     number_mom=etNumberOfMom?.text.toString().toIntOrNull(),
+                                     gender=etGenderOfCalf?.text.toString(),
+                                     image_url=myUrl,
+                                     user_id=supabase.auth.currentSessionOrNull()?.user?.email,
+                                     comment=etComments?.text.toString(),
+                                     lat,
+                                     long,
+                                     Calendar.getInstance().timeInMillis,
+                                     Calendar.getInstance().timeInMillis
+                                 )
+                             }else{
+                                 cow=CowDetails(
+                                     number=etNumberOfCalf?.text.toString().toIntOrNull(),
+                                     number_mom=etNumberOfMom?.text.toString().toIntOrNull(),
+                                     gender=etGenderOfCalf?.text.toString(),
+                                     image_url=myUrl,
+                                     user_id=supabase.auth.currentSessionOrNull()?.user?.email,
+                                     comment=etComments?.text.toString(),
+                                     null,
+                                     null,
+                                     null,
+                                     Calendar.getInstance().timeInMillis
+                                 )
+                             }
 
                              myViewModelSupbase?.dbInsertCowDetails(cow,object : CowRepositoryCB {
 
