@@ -40,6 +40,7 @@ import java.io.File
 import java.util.ArrayList
 import java.util.UUID
 import kotlin.collections.sortedBy
+import kotlin.text.toInt
 
 
 class MyViewModelSupbase (application: Application) : AndroidViewModel(application) {
@@ -48,6 +49,14 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
     //private var cowsDto:ArrayList<CowDto> ?=null
     var _cowsDetails = MutableLiveData<List<CowDetails>>()
     var cowsDetails:ArrayList<CowDetails>?=null
+    var pageNum = MutableLiveData(0)
+
+    /**
+     * set page number
+     */
+    fun setPageNum(num:Int){
+        pageNum.postValue(num)
+    }
 
 
     /**
@@ -72,37 +81,109 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
     }
 
     /**
-     * log in
+     * get user name
      */
-    fun login(cowRepositoryCallback: CowRepositoryCB) {
+    fun getUserName():String{
+        return supabase.auth.currentUserOrNull()?.email.toString()
+    }
+
+    /**
+     * check if session is get
+     */
+    fun isSessionGetSupabase(): Boolean {
+        return supabase.auth.currentSessionOrNull()!=null
+    }
+
+
+    /**
+     * login with email and password
+     */
+    fun login(email: String, password: String,cowRepositoryCallback: CowRepositoryCB) {
         viewModelScope.launch {
-            try {
-
-                var user=supabase.auth.currentSessionOrNull()
-
+            runCatching {
                 supabase.auth.signInWith(Email) {
-                    email="hag.swead@gmail.com"
-                    password="ringo1234"
+                    this.email=email
+                    this.password=password
                 }
-
-                user=supabase.auth.currentSessionOrNull()
-                if(user!=null){
-                    cowRepositoryCallback.onRequestResult(1)
-                }else {
-                    cowRepositoryCallback.onRequestResult(0)
-                }
-                //configTabs()
-
-                //val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
-
-                //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
-                //val num=10
-            } catch (ex: Exception) {
-                print(ex)
+            }.onSuccess {
+                val session=supabase.auth.currentSessionOrNull()
+                val user=supabase.auth.currentUserOrNull()
+                cowRepositoryCallback.onRequestResult(1)
+                // use session / user here
+            }.onFailure { error ->
+                // show error.message to the user
                 cowRepositoryCallback.onRequestResult(0)
             }
         }
     }
+
+
+//    /**
+//     * log in
+//     */
+//    fun login1(email: String, password: String,cowRepositoryCallback: CowRepositoryCB) {
+//
+//        viewModelScope.launch {
+//            try {
+//
+//                var user=supabase.auth.currentSessionOrNull()
+//
+//                supabase.auth.signInWith(Email) {
+//                    _email = email
+//                    _password=password
+//                }.
+//
+//                user=supabase.auth.currentSessionOrNull()
+//                if(user!=null){
+//                    cowRepositoryCallback.onRequestResult(1)
+//                }else {
+//                    cowRepositoryCallback.onRequestResult(0)
+//                }
+//                //configTabs()
+//
+//                //val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
+//
+//                //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
+//                //val num=10
+//            } catch (ex: Exception) {
+//                print(ex)
+//                cowRepositoryCallback.onRequestResult(0)
+//            }
+//        }
+//    }
+
+//    /**
+//     * log in
+//     */
+//    fun login(cowRepositoryCallback: CowRepositoryCB) {
+//        viewModelScope.launch {
+//            try {
+//
+//                var user=supabase.auth.currentSessionOrNull()
+//
+//                supabase.auth.signInWith(Email) {
+//                    email="hag.swead@gmail.com"
+//                    password="ringo1234"
+//                }
+//
+//                user=supabase.auth.currentSessionOrNull()
+//                if(user!=null){
+//                    cowRepositoryCallback.onRequestResult(1)
+//                }else {
+//                    cowRepositoryCallback.onRequestResult(0)
+//                }
+//                //configTabs()
+//
+//                //val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
+//
+//                //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
+//                //val num=10
+//            } catch (ex: Exception) {
+//                print(ex)
+//                cowRepositoryCallback.onRequestResult(0)
+//            }
+//        }
+//    }
 
 //    /**
 //     * get details of all cows
@@ -120,6 +201,28 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
 //    }
 
     /**
+     * get details by id
+     */
+    fun dbGetCowsDetailsById(id:Int) {
+
+        runBlocking {
+            try {
+                cowsDetails=ArrayList()
+                   val result=supabase.from("CowDetails").select( ) {
+                       filter {
+                           eq("id", id)
+                       }
+                   }
+                    val item=result.decodeList<CowDto>()[0]
+                    updateCowsList(item,id)
+                }catch (ex: Exception) {
+                   print(ex)
+                }
+            }
+        }
+
+
+                /**
      * get details of all cows
      */
     fun dbGetCowsDetails() {
@@ -173,7 +276,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                 //sort by calf number
                 cowsDetails = sortByCalfNumber(cowsDetails)?.let { ArrayList(it) }
 
-                _cowsDetails.value=cowsDetails?.toList()
+                _cowsDetails.postValue(cowsDetails?.toList())
             } catch (ex: Exception) {
                 print(ex)
                 //cowRepositoryCBselect.onRequestResult(ArrayList(emptyList()))
@@ -207,6 +310,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                                     eq("id", cow.id!!)
                                     //eq("id", 7)
                                 }
+                                //dbGetCowsDetailsById(cow.id!!)
                             }
                         }
 
@@ -217,7 +321,9 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                                     eq("id", cow.id!!)
                                     //eq("id", 7)
                                 }
+                                //dbGetCowsDetailsById(cow.id!!)
                             }
+
                         }
                     }
 
@@ -321,7 +427,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                         is PostgresAction.Insert->{
                             //val cow = it.decodeRecord<CowDto>()
                             //insertToCowsListUI(cow)
-                            dbGetCowsDetails()
+                            //dbGetCowsDetails()
                             Log.d("chatInfo", "insert list")
                         }
                         is PostgresAction.Delete->{
@@ -342,6 +448,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                         is PostgresAction.Select->{
                             Log.d("chatInfo", "select list")
                         }
+
                         else -> {}
                     }
                 }.launchIn(CoroutineScope(coroutineContext))
@@ -381,7 +488,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
             }
         }
         //_cowsDetails= MutableLiveData<List<CowDetails>>()
-        _cowsDetails.value=cowsDetails?.toList()
+        _cowsDetails.postValue(cowsDetails?.toList())
     }
 
 }

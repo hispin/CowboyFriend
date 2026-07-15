@@ -20,7 +20,8 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.israel.cowboyfriend.R
-import com.israel.cowboyfriend.global.CURRENT_LOCATION
+import com.israel.cowboyfriend.global.CURRENT_LOCATION_LATITUDE
+import com.israel.cowboyfriend.global.CURRENT_LOCATION_LONGITUDE
 import com.israel.cowboyfriend.global.GET_CURRENT_SINGLE_LOCATION_KEY
 
 class ServiceFindSingleLocation : Service() {
@@ -29,16 +30,37 @@ class ServiceFindSingleLocation : Service() {
     private lateinit var locationRequest: LocationRequest
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            run {
-                if (locationResult.lastLocation != null) {
-                    //Log.d(TAG,"get location")
-                    location = locationResult.lastLocation!!
-                    val inn = Intent(GET_CURRENT_SINGLE_LOCATION_KEY)
-                    inn.putExtra(CURRENT_LOCATION, location)
-                    sendBroadcast(inn)
-                    stopSelf()
+            super.onLocationResult(locationResult)
+            //for (location in locationResult.locations) {
+
+
+                if(locationResult.locations!=null && locationResult.locations.isNotEmpty()) {
+                    val latitude=locationResult.locations[0].latitude
+                    val longitude=locationResult.locations[0].longitude
+                    Log.d(TAG, "get location")
+                    //location = locationResult.lastLocation!!
+                    if (longitude != null && longitude != null) {
+                        val inn=Intent(GET_CURRENT_SINGLE_LOCATION_KEY)
+                        inn.putExtra(CURRENT_LOCATION_LATITUDE, latitude)
+                        inn.putExtra(CURRENT_LOCATION_LONGITUDE, longitude)
+                        sendBroadcast(inn)
+                    }
                 }
-            }
+                stopSelf()
+                // TODO: Update your UI or database here
+            //}
+
+//            run {
+//                if (locationResult.lastLocation != null) {
+//                    Log.d(TAG,"get location")
+//                    location = locationResult.lastLocation!!
+//                    val inn = Intent(GET_CURRENT_SINGLE_LOCATION_KEY)
+//                    inn.putExtra(CURRENT_LOCATION_LATITUDE, location.latitude)
+//                    inn.putExtra(CURRENT_LOCATION_LONGITUDE, location.longitude)
+//                    sendBroadcast(inn)
+//                    stopSelf()
+//                }
+//            }
         }
     }
     lateinit var location: Location
@@ -56,9 +78,14 @@ class ServiceFindSingleLocation : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        Log.d(TAG, "onStartCommand")
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+            .setIntervalMillis(0L)
+            .setMinUpdateIntervalMillis(0L)
             .setMaxUpdates(1)
             .build()
+            //.setMaxUpdates(1)
+            //.build()
         startGetLocation()
 
         return START_NOT_STICKY

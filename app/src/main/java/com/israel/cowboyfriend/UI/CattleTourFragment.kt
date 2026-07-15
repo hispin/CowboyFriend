@@ -52,7 +52,7 @@ class CattleTourFragment : Fragment() {
      * set observers
      */
     private fun setObservers() {
-        myViewModelSupbase?._cowsDetails?.observe(requireActivity()) {
+        myViewModelSupbase?._cowsDetails?.observe(viewLifecycleOwner) {
             if(it!=null) {
                 showCowsDetails(it as ArrayList<CowDetails>?)
             }
@@ -107,8 +107,10 @@ class CattleTourFragment : Fragment() {
      */
     private fun showCowsDetails(cows: ArrayList<CowDetails>?) {
 
+        val activity = activity ?: return
+
         if(myCowsAdapter==null) {
-            myCowsAdapter=MyCowAdapter(cows, requireActivity(), object : InterOnItemClickListener {
+            myCowsAdapter=MyCowAdapter(cows, activity, object : InterOnItemClickListener {
 
 
                 override fun onItemClick(item: CowDetails, type: Int, position: Int) {
@@ -124,7 +126,7 @@ class CattleTourFragment : Fragment() {
             rcShowCows?.setHasFixedSize(true)
             //add dividing line between items in list
             val dividerItemDecoration=DividerItemDecoration(
-                requireActivity(), LinearLayoutManager(activity).orientation
+                activity, LinearLayoutManager(activity).orientation
             )
             rcShowCows?.addItemDecoration(dividerItemDecoration)
         }else{

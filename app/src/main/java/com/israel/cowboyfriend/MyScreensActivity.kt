@@ -6,9 +6,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -18,29 +16,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.israel.cowboyfriend.UI.CattleTourFragment
+import com.israel.cowboyfriend.UI.LoginFragment
 import com.israel.cowboyfriend.UI.MapmobFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
-import com.israel.cowboyfriend.UI.SettingsFragment
-import com.israel.cowboyfriend.classes.CowDetails
-import com.israel.cowboyfriend.classes.NonSwipeAbleViewPager
 import com.israel.cowboyfriend.global.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.global.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.postgrest.from
-import kotlinx.coroutines.runBlocking
 import java.util.Locale
-import kotlin.jvm.java
 
 //import io.github.jan.supabase.auth.Auth
 
@@ -66,8 +55,24 @@ class MyScreensActivity : AppCompatActivity() {
     private var currentItemTopMenu = 0
     //private var myViewModelSupbase: MyViewModelSupbase=viewModel()
     private var myViewModelSupbase: MyViewModelSupbase? = null
+    var tabs:TabLayout?=null
+
+    override fun onStart() {
+        super.onStart()
+
+        myViewModelSupbase = ViewModelProvider(this)[MyViewModelSupbase::class.java]
+
+        setSupabase()
+
+        myViewModelSupbase?.setListenerRealtimeCowDetails()//
 
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setLocationPermission()
+        } else {
+            configTabs()
+        }
+    }
 
     @Composable
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,18 +88,17 @@ class MyScreensActivity : AppCompatActivity() {
             insets
         }
         initViews()
-        myViewModelSupbase = ViewModelProvider(this)[MyViewModelSupbase::class.java]
+        setObserver()
 
-        setSupabase()
 
-        myViewModelSupbase?.setListenerRealtimeCowDetails()//
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setLocationPermission()
-        } else {
-            login()
+    private fun setObserver() {
+        myViewModelSupbase?.pageNum?.observe(this) {
+            if(it!=null) {
+                tabs?.getTabAt(it)?.select()
+            }
         }
-
     }
 
     /**
@@ -112,7 +116,7 @@ class MyScreensActivity : AppCompatActivity() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             //setExternalPermission()
-            login()
+            configTabs()
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -133,7 +137,9 @@ class MyScreensActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
-                login()
+                //myViewModelSupbase?.isSessionGetSupabase()
+                configTabs()
+                //login()
                 //setExternalPermission()
             }
         }
@@ -141,39 +147,6 @@ class MyScreensActivity : AppCompatActivity() {
     }
 
 
-    private fun selsect() {
-        runBlocking {
-            try {
-
-               val cows=supabase.from("CowDetails").select().decodeList<CowDetails>()
-//
-//               //val users=supabase.postgrest["CowDetails"].select().decodeList<CowDetails>()
-               val num=10
-
-            }catch (ex: Exception){
-                print(ex)
-            }
-        }
-    }
-
-
-
-    private fun login() {
-
-        myViewModelSupbase?.login (object :
-          CowRepositoryCB {
-            override fun onRequestResult(result: Int) {
-                if(result==1){
-                    myViewModelSupbase?.setListenerRealtimeCowDetails()
-                    configTabs()
-                }
-                else
-                    print("error")
-            }
-          }
-        )
-
-    }
 
 
     private  fun setSupabase() {
@@ -221,158 +194,46 @@ class MyScreensActivity : AppCompatActivity() {
 
     private fun configTabs() {
 
-        val tabs = findViewById<TabLayout>(R.id.tab_layout)
+        tabs = findViewById<TabLayout>(R.id.tab_layout)
 
-        collectionPagerAdapter = CollectionPagerAdapter1(this)
+        collectionPagerAdapter =CollectionPagerAdapter1(this)
         viewPager.adapter = collectionPagerAdapter
 
         //relate the tab layout to viewpager because we need to add the icons
         //haggay tabs.setupWithViewPager(viewPager)
 
-        TabLayoutMediator(tabs, viewPager,
+        if(tabs==null) return
+
+        TabLayoutMediator(tabs!!, viewPager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 //            //set the title text of top menu
             when (position) {
-                0 -> tab.text=resources.getString(R.string.new_calf)
-                1 -> tab.text=resources.getString(R.string.cattle_tour)
-                2 -> tab.text=resources.getString(R.string.settings)
-                3 -> tab.text=resources.getString(R.string.map_title)
+                0 -> tab.text=resources.getString(R.string.cattle_tour)
+                1 -> tab.text=resources.getString(R.string.new_calf)
+                //2 -> tab.text=resources.getString(R.string.settings)
+                2 -> tab.text=resources.getString(R.string.map_title)
+                3 -> tab.text= resources.getString(R.string.login)
                 else -> "nothing"
             }
             }).attach()
 
-//        TabLayoutMediator(tabs, viewPager) { tab, position ->
-//            tab.text="OBJECT ${(position + 1)}"
-//        }.attach()
-    }
 
-    /////////////////////////////
-    inner class CollectionPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(
-        fm,
-        BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-    ) {
-
-        override fun getCount(): Int = MAIN_MENU_NUM_ITEM
-
-        override fun getItem(position: Int): Fragment {
-
-            var fragment: Fragment? = null
-            //set event of click ic_on top menu
-            when (position) {
-                0 -> {
-                    fragment = NewCalfFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-                1 -> {
-                    fragment = CattleTourFragment()//MapSensorsFragment()//MapmobFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-                2 -> {
-                    fragment = SettingsFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-                3 -> {
-                    fragment =MapmobFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-
-            }
-            return fragment!!
-
-        }
-
-        override fun getPageTitle(position: Int): CharSequence {
-
-            //set the title text of top menu
-            return when (position) {
-                0 -> resources.getString(R.string.new_calf)
-                1 -> resources.getString(R.string.cattle_tour)
-                2 -> resources.getString(R.string.settings)
-                3 -> resources.getString(R.string.map_title)
-                else -> "nothing"
-            }
-
+        if(myViewModelSupbase?.isSessionGetSupabase() == true) {
+            tabs?.getTabAt(0)?.select()
+        }else{
+            tabs?.getTabAt(3)?.select()
         }
 
     }
 
-
-
-
-    //////////////////////////////
 
 
     // Since this is an object collection, use a FragmentStatePagerAdapter,
 // and NOT a FragmentPagerAdapter.
-    inner class CollectionPagerAdapter1(fm: FragmentActivity) : FragmentStateAdapter(
+    class CollectionPagerAdapter1(fm: FragmentActivity) : FragmentStateAdapter(
         fm
     ) {
 
-        //override fun getCount(): Int = MAIN_MENU_NUM_ITEM
-
-//        override fun getItem(position: Int): Fragment {
-//
-//            var fragment: Fragment? = null
-//            //set event of click ic_on top menu
-//            when (position) {
-//                0 -> {
-//                    fragment = NewCalfFragment()
-//                    fragment.arguments = Bundle().apply {
-//                        // Our object is just an integer :-P
-//                        putInt("ARG_OBJECT", position + 1)
-//                    }
-//                }
-//                1 -> {
-//                    fragment = CattleTourFragment()//MapSensorsFragment()//MapmobFragment()
-//                    fragment.arguments = Bundle().apply {
-//                        // Our object is just an integer :-P
-//                        putInt("ARG_OBJECT", position + 1)
-//                    }
-//                }
-//                2 -> {
-//                    fragment = SettingsFragment()
-//                    fragment.arguments = Bundle().apply {
-//                        // Our object is just an integer :-P
-//                        putInt("ARG_OBJECT", position + 1)
-//                    }
-//                }
-//                3 -> {
-//                    fragment =MapmobFragment()
-//                    fragment.arguments = Bundle().apply {
-//                        // Our object is just an integer :-P
-//                        putInt("ARG_OBJECT", position + 1)
-//                    }
-//                }
-//
-//            }
-//            return fragment!!
-//
-//        }
-
-//        override fun getPageTitle(position: Int): CharSequence {
-//
-//            //set the title text of top menu
-//            return when (position) {
-//                0 -> resources.getString(R.string.new_calf)
-//                1 -> resources.getString(R.string.cattle_tour)
-//                2 -> resources.getString(R.string.settings)
-//                3 -> resources.getString(R.string.map_title)
-//                else -> "nothing"
-//            }
-//
-//        }
 
         override fun createFragment(position: Int): Fragment {
 
@@ -380,28 +241,35 @@ class MyScreensActivity : AppCompatActivity() {
             //set event of click ic_on top menu
             when (position) {
                 0 -> {
-                    fragment = NewCalfFragment()
-                    fragment.arguments = Bundle().apply {
-                        // Our object is just an integer :-P
-                        putInt("ARG_OBJECT", position + 1)
-                    }
-                }
-                1 -> {
                     fragment = CattleTourFragment()//MapSensorsFragment()//MapmobFragment()
                     fragment.arguments = Bundle().apply {
                         // Our object is just an integer :-P
                         putInt("ARG_OBJECT", position + 1)
                     }
                 }
+                1 -> {
+                    fragment = NewCalfFragment()
+                    fragment.arguments = Bundle().apply {
+                        // Our object is just an integer :-P
+                        putInt("ARG_OBJECT", position + 1)
+                    }
+                }
+//                2 -> {
+//                    fragment = SettingsFragment()
+//                    fragment.arguments = Bundle().apply {
+//                        // Our object is just an integer :-P
+//                        putInt("ARG_OBJECT", position + 1)
+//                    }
+//                }
                 2 -> {
-                    fragment = SettingsFragment()
+                    fragment =MapmobFragment()
                     fragment.arguments = Bundle().apply {
                         // Our object is just an integer :-P
                         putInt("ARG_OBJECT", position + 1)
                     }
                 }
                 3 -> {
-                    fragment =MapmobFragment()
+                    fragment =LoginFragment()
                     fragment.arguments = Bundle().apply {
                         // Our object is just an integer :-P
                         putInt("ARG_OBJECT", position + 1)

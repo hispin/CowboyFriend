@@ -7,7 +7,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -38,7 +37,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.classes.CowDetails
-import com.israel.cowboyfriend.global.CURRENT_LOCATION
+import com.israel.cowboyfriend.global.CURRENT_LOCATION_LATITUDE
+import com.israel.cowboyfriend.global.CURRENT_LOCATION_LONGITUDE
 import com.israel.cowboyfriend.global.GET_CURRENT_SINGLE_LOCATION_KEY
 import com.israel.cowboyfriend.global.UIHelper
 import com.israel.cowboyfriend.global.baseUrl
@@ -434,10 +434,13 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         override fun onReceive(arg0: Context, inn: Intent) {
             //accept currentAlarm
             if (inn.action == GET_CURRENT_SINGLE_LOCATION_KEY) {
-                val location: Location? = inn.getParcelableExtra(CURRENT_LOCATION)
-                if (location != null) {
-                    tvLocationLatitude?.text = location.latitude.toString()
-                    tvLocationLongitude?.text = location.longitude.toString()
+
+                val latitude = inn.extras?.getDouble(CURRENT_LOCATION_LATITUDE)
+                val longitude = inn.extras?.getDouble(CURRENT_LOCATION_LONGITUDE)
+
+                if (latitude != null && longitude != null) {
+                    tvLocationLatitude?.text = latitude.toString()
+                    tvLocationLongitude?.text = longitude.toString()
                     btnSaveLocation?.text=requireActivity().resources.getString(R.string.save_location)
 
                 } else {

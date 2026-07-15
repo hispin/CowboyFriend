@@ -37,4 +37,8 @@
     <string name="last_not_seen">not seen recently</string>
     <string name="cow_details">cow details</string>
     <string name="no_corpse">no corpse</string>
+    <string name="user">user</string>
+    <string name="password">password</string>
+    <string name="connect">connect</string>
+    <string name="login">login</string>
 </resources>

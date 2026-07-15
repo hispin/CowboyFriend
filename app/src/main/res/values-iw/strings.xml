@@ -37,4 +37,8 @@
     <string name="last_not_seen">לא נראה לאחרונה</string>
     <string name="cow_details">פרטי הפרה</string>
     <string name="no_corpse">לא פגר</string>
+    <string name="user">משתמש</string>
+    <string name="password">סיסמה</string>
+    <string name="connect">התחברות</string>
+    <string name="login">התחברות</string>
 </resources>

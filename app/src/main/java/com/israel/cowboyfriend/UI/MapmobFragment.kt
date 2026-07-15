@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
@@ -14,12 +13,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.model.LatLng
@@ -27,7 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.global.CURRENT_LATITUDE_PREF
-import com.israel.cowboyfriend.global.CURRENT_LOCATION
+import com.israel.cowboyfriend.global.CURRENT_LOCATION_LATITUDE
+import com.israel.cowboyfriend.global.CURRENT_LOCATION_LONGITUDE
 import com.israel.cowboyfriend.global.CURRENT_LONGTUDE_PREF
 import com.israel.cowboyfriend.global.GET_CURRENT_SINGLE_LOCATION_KEY
 import com.israel.cowboyfriend.global.getStringInPreference
@@ -41,8 +39,12 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
-import com.mapbox.maps.ViewAnnotationAnchor
-import com.mapbox.maps.ViewAnnotationOptions
+import com.mapbox.maps.extension.style.image.image
+import com.mapbox.maps.extension.style.layers.generated.symbolLayer
+import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.style
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
@@ -53,10 +55,6 @@ import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.addOnMapLongClickListener
 import com.mapbox.maps.plugin.gestures.addOnMoveListener
-import com.mapbox.maps.viewannotation.ViewAnnotationManager
-import com.mapbox.maps.viewannotation.annotationAnchor
-import com.mapbox.maps.viewannotation.geometry
-import com.mapbox.maps.viewannotation.viewAnnotationOptions
 
 class MapmobFragment : Fragment() , OnMoveListener{
     private var fbRefresh: FloatingActionButton? = null
@@ -67,14 +65,15 @@ class MapmobFragment : Fragment() , OnMoveListener{
     private var mapType = Style.OUTDOORS
     private var locationManager: LocationManager? = null
     private var myViewModelSupbase: MyViewModelSupbase? = null
-    //annotations (markers)
-    private var viewAnnotationManager: ViewAnnotationManager? = null//mapView?.viewAnnotationManager
-    private var pointAnnotationManager: PointAnnotationManager? = null
+    //private var pointAnnotationManager: PointAnnotationManager? = null
+
+    //private var pointAnnotation: PointAnnotation? = null
+    //private var pointAnnotationOptions: PointAnnotationOptions?=null
+
     private var annotationApi: AnnotationPlugin? = null
-    private var pointAnnotation: PointAnnotation? = null
-    private var pointAnnotationOptions: PointAnnotationOptions?=null
-    //////////////
-    private var currentPopup: View? = null
+    private var pointAnnotationManager: PointAnnotationManager? = null
+
+    //private var currentPopup: View? = null
 
 
 
@@ -85,7 +84,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
 
     override fun onPause() {
         super.onPause()
-        currentPopup?.let { viewAnnotationManager?.removeViewAnnotation(it) }
+        //currentPopup?.let { viewAnnotationManager?.removeViewAnnotation(it) }
     }
 
         override fun onCreateView(
@@ -151,14 +150,15 @@ class MapmobFragment : Fragment() , OnMoveListener{
      * initialize annotation for markers
      */
     private fun initializeAnnotation() {
-        viewAnnotationManager = mapView?.viewAnnotationManager
+        //viewAnnotationManager = mapView?.viewAnnotationManager
         // Create an instance of the Annotation API and get the PointAnnotationManager.
         annotationApi = mapView?.annotations
+        //pointAnnotationManager = annotationApi?.createPointAnnotationManager()
         pointAnnotationManager = annotationApi?.createPointAnnotationManager()
     }
 
     /**
-     * get current location from gps
+     * get single current location from gps
      */
     private fun gotoMySingleLocation() {
         activity?.startForegroundService(Intent(context, ServiceFindSingleLocation::class.java))
@@ -171,22 +171,28 @@ class MapmobFragment : Fragment() , OnMoveListener{
         override fun onReceive(arg0: Context, inn: Intent) {
             //accept currentAlarm
              if (inn.action == GET_CURRENT_SINGLE_LOCATION_KEY) {
-                val location: Location? = inn.getParcelableExtra(CURRENT_LOCATION)
-                if (location != null) {
+                //val location: Location? = inn.getParcelableExtra(CURRENT_LOCATION)
+                val latitude = inn.extras?.getDouble(CURRENT_LOCATION_LATITUDE)
+                val longitude = inn.extras?.getDouble(CURRENT_LOCATION_LONGITUDE)
+                val location=Location(LocationManager.GPS_PROVIDER)
+
+                if (latitude != null && longitude != null) {
+
+                    location.latitude=latitude
+                    location.longitude=longitude
+
                     //save locally the current location
                     setStringInPreference(
                         activity,
                         CURRENT_LATITUDE_PREF,
-                        location.latitude.toString()
+                        latitude.toString()
                     )
                     setStringInPreference(
                         activity,
                         CURRENT_LONGTUDE_PREF,
-                        location.longitude.toString()
+                        longitude.toString()
                     )
-                    showLocation(location)
-                } else {
-                    Toast.makeText(activity, "error in location2", Toast.LENGTH_LONG).show()
+                    moveCamera(location)
                 }
             }
         }
@@ -248,15 +254,16 @@ class MapmobFragment : Fragment() , OnMoveListener{
                     LatLng(it.latitude, it.longitude)
             }
 
-            showLocation(location)
+            moveCamera(location)
 
-            //gotoMyLocation()
-
+            gotoMySingleLocation()
         }
     }
 
-    //Done move the camera to ic_mark location
-    private fun showLocation(location: Location?) {
+    /**
+     * Move camera to current location
+     */
+    private fun moveCamera(location: Location?) {
 
         if (location != null) {
             setMyLocate(
@@ -265,7 +272,6 @@ class MapmobFragment : Fragment() , OnMoveListener{
                 )
             )
         } else {
-
             myLocate = getLastLocationLocally()
 
             if (myLocate == null) {
@@ -292,13 +298,12 @@ class MapmobFragment : Fragment() , OnMoveListener{
                                     myLocate?.longitude!!,
                                     myLocate?.latitude!!
                                 )
-                            )//Point.fromLngLat(myLocate?.latitude!!, myLocate?.longitude!!))
+                            )
                             .build()
                         // set camera position
                         myMapboxMap?.setCamera(cameraPosition)
+                        showCurrentLocationMarker()
                     }
-                //show all markers
-                showMarkers()
 
             }
 
@@ -319,7 +324,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
         //markersList = ArrayList<Feature>()
 
         //show current location marker
-        showCurrentLocationMarker()
+        //showCurrentLocationMarker()
 
         val iteratorList = details.listIterator()
         while (iteratorList != null && iteratorList.hasNext()) {
@@ -332,68 +337,131 @@ class MapmobFragment : Fragment() , OnMoveListener{
 
     }
 
+//    /**
+//     * show current location marker
+//     */
+//    fun showMarkers() {
+//
+//        //remove all markers
+//        //pointAnnotationManager?.deleteAll()
+//        //pointAnnotation = null
+//
+//        //clear the markers
+//        //markersList = ArrayList<Feature>()
+//
+//        //show current location marker
+//        showCurrentLocationMarker()
+//    }
+
+
+    private lateinit var geojsonSource: GeoJsonSource
+
     /**
      * show current location marker
      */
-    fun showMarkers() {
-
-        //remove all markers
-        pointAnnotationManager?.deleteAll()
-        //pointAnnotation = null
-
-        //clear the markers
-        //markersList = ArrayList<Feature>()
-
-        //show current location marker
-        showCurrentLocationMarker()
-    }
-
-    /**
-     * show marker of current location if exist
-     */
     private fun showCurrentLocationMarker() {
 
-        if (activity == null) {
-            return
+        if (myLocate==null)return
+
+        val currentPoint = Point.fromLngLat(
+            myLocate?.longitude!!,
+            myLocate?.latitude!!
+        )
+
+
+        geojsonSource = geoJsonSource("source-id") {
+            feature(Feature.fromGeometry(currentPoint))
         }
 
-        if (mapView == null) {
-            return
-        }
 
-        if (myLocate == null) {
-            return
-        }
+        //val mapboxMap = binding.mapView.mapboxMap
+        myMapboxMap?.loadStyle(
+            style(Style.STANDARD) {
+                +image(
+                    "marker_icon",
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.ic_cowbow)!!.toBitmap()
+                )
 
-        if (myLocate != null) {
 
-            if (pointAnnotation == null && pointAnnotationOptions == null) {
-                // Set options for the resulting symbol layer.
-                pointAnnotationOptions = PointAnnotationOptions()
-                    // Define a geographic coordinate.
-                    .withPoint(Point.fromLngLat(myLocate?.longitude!!, myLocate?.latitude!!))
-                    // Specify the bitmap you assigned to the point annotation
-                    // The bitmap will be added to map style automatically.
-                    .withIconImage(
-                        BitmapFactory.decodeResource(
-                            requireActivity().resources, R.drawable.ic_cowbow
-                        )
-                    )
-                // Add the resulting pointAnnotation to the map.
-                pointAnnotation =pointAnnotationOptions?.let { pointAnnotationManager?.create(it) }
-            } else {
-                //if pointAnnotation is already exist then update the current markers location
-                pointAnnotation?.point =
-                    Point.fromLngLat(myLocate?.longitude!!, myLocate?.latitude!!)
-                if (pointAnnotation != null) {
-                    pointAnnotationManager?.update(pointAnnotation!!)
+                +geojsonSource
+                +symbolLayer(layerId = "layer-id", sourceId = "source-id") {
+                    iconImage("marker_icon")
+                    iconIgnorePlacement(true)
+                    iconAllowOverlap(true)
                 }
             }
-
-
+        ) {
+//            Toast.makeText(
+//                this@AnimatedMarkerActivity,
+//                getString(R.string.tap_on_map_instruction),
+//                Toast.LENGTH_LONG
+//            ).show()
+//            myMapboxMap?.addOnMapClickListener(requireActivity() as OnMapClickListener)
         }
-
     }
+
+
+//    /**
+//     * show marker of current location if exist
+//     */
+//    private fun showCurrentLocationMarker1() {
+//
+//        if (activity == null) {
+//            return
+//        }
+//
+//        if (mapView == null) {
+//            return
+//        }
+//
+//        if (myLocate == null) {
+//            return
+//        }
+//
+//        if (myLocate != null) {
+//
+//            if (pointAnnotation != null) {
+//                //pointAnnotationManager?.delete(pointAnnotationOptions!!)
+//                //pointAnnotationManager?.delete(listOf(pointAnnotation))
+//            }
+//
+//           // if (pointAnnotationOptions == null) {
+//                Toast.makeText(activity,"create marker",Toast.LENGTH_SHORT).show()
+//                // Set options for the resulting symbol layer.
+//                pointAnnotationOptions = PointAnnotationOptions()
+//                    // Define a geographic coordinate.
+//                    .withPoint(Point.fromLngLat(myLocate?.longitude!!, myLocate?.latitude!!))
+//                    // Specify the bitmap you assigned to the point annotation
+//                    // The bitmap will be added to map style automatically.
+//                    .withIconImage(
+//                        BitmapFactory.decodeResource(
+//                            requireActivity().resources, R.drawable.ic_cowbow
+//                        )
+//                    )
+//
+////                if (pointAnnotation != null) {
+////                    pointAnnotationManager?.update(pointAnnotation!!)
+////                    //pointAnnotationManager.
+////                }else{
+//                    // Add the resulting pointAnnotation to the map.
+//                    pointAnnotation =pointAnnotationOptions?.let { pointAnnotationManager?.create(it) }
+//
+//                }
+////            } else {
+////                Toast.makeText(activity,"update marker",Toast.LENGTH_SHORT).show()
+////                //if pointAnnotation is already exist then update the current markers location
+////                pointAnnotation?.point =
+////                    Point.fromLngLat(myLocate?.longitude!!, myLocate?.latitude!!)
+////                if (pointAnnotation != null) {
+////                    pointAnnotationManager?.update(pointAnnotation!!)
+////                    //pointAnnotationManager.
+////                }
+////            }
+//
+//
+//  //      }
+//
+//    }
 
 
     /**
@@ -403,7 +471,8 @@ class MapmobFragment : Fragment() , OnMoveListener{
         cow: CowDetails,
     ): Feature? {
 
-        if(requireActivity()==null) return null
+        //if the fragment is not attached to activity
+        activity ?: return null
 
         val myIcon=R.drawable.ic_cow_loc
 
@@ -428,43 +497,43 @@ class MapmobFragment : Fragment() , OnMoveListener{
 
         //set transparent to hide preview text (without click)
         //TODO to learn how to hide annotation view text
-        pointAnnotationOptions.withTextColor(Color.TRANSPARENT)
+        //pointAnnotationOptions.withTextColor(Color.TRANSPARENT)
+        pointAnnotationOptions.withIconAnchor(IconAnchor.BOTTOM)
         // Add the resulting pointAnnotation to the map.
         pointAnnotationManager?.create(pointAnnotationOptions)
         pointAnnotationManager?.addClickListener(object : OnPointAnnotationClickListener {
             override fun onAnnotationClick(annotation: PointAnnotation): Boolean {
 
-
                 // Remove existing popup if any
-                viewAnnotationManager?.removeAllViewAnnotations()
-
-                currentPopup = createPopup(annotation)
-
-
-                val options: ViewAnnotationOptions?
-                options = viewAnnotationOptions {
-                    geometry(
-                        Point.fromLngLat(
-                            annotation.point.longitude(),
-                            annotation.point.latitude()
-                        )
-                    )
-                    allowOverlap(false)
-                    annotationAnchor { anchor(ViewAnnotationAnchor.BOTTOM_RIGHT) }
-                    //visible(false)
-                }
-
-                val lp = LinearLayout.LayoutParams(
-                    WRAP_CONTENT,
-                    WRAP_CONTENT
-                )
-                currentPopup?.layoutParams = lp
-
-
-                if (currentPopup != null) {
-                    // Add the popup as a ViewAnnotation
-                    viewAnnotationManager?.addViewAnnotation(currentPopup!!, options)
-                }
+//                viewAnnotationManager?.removeAllViewAnnotations()
+//
+//                currentPopup = createPopup(annotation)
+//
+//
+//                val options: ViewAnnotationOptions?
+//                options = viewAnnotationOptions {
+//                    geometry(
+//                        Point.fromLngLat(
+//                            annotation.point.longitude(),
+//                            annotation.point.latitude()
+//                        )
+//                    )
+//                    allowOverlap(false)
+//                    annotationAnchor { anchor(ViewAnnotationAnchor.BOTTOM) }
+//                    //visible(false)
+//                }
+//
+//                val lp = LinearLayout.LayoutParams(
+//                    WRAP_CONTENT,
+//                    WRAP_CONTENT
+//                )
+//                currentPopup?.layoutParams = lp
+//
+//
+//                if (currentPopup != null) {
+//                    // Add the popup as a ViewAnnotation
+//                    viewAnnotationManager?.addViewAnnotation(currentPopup!!, options)
+//                }
 
 
                 return true
@@ -478,8 +547,8 @@ class MapmobFragment : Fragment() , OnMoveListener{
     }
 
     override fun onMoveBegin(detector: MoveGestureDetector) {
-        if (viewAnnotationManager != null && currentPopup != null)
-            viewAnnotationManager?.removeViewAnnotation(currentPopup!!)
+//        if (viewAnnotationManager != null && currentPopup != null)
+//            viewAnnotationManager?.removeViewAnnotation(currentPopup!!)
     }
 
     override fun onMoveEnd(detector: MoveGestureDetector) {
