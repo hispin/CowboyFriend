@@ -57,6 +57,7 @@ import com.mapbox.maps.plugin.gestures.addOnMapLongClickListener
 import com.mapbox.maps.plugin.gestures.addOnMoveListener
 
 class MapmobFragment : Fragment() , OnMoveListener{
+    private var tvLoadLocation: TextView?=null
     private var fbRefresh: FloatingActionButton? = null
     private var myLocate: LatLng? = null
     private var mapView: MapView? = null
@@ -117,6 +118,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
         fbRefresh?.setOnClickListener {
             gotoMySingleLocation()
         }
+        tvLoadLocation= view.findViewById(R.id.tvLoadLocation)
     }
 
     private fun setFilter() {
@@ -161,6 +163,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
      * get single current location from gps
      */
     private fun gotoMySingleLocation() {
+        tvLoadLocation?.visibility=View.VISIBLE
         activity?.startForegroundService(Intent(context, ServiceFindSingleLocation::class.java))
     }
 
@@ -192,6 +195,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
                         CURRENT_LONGTUDE_PREF,
                         longitude.toString()
                     )
+                    tvLoadLocation?.visibility=View.GONE
                     moveCamera(location)
                 }
             }
@@ -245,16 +249,16 @@ class MapmobFragment : Fragment() , OnMoveListener{
             }
 
             //go to last location
-            val location = initFindLocation()
-
-
-            //set last location if exist
-            location?.let {
-                myLocate =
-                    LatLng(it.latitude, it.longitude)
-            }
-
-            moveCamera(location)
+//            val location = initFindLocation()
+//
+//
+//            //set last location if exist
+//            location?.let {
+//                myLocate =
+//                    LatLng(it.latitude, it.longitude)
+//            }
+//
+//            moveCamera(location)
 
             gotoMySingleLocation()
         }

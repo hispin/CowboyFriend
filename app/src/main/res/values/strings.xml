@@ -41,4 +41,6 @@
     <string name="password">password</string>
     <string name="connect">connect</string>
     <string name="login">login</string>
+    <string name="success_login">success login</string>
+    <string name="load_my_location">load my location…</string>
 </resources>

@@ -41,4 +41,6 @@
     <string name="password">סיסמה</string>
     <string name="connect">התחברות</string>
     <string name="login">התחברות</string>
+    <string name="success_login">ההתחברות הצליחה</string>
+    <string name="load_my_location">טוען את המיקום שלי …</string>
 </resources>
