@@ -26,11 +26,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -56,6 +53,7 @@ import java.util.Locale
 @AndroidEntryPoint
 class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
+    //private var startCamera: ActivityResultLauncher<Intent>?=null
     private var myTextOrder: String?=null
     private var uri: Uri? = null
     private var textToSpeech:TextToSpeech?=null
@@ -116,19 +114,34 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         }
     }
 
-    /**
-     * define listener handler after image capture
-     */
-    var startCamera: ActivityResultLauncher<Intent> =
-        registerForActivityResult<Intent, ActivityResult>(
-            StartActivityForResult(), object : ActivityResultCallback<ActivityResult?> {
 
-                override fun onActivityResult(result: ActivityResult?) {
-                    if (result!!.resultCode == Activity.RESULT_OK) {
-                        ivTakePicture?.setImageURI(uri)
-                    }
-                }
-            })
+//    fun registerCallbackPicture(){
+//        startCamera =
+//            registerForActivityResult<Intent, ActivityResult>(
+//                StartActivityForResult(), object : ActivityResultCallback<ActivityResult?> {
+//
+//                    override fun onActivityResult(result: ActivityResult?) {
+//                        if (result!!.resultCode == Activity.RESULT_OK) {
+//                            ivTakePicture?.setImageURI(uri)
+//                        }
+//                    }
+//                })
+//
+//    }
+
+//    /**
+//     * define listener handler after image capture
+//     */
+//    var startCamera: ActivityResultLauncher<Intent> =
+//        registerForActivityResult<Intent, ActivityResult>(
+//            StartActivityForResult(), object : ActivityResultCallback<ActivityResult?> {
+//
+//                override fun onActivityResult(result: ActivityResult?) {
+//                    if (result!!.resultCode == Activity.RESULT_OK) {
+//                        ivTakePicture?.setImageURI(uri)
+//                    }
+//                }
+//            })
 
     /**
      * recognize voice and convert to text
@@ -206,10 +219,22 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
     }
 
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //initialize text to speech
         textToSpeech = TextToSpeech(requireActivity(), this)
+
+        takePictureLauncher = registerForActivityResult(
+            ActivityResultContracts.TakePicture()
+        ) { success ->
+
+            ivTakePicture?.setImageURI(uri)
+            //viewModel.setCaptureSuccess(success)
+            // התוצאה נשמרת ב-ViewModel
+        }
+        //registerCallbackPicture()
     }
 
    override fun onCreateView(
@@ -360,18 +385,35 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     Take a picture
      */
     private fun takePicture() {
-        val values=ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "New Picture")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
-        uri=requireContext().contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values        )
-        val cameraIntent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-        startCamera.launch(cameraIntent)
+//        val values=ContentValues()
+//        values.put(MediaStore.Images.Media.TITLE, "New Picture")
+//        values.put(MediaStore.Images.Media.DESCRIPTION, "From Camera")
+//        uri=requireContext().contentResolver.insert(
+//            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values        )
+//        val cameraIntent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+//
+        uri = createImageUri()
+
+        if(uri!=null) {
+            takePictureLauncher.launch(uri!!)
+        }
     }
 
 
-    /**
+    private fun createImageUri(): Uri {
+        val contentValues=ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "IMG_${System.currentTimeMillis()}")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        }
+        return requireContext().contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues
+        ) ?: throw IllegalStateException("Failed to create image URI")
+
+    }
+
+
+        /**
      * open dialog to accept voice
      */
     private fun openDialogToEnterCalfNumber(){

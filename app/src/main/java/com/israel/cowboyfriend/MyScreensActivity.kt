@@ -6,7 +6,11 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -51,6 +55,9 @@ class MyScreensActivity : AppCompatActivity() {
     private lateinit var supabase: SupabaseClient
     private var collectionPagerAdapter: CollectionPagerAdapter1?=null
     private lateinit var viewPager: ViewPager2
+    private var llMain: LinearLayout?=null
+    private  var tvConnectAccount: Button?=null
+
     //var vPager: ViewPager? = null
     private var currentItemTopMenu = 0
     //private var myViewModelSupbase: MyViewModelSupbase=viewModel()
@@ -60,18 +67,20 @@ class MyScreensActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        myViewModelSupbase = ViewModelProvider(this)[MyViewModelSupbase::class.java]
+        //check if session is get
+        Handler(Looper.getMainLooper()).postDelayed({
+            if(myViewModelSupbase?.isSessionGetSupabase() == true) {
+                llMain?.alpha = 1.0f
+                tvConnectAccount?.visibility=View.GONE
+            }else{
+                llMain?.alpha = 0.2f
+                tvConnectAccount?.visibility=View.VISIBLE
+            }
+        }, 100)
 
-        setSupabase()
-
-        myViewModelSupbase?.setListenerRealtimeCowDetails()//
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setLocationPermission()
-        } else {
-            configTabs()
-        }
+
     }
 
     @Composable
@@ -82,13 +91,25 @@ class MyScreensActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_my_screen)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.llMain)) { v, insets ->
             val systemBars=insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         initViews()
         setObserver()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setLocationPermission()
+        } else {
+            configTabs()
+        }
+
+        myViewModelSupbase = ViewModelProvider(this)[MyViewModelSupbase::class.java]
+
+        setSupabase()
+
+        myViewModelSupbase?.setListenerRealtimeCowDetails()//
+
 
 
     }
@@ -96,7 +117,7 @@ class MyScreensActivity : AppCompatActivity() {
     private fun setObserver() {
         myViewModelSupbase?.pageNum?.observe(this) {
             if(it!=null) {
-                tabs?.getTabAt(it)?.select()
+                //tabs?.getTabAt(it)?.select()
             }
         }
     }
@@ -189,7 +210,15 @@ class MyScreensActivity : AppCompatActivity() {
     private fun initViews() {
         //vPager = findViewById(R.id.vPager)
         viewPager = findViewById(R.id.vPager)
+        viewPager.offscreenPageLimit = 1
         viewPager.setUserInputEnabled(false)
+        llMain = findViewById(R.id.llMain)
+        tvConnectAccount= findViewById(R.id.tvConnectAccount)
+        tvConnectAccount?.setOnClickListener {
+            llMain?.alpha = 1.0f
+            tabs?.getTabAt(3)?.select()
+            tvConnectAccount?.visibility=View.GONE
+        }
     }
 
     private fun configTabs() {
@@ -218,11 +247,7 @@ class MyScreensActivity : AppCompatActivity() {
             }).attach()
 
 
-        if(myViewModelSupbase?.isSessionGetSupabase() == true) {
-            tabs?.getTabAt(0)?.select()
-        }else{
-            tabs?.getTabAt(3)?.select()
-        }
+
 
     }
 

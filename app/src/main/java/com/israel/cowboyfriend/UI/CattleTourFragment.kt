@@ -53,7 +53,7 @@ class CattleTourFragment : Fragment() {
      */
     private fun setObservers() {
         myViewModelSupbase?._cowsDetails?.observe(viewLifecycleOwner) {
-            if(it!=null) {
+            if(it!=null && it.isNotEmpty()) {
                 showCowsDetails(it as ArrayList<CowDetails>?)
             }
         }
@@ -133,6 +133,8 @@ class CattleTourFragment : Fragment() {
             myCowsAdapter?.setCows(cows)
             if(lastPosition!=null) {
                 myCowsAdapter?.notifyItemChanged(lastPosition!!)
+            }else{
+                myCowsAdapter?.notifyDataSetChanged()
             }
         }
     }

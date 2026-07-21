@@ -22,10 +22,10 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.channel
-import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
@@ -40,6 +40,7 @@ import java.io.File
 import java.util.ArrayList
 import java.util.UUID
 import kotlin.collections.sortedBy
+import kotlin.runCatching
 import kotlin.text.toInt
 
 
@@ -50,7 +51,6 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
     var _cowsDetails = MutableLiveData<List<CowDetails>>()
     var cowsDetails:ArrayList<CowDetails>?=null
     var pageNum = MutableLiveData(0)
-
     /**
      * set page number
      */
@@ -201,22 +201,28 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
 //    }
 
     /**
-     * get details by id
+     * get cow details by id
      */
-    fun dbGetCowsDetailsById(id:Int) {
+    fun dbGetCowDetailsById(id:Int) {
 
-        runBlocking {
-            try {
-                cowsDetails=ArrayList()
-                   val result=supabase.from("CowDetails").select( ) {
-                       filter {
-                           eq("id", id)
+            runBlocking {
+                var result: PostgrestResult?=null
+                runCatching {
+                    //cowsDetails=ArrayList()
+                       result=supabase.from("CowDetails").select( ) {
+                           filter {
+                               eq("id", id)
+                           }
                        }
-                   }
-                    val item=result.decodeList<CowDto>()[0]
-                    updateCowsList(item,id)
-                }catch (ex: Exception) {
-                   print(ex)
+
+                    }.onSuccess {
+                    val item=result?.decodeList<CowDto>()[0]
+                    if(item!=null){
+                        updateCowsListForUi(item,id)
+                    }
+                    // use session / user here
+                }.onFailure { error ->
+                    // show error.message to the user
                 }
             }
         }
@@ -292,6 +298,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
 
     }
 
+
     /**
      * update a new cow
      */
@@ -299,42 +306,89 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
         cow: CowDetails, type: Int
     ) {
         runBlocking {
-            try {
-
-                if(cow.id!=null){
-                    when(type){
-                        CORPSE_TYPE->{
-                            val result=supabase.postgrest.from("CowDetails").update({ set("corpse", cow.isCorpse)} ) {
-                                filter {
-                                    // Target rows where column 'id' equals 554
-                                    eq("id", cow.id!!)
-                                    //eq("id", 7)
+            runCatching {
+                if (cow.id != null) {
+                    when (type) {
+                        CORPSE_TYPE -> {
+                            val result=supabase.postgrest.from("CowDetails")
+                                .update({ set("corpse", cow.isCorpse) }) {
+                                    filter {
+                                        // Target rows where column 'id' equals 554
+                                        eq("id", cow.id!!)
+                                        //eq("id", 7)
+                                    }
+                                    //dbGetCowsDetailsById(cow.id!!)
                                 }
-                                //dbGetCowsDetailsById(cow.id!!)
-                            }
                         }
 
-                        LAST_SEEN_AT_TYPE->{
-                            val result=supabase.postgrest.from("CowDetails").update({ set("last_seen_at", cow.last_seen_at)} ) {
-                                filter {
-                                    // Target rows where column 'id' equals 554
-                                    eq("id", cow.id!!)
-                                    //eq("id", 7)
+                        LAST_SEEN_AT_TYPE -> {
+                            val result=supabase.postgrest.from("CowDetails")
+                                .update({ set("last_seen_at", cow.last_seen_at) }) {
+                                    filter {
+                                        // Target rows where column 'id' equals 554
+                                        eq("id", cow.id!!)
+                                        //eq("id", 7)
+                                    }
+                                    //dbGetCowsDetailsById(cow.id!!)
                                 }
-                                //dbGetCowsDetailsById(cow.id!!)
-                            }
 
                         }
                     }
 
                 }
                 //dbGetCowsDetails()
-            }catch (ex: Exception) {
-                print(ex)
+            }.onSuccess {
+                dbGetCowDetailsById(cow.id!!)
+                // use session / user here
+            }.onFailure { error ->
+                // show error.message to the user
                 //cowRepositoryCallback.onRequestResult(0)
             }
         }
     }
+//    /**
+//     * update a new cow
+//     */
+//    fun dbUpdateCowDetails1(
+//        cow: CowDetails, type: Int
+//    ) {
+//        runBlocking {
+//            try {
+//
+//                if(cow.id!=null){
+//                    when(type){
+//                        CORPSE_TYPE->{
+//                            val result=supabase.postgrest.from("CowDetails").update({ set("corpse", cow.isCorpse)} ) {
+//                                filter {
+//                                    // Target rows where column 'id' equals 554
+//                                    eq("id", cow.id!!)
+//                                    //eq("id", 7)
+//                                }
+//                                //dbGetCowsDetailsById(cow.id!!)
+//                            }
+//                        }
+//
+//                        LAST_SEEN_AT_TYPE->{
+//                            val result=supabase.postgrest.from("CowDetails").update({ set("last_seen_at", cow.last_seen_at)} ) {
+//                                filter {
+//                                    // Target rows where column 'id' equals 554
+//                                    eq("id", cow.id!!)
+//                                    //eq("id", 7)
+//                                }
+//                                //dbGetCowsDetailsById(cow.id!!)
+//                            }
+//
+//                        }
+//                    }
+//
+//                }
+//                //dbGetCowsDetails()
+//            }catch (ex: Exception) {
+//                print(ex)
+//                //cowRepositoryCallback.onRequestResult(0)
+//            }
+//        }
+//    }
 
     /**
      * insert a new cow
@@ -344,7 +398,7 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
         cowRepositoryCallback: CowRepositoryCB
     ) {
         runBlocking {
-            try {
+            runCatching {
                 val cowDto =CowDto(
                     number =  cow.number,
                     number_mom = cow.number_mom,
@@ -359,12 +413,20 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                     last_seen_at = cow.last_seen_at
                 )
                 val result=supabase.postgrest.from("CowDetails").insert(cowDto)
-                cowRepositoryCallback.onRequestResult(1)
+                //cowRepositoryCallback.onRequestResult(1)
 
-            }catch (ex: Exception) {
-                print(ex)
+            }.onSuccess {
+                dbGetCowsDetails()
+                cowRepositoryCallback.onRequestResult(1)
+                // use session / user here
+            }.onFailure { error ->
+                // show error.message to the user
                 cowRepositoryCallback.onRequestResult(0)
             }
+//            catch (ex: Exception) {
+//                print(ex)
+//                cowRepositoryCallback.onRequestResult(0)
+//            }
         }
     }
 
@@ -435,14 +497,14 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                             Log.d("chatInfo", "delete list")
                         }
                         is PostgresAction.Update->{
-                            val id =it.record["id"].toString()
+//                            val id =it.record["id"].toString()
+//
+//                            val cow = it.decodeRecord<CowDto>()
+//
+//                            if(id.isDigitsOnly()) {
+//                                updateCowsList(cow, id.toInt())
+//                            }
 
-                            val cow = it.decodeRecord<CowDto>()
-                            //val n = 10
-                            if(id.isDigitsOnly()) {
-                                updateCowsList(cow, id.toInt())
-                            }
-                            //dbGetCowsDetails()
                             Log.d("chatInfo", "updated list")
                         }
                         is PostgresAction.Select->{
@@ -474,9 +536,9 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
 //    }
 
     /**
-     * update list of cows
+     * update list of cows for UI
      */
-    fun updateCowsList(cow: CowDto, id: Int) {
+    fun updateCowsListForUi(cow: CowDto, id: Int) {
         val iterator=cowsDetails?.iterator()
 
         while (iterator?.hasNext() == true) {
