@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">CowboyFriend</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="new_calf">New Calf</string>
+    <string name="new_cow">New cow</string>
     <string name="cattle_tour">Cattle Tour</string>
     <string name="settings">Settings</string>
-    <string name="number_calf">Number of calf</string>
-    <string name="gender_calf">Gender of calf</string>
+    <string name="number_cow">Number of cow</string>
+    <string name="gender_cow">Gender of cow</string>
     <string name="number_of_mom">Number of mom</string>
     <string name="take_picture">Take a picture</string>
     <string name="title_activity_login">LoginActivity</string>
@@ -17,9 +17,9 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="title_calf_number">number of calf: %1$s</string>
+    <string name="title_cow_number">number of cow: %1$s</string>
     <string name="title_mom_number">number of mom: %1$s</string>
-    <string name="title_calf_gender">gender of calf: %1$s</string>
+    <string name="title_cow_gender">gender of cow: %1$s</string>
     <string name="title_comment">comment: %1$s</string>
     <string name="title_last_date_location">last date location: %1$s</string>
     <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoidG9tZXJjaG9lbiIsImEiOiJja2psYWJ0M201N3ZuMnJucW4zNWZqYzNvIn0.fZ3nmtGLC2X-PKfuNY5wfQ</string>
@@ -44,4 +44,22 @@
     <string name="success_login">success login</string>
     <string name="load_my_location">load my location…</string>
     <string name="connect_to_account">connect to your account</string>
+    <string name="cow_type">type of cow</string>
+    <string name="with_mom">with mom</string>
+    <string name="description" translatable="false">description</string>
+    <string name="error">Error</string>
+    <string name="save_file_success">File save was successful</string>
+    <string name="save_file_failed">Failed to save file</string>
+    <string name="no_photo">no photo</string>
+    <string name="share_title">Send video from Cow Friend</string>
+    <string name="see_mother">You can see his mother</string>
+    <string name="marked_tag">marked with an ear tag</string>
+
+
+    <string-array name="cow_type">
+        <item>calf</item>
+        <item>first-cow</item>
+        <item>cow</item>
+        <item>bull</item>
+    </string-array>
 </resources>

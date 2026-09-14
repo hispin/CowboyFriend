@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/material_dynamic_neutral80"
+    >
 
-    tools:context=".NewCalfActivity">
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -61,12 +62,39 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/tvCowType"
+        style="@style/title"
+        app:layout_constraintTop_toTopOf="@+id/ivTakePicture"
+        android:text="@string/cow_type"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate"
+        app:layout_constraintStart_toStartOf="@+id/tvDate"
+        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfCalf"
+        />
+
+    <Spinner
+        android:id="@+id/spNewCowType"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:entries="@array/cow_type"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/shape_bg_subjects_spinner"
+        android:spinnerMode="dropdown"
+        tools:listitem="@layout/support_simple_spinner_dropdown_item"
+        android:theme="@style/spinnerTheme"
+        android:popupBackground="@drawable/shape_bg_subjects_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/tvCowType"
+        app:layout_constraintStart_toStartOf="@+id/tvCowType"
+        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfCalf"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/tvNumberOfCalf"
         style="@style/title"
         app:layout_constraintTop_toBottomOf="@+id/tvDate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tvGenderOfCalf"
-        android:text="@string/number_calf"
+        android:text="@string/number_cow"
         />
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etNumberOfCalf"
@@ -101,7 +129,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvNumberOfCalf"
         app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
         app:layout_constraintBottom_toTopOf="@+id/tvNumberOfMom"
-        android:text="@string/gender_calf"
+        android:text="@string/gender_cow"
         />
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etGenderOfCalf"
@@ -128,6 +156,20 @@
         style="@style/button_style"
         />
 
+
+    <CheckBox
+        android:layout_marginStart="5dp"
+        android:id="@+id/cbWithMomNew"
+        android:textColor="@color/black"
+        android:layout_gravity="end"
+        android:text="@string/see_mother"
+        android:textSize="11sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:buttonTint="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfMom"
+        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfMom"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -138,6 +180,22 @@
         app:layout_constraintBottom_toTopOf="@+id/tvComments"
         android:text="@string/number_of_mom"
         />
+
+    <Spinner
+        android:id="@+id/spMoms"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:entries="@array/cow_type"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/shape_bg_subjects_spinner"
+        android:spinnerMode="dropdown"
+        tools:listitem="@layout/support_simple_spinner_dropdown_item"
+        android:theme="@style/spinnerTheme"
+        android:popupBackground="@drawable/shape_bg_subjects_spinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
+        />
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etNumberOfMom"
         android:layout_width="wrap_content"
@@ -145,6 +203,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
         android:ems="12"
+        android:visibility="gone"
         android:inputType="numberDecimal"
         android:background="@drawable/shape_bottom_border"
         style="@style/edittext_style"
@@ -157,10 +216,11 @@
         app:civ_border_width="2dp"
         app:civ_border_color="#FF000000"
         tools:ignore="MissingConstraints"
-        app:layout_constraintTop_toTopOf="@+id/etNumberOfMom"
-        app:layout_constraintBottom_toBottomOf="@+id/etNumberOfMom"
-        app:layout_constraintStart_toEndOf="@+id/etNumberOfMom"
+        app:layout_constraintTop_toTopOf="@+id/spMoms"
+        app:layout_constraintBottom_toBottomOf="@+id/spMoms"
+        app:layout_constraintStart_toEndOf="@+id/spMoms"
         style="@style/button_style"
+        android:layout_marginStart="64dp"
         />
 
 <!--    comments-->
@@ -240,6 +300,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvLocationLongitude"
         app:layout_constraintStart_toEndOf="@+id/tvLocationLongitude"
         android:layout_marginStart="24dp"
+        />
+
+    <CheckBox
+        android:layout_marginStart="5dp"
+        android:id="@+id/cbEarTag"
+        android:textColor="@color/black"
+        android:layout_gravity="end"
+        android:text="@string/marked_tag"
+        android:textSize="10sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:buttonTint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/frSave"
+        app:layout_constraintTop_toTopOf="@+id/frSave"
         />
 
     <FrameLayout

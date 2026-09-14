@@ -1,6 +1,7 @@
 package com.israel.cowboyfriend
 
 import android.Manifest
+import android.R.attr.fragment
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -21,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -29,11 +31,13 @@ import com.israel.cowboyfriend.UI.CattleTourFragment
 import com.israel.cowboyfriend.UI.LoginFragment
 import com.israel.cowboyfriend.UI.MapmobFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
+import com.israel.cowboyfriend.classes.OnFragmentListener
 import com.israel.cowboyfriend.global.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.global.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 import io.github.jan.supabase.SupabaseClient
 import java.util.Locale
+import kotlin.collections.set
 
 //import io.github.jan.supabase.auth.Auth
 
@@ -50,7 +54,7 @@ import java.util.Locale
 //    install(SessionSource.Storage)   // For file storage
 //}
 
-class MyScreensActivity : AppCompatActivity() {
+class MyScreensActivity : AppCompatActivity(){
 
     private lateinit var supabase: SupabaseClient
     private var collectionPagerAdapter: CollectionPagerAdapter1?=null
@@ -238,7 +242,7 @@ class MyScreensActivity : AppCompatActivity() {
                 //            //set the title text of top menu
             when (position) {
                 0 -> tab.text=resources.getString(R.string.cattle_tour)
-                1 -> tab.text=resources.getString(R.string.new_calf)
+                1 -> tab.text=resources.getString(R.string.new_cow)
                 //2 -> tab.text=resources.getString(R.string.settings)
                 2 -> tab.text=resources.getString(R.string.map_title)
                 3 -> tab.text= resources.getString(R.string.login)
@@ -247,6 +251,27 @@ class MyScreensActivity : AppCompatActivity() {
             }).attach()
 
 
+        tabs?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                // This fires when a tab is clicked or selected
+                viewPager.currentItem = tab.position
+                val position = tab.position
+
+                //to enable every time load cows when selected Cattle Tour
+                if(collectionPagerAdapter?.fragmentMap[position] is CattleTourFragment){
+                     (collectionPagerAdapter?.fragmentMap[position] as CattleTourFragment).getCowDetails()
+                }
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                // Called when a tab exits the selected state
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // Called when the already selected tab is clicked again
+            }
+        })
 
 
     }
@@ -259,6 +284,7 @@ class MyScreensActivity : AppCompatActivity() {
         fm
     ) {
 
+        val fragmentMap = mutableMapOf<Int, Fragment>()
 
         override fun createFragment(position: Int): Fragment {
 
@@ -301,6 +327,9 @@ class MyScreensActivity : AppCompatActivity() {
                     }
                 }
 
+            }
+            if(fragment!=null) {
+                fragmentMap[position]=fragment
             }
             return fragment!!
 

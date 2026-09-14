@@ -12,6 +12,7 @@ import com.israel.cowboyfriend.DB.CowDto
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.global.CORPSE_TYPE
 import com.israel.cowboyfriend.global.LAST_SEEN_AT_TYPE
+import com.israel.cowboyfriend.global.TYPE_COW
 import com.israel.cowboyfriend.interfaces.CowRepositoryCB
 import com.israel.cowboyfriend.interfaces.CowStorageRespose
 import io.github.jan.supabase.SupabaseClient
@@ -234,9 +235,15 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
     fun dbGetCowsDetails() {
 
         runBlocking {
+            if(supabase.auth.currentUserOrNull()?.email==null) return@runBlocking
+
             try {
                 cowsDetails=ArrayList()
-                val result=supabase.from("CowDetails").select()
+                val result=supabase.from("CowDetails").select(){
+                    filter {
+                        eq("user_id", supabase.auth.currentUserOrNull()?.email!!)
+                    }
+                }
 
 
                 //get the identity ids for each row and the add it to main array
@@ -265,7 +272,9 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                         latitude = item.latitude,
                         longitude = item.longitude,
                         location_updated_at = item.location_updated_at,
-                        last_seen_at = item.last_seen_at
+                        last_seen_at = item.last_seen_at,
+                        cowType=item.cow_type,
+                        with_mom=item.with_mom
                     )
                     val id=strArr[idx++]
                     if(id.isDigitsOnly()) {
@@ -323,7 +332,19 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
 
                         LAST_SEEN_AT_TYPE -> {
                             val result=supabase.postgrest.from("CowDetails")
-                                .update({ set("last_seen_at", cow.last_seen_at) }) {
+                                .update({ set("last_seen_at", cow.last_seen_at);set("with_mom", cow.with_mom)}) {
+                                    filter {
+                                        // Target rows where column 'id' equals 554
+                                        eq("id", cow.id!!)
+                                        //eq("id", 7)
+                                    }
+                                    //dbGetCowsDetailsById(cow.id!!)
+                                }
+
+                        }
+                        TYPE_COW -> {
+                            val result=supabase.postgrest.from("CowDetails")
+                                .update({ set("cow_type", cow.cowType) }) {
                                     filter {
                                         // Target rows where column 'id' equals 554
                                         eq("id", cow.id!!)
@@ -410,7 +431,9 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                     longitude = cow.longitude,
                     location_updated_at = cow.location_updated_at,
                     corpse = cow.isCorpse,
-                    last_seen_at = cow.last_seen_at
+                    last_seen_at = cow.last_seen_at,
+                    cow_type = cow.cowType,
+                    with_mom = cow.with_mom
                 )
                 val result=supabase.postgrest.from("CowDetails").insert(cowDto)
                 //cowRepositoryCallback.onRequestResult(1)

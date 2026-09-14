@@ -10,7 +10,9 @@ data class CowDetails (
     var latitude: Double?,
     var longitude: Double?,
     var location_updated_at: Long?,
-    var last_seen_at: Long?
+    var last_seen_at: Long?,
+    var cowType: String?,
+    var with_mom: Long?
 ){
     var isCorpse: Boolean=false
     var id: Int?=null

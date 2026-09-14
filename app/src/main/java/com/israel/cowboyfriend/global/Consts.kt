@@ -10,5 +10,15 @@ package com.israel.cowboyfriend.global
    const val CURRENT_LONGTUDE_PREF = "currentLongtudePref"
    const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0
    const val MAIN_MENU_NUM_ITEM = 4
+   const val NONE_TYPE= -1
    const val CORPSE_TYPE= 0
    const val LAST_SEEN_AT_TYPE= 1
+   const val TYPE_COW = 2
+   const val ACTION_UPDATE_TYPE = 0
+   const val ACTION_SHOW_LARGE_TYPE = 1
+   const val ACTION_TYPE_KEY = "actionType"
+   const val ACTION_PICTURE_KEY = 1
+   const val ACTION_VIDEO_KEY = 2
+const val IMAGE_PATH_KEY = "imagePathKey"
+const val IMAGE_TIME_KEY = "imageTimeKey"
+

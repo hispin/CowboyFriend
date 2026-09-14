@@ -16,5 +16,6 @@ class CowDto (
     @SerialName("longitude") val longitude: Double?,
     @SerialName("location_updated_at") val location_updated_at: Long?,
     @SerialName("corpse") val corpse: Boolean?,
-    @SerialName("last_seen_at") val last_seen_at: Long?
-    )
+    @SerialName("last_seen_at") val last_seen_at: Long?,
+    @SerialName("cow_type") val cow_type: String?,
+    @SerialName("with_mom") val with_mom: Long?)

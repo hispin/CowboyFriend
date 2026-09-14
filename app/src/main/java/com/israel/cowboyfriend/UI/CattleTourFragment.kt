@@ -1,11 +1,13 @@
 package com.israel.cowboyfriend.UI
 
+import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,16 +17,22 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.adapter.MyCowAdapter
 import com.israel.cowboyfriend.classes.CowDetails
+import com.israel.cowboyfriend.classes.OnFragmentListener
+import com.israel.cowboyfriend.global.ACTION_PICTURE_KEY
+import com.israel.cowboyfriend.global.ACTION_SHOW_LARGE_TYPE
+import com.israel.cowboyfriend.global.ACTION_TYPE_KEY
+import com.israel.cowboyfriend.global.ACTION_UPDATE_TYPE
+import com.israel.cowboyfriend.global.IMAGE_PATH_KEY
+import com.israel.cowboyfriend.global.IMAGE_TIME_KEY
 import com.israel.cowboyfriend.interfaces.InterOnItemClickListener
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 
-class CattleTourFragment : Fragment() {
+class CattleTourFragment : Fragment() ,OnFragmentListener{
 
     private var rcShowCows: RecyclerView? =null
     private var myViewModelSupbase: MyViewModelSupbase? = null
     private var myCowsAdapter: MyCowAdapter?=null
     private var fbRefreshCows: FloatingActionButton?=null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,9 +61,9 @@ class CattleTourFragment : Fragment() {
      */
     private fun setObservers() {
         myViewModelSupbase?._cowsDetails?.observe(viewLifecycleOwner) {
-            if(it!=null && it.isNotEmpty()) {
-                showCowsDetails(it as ArrayList<CowDetails>?)
-            }
+            val cows =ArrayList<CowDetails>()
+            cows.addAll(it)
+            showCowsDetails(cows)
         }
     }
 
@@ -72,7 +80,7 @@ class CattleTourFragment : Fragment() {
     /**
      * get details of all cows
      */
-    private fun getCowDetails(){
+    fun getCowDetails(){
         myViewModelSupbase?.dbGetCowsDetails()
     }
 
@@ -113,12 +121,16 @@ class CattleTourFragment : Fragment() {
             myCowsAdapter=MyCowAdapter(cows, activity, object : InterOnItemClickListener {
 
 
-                override fun onItemClick(item: CowDetails, type: Int, position: Int) {
-                    lastPosition = position
-                    // delay to enable visible the progress bar
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        myViewModelSupbase?.dbUpdateCowDetails(item,type)
-                    }, 500)
+                override fun onItemClick(item: CowDetails, type: Int, position: Int,action:Int) {
+                    if(action== ACTION_UPDATE_TYPE) {
+                        lastPosition=position
+                        // delay to enable visible the progress bar
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            myViewModelSupbase?.dbUpdateCowDetails(item, type)
+                        }, 500)
+                    }else if(action == ACTION_SHOW_LARGE_TYPE){
+                        openLargePictureVideoByType(ACTION_PICTURE_KEY, item.image_url, item.last_seen_at, 0)
+                    }
                 }
             })
             rcShowCows?.setLayoutManager(LinearLayoutManager(getActivity()))
@@ -137,6 +149,51 @@ class CattleTourFragment : Fragment() {
                 myCowsAdapter?.notifyDataSetChanged()
             }
         }
+    }
+
+    //open fragment dialog to see a large picture or video
+    private fun openLargePictureVideoByType(
+        type: Int,
+        imgPath: String?,
+        timeInMillis: Long?,
+        requestCode: Int
+    ) {
+
+
+        if (imgPath == null) {
+            Toast.makeText(activity, resources.getString(R.string.no_photo), Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
+        val fr=LargePictureVideoDialogFragment(this)
+
+        //deliver selected camera to continue add data
+        //val cameraStr = convertToGson(camera)
+        val bdl = Bundle()
+        bdl.putInt(ACTION_TYPE_KEY, type)
+        bdl.putString(IMAGE_PATH_KEY, imgPath)
+        bdl.putString(IMAGE_TIME_KEY, timeInMillis.toString())
+        fr.arguments = bdl
+        fr.setTargetFragment(this, requestCode)
+        val fm = activity?.supportFragmentManager
+        fm?.let { fr.show(it, "LargePictureVideoDialogFragment") }
+    }
+
+    override fun updateLanguage() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSaveForShareVideo(cowDetails: CowDetails) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSaveForShareVideo(imgPath: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBack() {
+        TODO("Not yet implemented")
     }
 
 }

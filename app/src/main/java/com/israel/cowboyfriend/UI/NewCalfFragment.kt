@@ -20,10 +20,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -76,7 +80,10 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var tvLocationLatitude: TextView?=null
     private var tvLocationLongitude: TextView?=null
     private var btnSaveLocation: Button?=null
-
+    private var spNewCowType: Spinner?=null
+    private var cbWithMomNew: CheckBox?=null
+    private var cowTypeArray: Array<out String?>?=null
+    private var spMoms: Spinner? = null
     private val UTTERANCE_ID = "my_unique_utterance_id"
 
     /**
@@ -258,9 +265,40 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
         myViewModelSupbase = ViewModelProvider(requireActivity())[MyViewModelSupbase::class.java]
 
-        return view
+       cowTypeArray= context?.resources?.getStringArray(R.array.cow_type)
+
+       setObservers()
+
+       return view
     }
 
+
+    /**
+     * set observers
+     */
+    private fun setObservers() {
+        myViewModelSupbase?._cowsDetails?.observe(viewLifecycleOwner) {
+            if(activity==null) return@observe
+            val cows =ArrayList<CowDetails>()
+            cows.addAll(it)
+            val moms =ArrayList<String>()
+            val iterator=cows.iterator()
+            while (iterator.hasNext()) {
+                val item=iterator.next()
+                if(item.cowType.equals(cowTypeArray?.get(2))) {
+                    moms.add(item.number.toString())
+                }
+            }
+            val adapter =ArrayAdapter(
+                requireActivity(), android.R.layout.simple_spinner_item, moms
+            )
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //Attach the adapter to the spinner
+            spMoms?.adapter = adapter
+        }
+    }
 
 
     private fun initView(view: View?) {
@@ -285,6 +323,40 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             gotoMySingleLocation()
         }
 
+
+        cbWithMomNew = view?.findViewById(R.id.cbWithMomNew)
+        if(cbWithMomNew?.isChecked == false) {
+            etNumberOfMom?.isEnabled=false
+            ciNumberOfMom?.isEnabled=false
+        }
+        cbWithMomNew?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                etNumberOfMom?.isEnabled=true
+                ciNumberOfMom?.isEnabled=true
+            } else {
+                etNumberOfMom?.isEnabled=false
+                ciNumberOfMom?.isEnabled=false
+            }
+        }
+
+        spNewCowType = view?.findViewById(R.id.spNewCowType)
+        spNewCowType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Retrieve the selected item object
+                val selectedItem = parent?.getItemAtPosition(position)
+
+                if(cowTypeArray?.get(0)?.equals(selectedItem) == true){
+                    cbWithMomNew?.visibility=View.VISIBLE
+                }else{
+                    cbWithMomNew?.visibility=View.GONE
+                }
+              }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // This callback triggers when the selection disappears (rare in standard spinners)
+            }
+        }
+        spMoms= view?.findViewById(R.id.spMoms)
 
         tvDate?.text=getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy", requireActivity())
 
@@ -328,6 +400,15 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
                              val lat: Double?= tvLocationLatitude?.text.toString().toDoubleOrNull()
                              val long: Double?= tvLocationLongitude?.text.toString().toDoubleOrNull()
+                             val cowType = spNewCowType?.selectedItem.toString()
+
+                             var with_mom: Long? = null
+                             if(cowType.equals(cowTypeArray?.get(0))
+                                 && cbWithMomNew?.isChecked==true){
+                                 with_mom=Calendar.getInstance().timeInMillis
+                             }
+
+
 
                              var cow:CowDetails?=null
                              if(lat!=null && long!=null) {
@@ -341,7 +422,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                      lat,
                                      long,
                                      Calendar.getInstance().timeInMillis,
-                                     Calendar.getInstance().timeInMillis
+                                     Calendar.getInstance().timeInMillis,
+                                     cowType,
+                                     with_mom
                                  )
                              }else{
                                  cow=CowDetails(
@@ -354,7 +437,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                      null,
                                      null,
                                      null,
-                                     Calendar.getInstance().timeInMillis
+                                     Calendar.getInstance().timeInMillis,
+                                     cowType,
+                                     with_mom
                                  )
                              }
 

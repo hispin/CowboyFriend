@@ -2,11 +2,11 @@
 <resources>
     <string name="app_name">CowboyFriend</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="new_calf">עגל חדש</string>
+    <string name="new_cow">פרה חדש</string>
     <string name="cattle_tour">סיור בקר</string>
     <string name="settings">הגדרות</string>
-    <string name="number_calf">מספר עגל</string>
-    <string name="gender_calf">מין העגל</string>
+    <string name="number_cow">מספר פרה</string>
+    <string name="gender_cow">מין הפרה</string>
     <string name="number_of_mom">מספר האמא</string>
     <string name="take_picture">צלם תמונה</string>
     <string name="title_activity_login">LoginActivity</string>
@@ -18,9 +18,9 @@
     <string name="invalid_username">שם משתמש שגוי</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"ההתחברות נכשלה"</string>
-    <string name="title_calf_number">מספר העגל: %1$s</string>
+    <string name="title_cow_number">מספר הפרה: %1$s</string>
     <string name="title_mom_number">מספר האמא: %1$s</string>
-    <string name="title_calf_gender">מין העגל: %1$s</string>
+    <string name="title_cow_gender">מין הפרה: %1$s</string>
     <string name="title_comment">הערה: %1$s</string>
     <string name="title_last_date_location">תאריך מיקום אחרון: %1$s</string>
     <string name="map_title">מפה</string>
@@ -44,4 +44,21 @@
     <string name="success_login">ההתחברות הצליחה</string>
     <string name="load_my_location">טוען את המיקום שלי …</string>
     <string name="connect_to_account">התחבר לחשבון שלך</string>
+    <string name="cow_type">סוג פרה</string>
+    <string name="with_mom">עם אימו</string>
+    <string name="error">שגיאה</string>
+    <string name="save_file_success">שמירת הקובץ הצליחה</string>
+    <string name="save_file_failed">שמירת הקובץ נכשלה</string>
+    <string name="no_photo">אין תמונה</string>
+    <string name="share_title">שליחת וידאו מחבר של הבוקר</string>
+    <string name="see_mother">רואים את אימו</string>
+    <string name="marked_tag">מסומן בתג אוזן</string>
+
+
+    <string-array name="cow_type">
+        <item>עגל</item>
+        <item>מבכירה</item>
+        <item>פרה</item>
+        <item>שור</item>
+    </string-array>
 </resources>

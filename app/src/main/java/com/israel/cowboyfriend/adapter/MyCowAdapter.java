@@ -1,18 +1,26 @@
 package com.israel.cowboyfriend.adapter;
 
+import static com.israel.cowboyfriend.global.ConstsKt.ACTION_SHOW_LARGE_TYPE;
+import static com.israel.cowboyfriend.global.ConstsKt.ACTION_UPDATE_TYPE;
 import static com.israel.cowboyfriend.global.ConstsKt.CORPSE_TYPE;
 import static com.israel.cowboyfriend.global.ConstsKt.LAST_SEEN_AT_TYPE;
+import static com.israel.cowboyfriend.global.ConstsKt.NONE_TYPE;
+import static com.israel.cowboyfriend.global.ConstsKt.TYPE_COW;
 import static com.israel.cowboyfriend.global.SysMethodDateKt.getStringFromCalendar;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -25,6 +33,7 @@ import com.israel.cowboyfriend.interfaces.InterOnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 
 public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder> {
@@ -86,11 +95,14 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         TextView tvComment;
         Context context;
         CheckBox cbCorpse;
-        Button btnSave;
+        ImageView btnSave;
         TextView tvLastDateLocation;
         Button btnSaveLastSeen;
         TextView tvLastSeen;
         LinearLayout llContainer;
+        Spinner spCowType;
+        ImageView ivSaveCowType;
+        CheckBox cbWithMom;
 
         public MyViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -105,25 +117,36 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             btnSaveLastSeen = itemView.findViewById(R.id.btnSaveLastSeen);
             tvLastSeen = itemView.findViewById(R.id.tvLastSeen);
             llContainer = itemView.findViewById(R.id.llContainer);
+            spCowType = itemView.findViewById(R.id.spCowType);
+            ivSaveCowType=itemView.findViewById(R.id.ivSaveCowType);
+            cbWithMom=itemView.findViewById(R.id.cbWithMom);
             this.context = context;
         }
 
         public void bind(final CowDetails item, final InterOnItemClickListener listener, int position) {
-            tvCalfName.setText(String.format(context.getString(R.string.title_calf_number), item.getNumber()+""));
+            tvCalfName.setText(String.format(context.getString(R.string.title_cow_number), item.getNumber()+""));
             tvMonNum.setText(String.format(context.getString(R.string.title_mom_number), item.getNumber_mom()+""));
-            tvGender.setText(String.format(context.getString(R.string.title_calf_gender), item.getGender()));
+            tvGender.setText(String.format(context.getString(R.string.title_cow_gender), item.getGender()));
             if(item.getComment()!=null) {
                 tvComment.setText(String.format(context.getString(R.string.title_comment), item.getComment()));
             }else {
                 tvComment.setText(String.format(context.getString(R.string.title_comment), context.getString(R.string.no_comment)));
             }
+
+            ivCowImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(item,NONE_TYPE,position,ACTION_SHOW_LARGE_TYPE);
+                }
+            });
+
             showImage(item, ivCowImg);
             cbCorpse.setChecked(item.isCorpse());
             btnSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     item.setCorpse(cbCorpse.isChecked());
-                    listener.onItemClick(item,CORPSE_TYPE,position);
+                    listener.onItemClick(item,CORPSE_TYPE,position,ACTION_UPDATE_TYPE);
                 }
             });
 
@@ -131,7 +154,10 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
                 @Override
                 public void onClick(View view) {
                     item.setLast_seen_at(Calendar.getInstance().getTimeInMillis());
-                    listener.onItemClick(item,LAST_SEEN_AT_TYPE,position);
+                    if(cbWithMom.isChecked()) {
+                        item.setWith_mom(Calendar.getInstance().getTimeInMillis());
+                    }
+                    listener.onItemClick(item,LAST_SEEN_AT_TYPE,position,ACTION_UPDATE_TYPE);
                 }
             });
 
@@ -155,10 +181,69 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
                             context,
                             R.color.green1
                     ));
+                }else{
+                    llContainer.setBackgroundColor(ContextCompat.getColor(
+                            context,
+                            R.color.grey6
+                    ));
                 }
             }else{
                 tvLastSeen.setText(context.getString(R.string.last_not_seen));
+                llContainer.setBackgroundColor(ContextCompat.getColor(
+                        context,
+                        R.color.grey6
+                ));
             }
+
+            String cowType= item.getCowType();
+
+            if(cowType!=null){
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) spCowType.getAdapter();
+                int pos=adapter.getPosition(cowType);
+                spCowType.setSelection(pos);
+                //if the cow is calf check if the mom has been showed recently
+                cbWithMom.setChecked(false);
+                if(cowType!=null && cowType.equals(adapter.getItem(0))){
+                    cbWithMom.setVisibility(View.VISIBLE);
+                    if(item.getWith_mom()!=null
+                            && Objects.equals(item.getLast_seen_at(), item.getWith_mom())){
+                        cbWithMom.setChecked(true);
+                    }else{
+                        cbWithMom.setChecked(false);
+                    }
+                }else{
+                    cbWithMom.setVisibility(View.GONE);
+                }
+            }
+
+            spCowType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+                    String selectedItem = parent.getItemAtPosition(position).toString();
+                    ArrayAdapter<String> adapter = (ArrayAdapter<String>) spCowType.getAdapter();
+                    if(selectedItem.equals(adapter.getItem(0))){
+                        cbWithMom.setVisibility(View.VISIBLE);
+                    }else{
+                        cbWithMom.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+
+
+            ivSaveCowType.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    item.setCowType(spCowType.getSelectedItem().toString());
+                    listener.onItemClick(item,TYPE_COW,position,ACTION_UPDATE_TYPE);
+                }
+            });
+
 
 //            cbCorpse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //                @Override
@@ -196,4 +281,6 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         }
 
     }
+
+
 }

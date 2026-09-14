@@ -37,7 +37,9 @@
 <!--            android:label="@string/title_activity_login" />-->
         <activity
             android:name=".MyScreensActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="orientation"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
