@@ -51,6 +51,10 @@
     <string name="save_file_success">File save was successful</string>
     <string name="save_file_failed">Failed to save file</string>
     <string name="no_photo">no photo</string>
+    <string name="mom_number_not_found">This mom number does not exist in the list</string>
+    <string name="select_mom_placeholder">Select</string>
+    <string name="number_of_calvings">Number of calvings</string>
+    <string name="gender_not_found">This value does not exist in the list</string>
     <string name="share_title">Send video from Cow Friend</string>
     <string name="see_mother">You can see his mother</string>
     <string name="marked_tag">marked with an ear tag</string>
@@ -61,5 +65,11 @@
         <item>first-cow</item>
         <item>cow</item>
         <item>bull</item>
+    </string-array>
+
+    <string-array name="gender_options">
+        <item>Select</item>
+        <item>Male</item>
+        <item>Female</item>
     </string-array>
 </resources>

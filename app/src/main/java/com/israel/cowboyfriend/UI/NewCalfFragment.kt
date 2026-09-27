@@ -65,9 +65,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var hasToBeNumber:Boolean = false
     private var etNumberOfCalf:EditText? = null
     private var ciNumberOfCalf:CircleImageView?=null
-    private var etGenderOfCalf:EditText? = null
+    private var spGenderCalf:Spinner? = null
     private var ciGenderOfCalf:CircleImageView?=null
-    private var etNumberOfMom:EditText? = null
+    //private var etNumberOfMom:EditText? = null
     private var ciNumberOfMom:CircleImageView?=null
     private var ciTakePicture:CircleImageView?=null
     private var ivTakePicture:ImageView?=null
@@ -82,9 +82,18 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var btnSaveLocation: Button?=null
     private var spNewCowType: Spinner?=null
     private var cbWithMomNew: CheckBox?=null
+    private var cbEarTag: CheckBox?=null
+    private var tvNumberOfMom: TextView?=null
+    private var tvNumberOfCalvings: TextView?=null
+    private var tvComments: TextView?=null
+    private var etNumberOfCalvings: EditText?=null
+    private var ciNumberOfCalvings: CircleImageView?=null
     private var cowTypeArray: Array<out String?>?=null
     private var spMoms: Spinner? = null
+    private var isMomNumberField = false
+    private var isGenderField = false
     private val UTTERANCE_ID = "my_unique_utterance_id"
+    private val UTTERANCE_ID_MESSAGE = "my_message_utterance_id"
 
     /**
      *  callback function that is called when the Text-to-Speech (TTS) engine has finished its initialization process
@@ -102,8 +111,11 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
                     override fun onDone(utteranceId: String?) {
                         Log.d("TTS", "Speech finished: $utteranceId")
-                        openDialogToEnterCalfNumber()
-                        // Perform actions after speech is done (e.g., update UI on the main thread)
+                        //only reopen the mic to listen for an answer after speaking a prompt
+                        //that expects one - not after a plain spoken message (e.g. an error)
+                        if (utteranceId == UTTERANCE_ID) {
+                            openDialogToEnterCalfNumber()
+                        }
                     }
 
                     override fun onError(utteranceId: String?) {
@@ -161,13 +173,27 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
                     if(hasToBeNumber) {
                         val number=res[0].toString().toIntOrNull()
-                        if(number!=null){
+
+                        if (isMomNumberField) {
+                            //mom number is picked from the spMoms spinner, not typed freely
+                            val recognizedDigits = number?.toString() ?: hebrewWordToDigit(res[0].toString())
+                            if (recognizedDigits != null) {
+                                selectInSpinnerOrSpeakError(spMoms, recognizedDigits, R.string.mom_number_not_found)
+                            } else {
+                                speakMessage(resources.getString(R.string.mom_number_not_found))
+                            }
+                        } else if(number!=null){
                             etCurrent?.setText(number.toString())
                         }else{
                             //convert text word to number digits(the problem is just in 1-9)
                             covertTextToTextDigits(res[0].toString(),etCurrent)}
                     }else {
-                        etCurrent?.setText(res[0].toString())
+                        if (isGenderField) {
+                            //gender is picked from the spGenderCalf spinner, not typed freely
+                            selectInSpinnerOrSpeakError(spGenderCalf, res[0].toString(), R.string.gender_not_found)
+                        } else {
+                            etCurrent?.setText(res[0].toString())
+                        }
                     }
                 }
             }
@@ -181,42 +207,65 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     * convert text word to number digits(the problem is just in 1-9)
      */
     private fun covertTextToTextDigits(text: String, etCurrent: EditText?) {
-        when(text){
-            "אחד"-> {
-                etCurrent?.setText("1")
-            }
-            "שתיים"-> {
-                etCurrent?.setText("2")
-            }
-            "שניים"-> {
-                etCurrent?.setText("2")
-            }
-            "שלוש"-> {
-                etCurrent?.setText("3")
-            }
-            "ארבע"-> {
-                etCurrent?.setText("4")
-            }
-            "חמש"-> {
-                etCurrent?.setText("5")
-            }
-            "שש"-> {
-                etCurrent?.setText("6")
-            }
-            "שבע"-> {
-                etCurrent?.setText("7")
-            }
-            "שמונה"-> {
-                etCurrent?.setText("8")
-            }
-            "תשע"-> {
-                etCurrent?.setText("9")
-            }
-            else->
-                etCurrent?.error="הערך השדה זה צריך להיות מספרי"
+        val digit = hebrewWordToDigit(text)
+        if (digit != null) {
+            etCurrent?.setText(digit)
+        } else {
+            etCurrent?.error="הערך השדה זה צריך להיות מספרי"
+        }
+    }
 
+    /*
+    * map a Hebrew number word (1-9) to its digit string, or null if not recognized
+     */
+    private fun hebrewWordToDigit(text: String): String? {
+        return when(text){
+            "אחד"-> "1"
+            "שתיים"-> "2"
+            "שניים"-> "2"
+            "שלוש"-> "3"
+            "ארבע"-> "4"
+            "חמש"-> "5"
+            "שש"-> "6"
+            "שבע"-> "7"
+            "שמונה"-> "8"
+            "תשע"-> "9"
+            else-> null
+        }
+    }
+
+    /*
+    * search the recognized value in the given spinner (spMoms or spGenderCalf): if it exists,
+    * select it there; otherwise speak (using notFoundMessageResId) that it's not in the list
+     */
+    private fun selectInSpinnerOrSpeakError(spinner: Spinner?, recognizedValue: String, notFoundMessageResId: Int) {
+        val adapter = spinner?.adapter
+        var foundPosition = -1
+        if (adapter != null) {
+            for (i in 0 until adapter.count) {
+                if (adapter.getItem(i)?.toString() == recognizedValue) {
+                    foundPosition = i
+                    break
+                }
+            }
         }
 
+        if (foundPosition >= 0) {
+            spinner?.setSelection(foundPosition)
+        } else {
+            speakMessage(resources.getString(notFoundMessageResId))
+        }
+    }
+
+    /*
+    * speak a plain message, unlike speakNow this does not reopen the mic to listen
+    * for an answer afterward
+     */
+    private fun speakMessage(text: String) {
+        val params = Bundle()
+        params.putString(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID_MESSAGE)
+        textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, params, UTTERANCE_ID_MESSAGE)
     }
 
 
@@ -282,6 +331,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             val cows =ArrayList<CowDetails>()
             cows.addAll(it)
             val moms =ArrayList<String>()
+            //placeholder shown by default instead of auto-selecting the first mom number
+            moms.add(resources.getString(R.string.select_mom_placeholder))
             val iterator=cows.iterator()
             while (iterator.hasNext()) {
                 val item=iterator.next()
@@ -289,11 +340,13 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                     moms.add(item.number.toString())
                 }
             }
+            //custom item layout: bold black text, larger font, so the selected mom
+            //number stands out in the spinner
             val adapter =ArrayAdapter(
-                requireActivity(), android.R.layout.simple_spinner_item, moms
+                requireActivity(), R.layout.item_spinner_mom, moms
             )
 
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            adapter.setDropDownViewResource(R.layout.item_spinner_mom);
 
         //Attach the adapter to the spinner
             spMoms?.adapter = adapter
@@ -301,12 +354,52 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     }
 
 
+    /**
+     * show/hide fields according to the selected cow type:
+     * calf -> mom fields, cow / first-cow -> number of calvings, bull -> neither
+     */
+    private fun updateFieldsByCowType(selectedType: Any?) {
+        val isCalf = cowTypeArray?.get(0)?.equals(selectedType) == true
+        val hasCalvings = cowTypeArray?.get(1)?.equals(selectedType) == true
+                || cowTypeArray?.get(2)?.equals(selectedType) == true
+
+        val momVisibility = if (isCalf) View.VISIBLE else View.GONE
+        tvNumberOfMom?.visibility = momVisibility
+        spMoms?.visibility = momVisibility
+        ciNumberOfMom?.visibility = momVisibility
+        cbWithMomNew?.visibility = momVisibility
+
+        //the ear tag checkbox is for a calf only - clear it when hidden so a stale
+        //"checked" value is never saved for another cow type
+        cbEarTag?.visibility = momVisibility
+        if (!isCalf) {
+            cbEarTag?.isChecked = false
+        }
+
+        val calvingsVisibility = if (hasCalvings) View.VISIBLE else View.GONE
+        tvNumberOfCalvings?.visibility = calvingsVisibility
+        etNumberOfCalvings?.visibility = calvingsVisibility
+        ciNumberOfCalvings?.visibility = calvingsVisibility
+
+        //the vertical chain only spaces the labels, so leave room for the calvings field
+        //above the comments label when it is shown
+        tvComments?.let {
+            val params = it.layoutParams as ViewGroup.MarginLayoutParams
+            params.topMargin = if (hasCalvings) (64 * resources.displayMetrics.density).toInt() else 0
+            it.layoutParams = params
+        }
+    }
+
     private fun initView(view: View?) {
         ciNumberOfCalf=view?.findViewById(R.id.ciNumberOfCalf)
         etNumberOfCalf =view?.findViewById(R.id.etNumberOfCalf)
-        etGenderOfCalf=view?.findViewById(R.id.etGenderOfCalf)
+        spGenderCalf=view?.findViewById(R.id.spGenderCalf)
+        //custom item layout: bold black text, larger font - same as spMoms
+        val genderOptions = resources.getStringArray(R.array.gender_options).toList()
+        val genderAdapter = ArrayAdapter(requireActivity(), R.layout.item_spinner_mom, genderOptions)
+        genderAdapter.setDropDownViewResource(R.layout.item_spinner_mom)
+        spGenderCalf?.adapter = genderAdapter
         ciGenderOfCalf =view?.findViewById(R.id.ciGenderOfCalf)
-        etNumberOfMom=view?.findViewById(R.id.etNumberOfMom)
         ciNumberOfMom =view?.findViewById(R.id.ciNumberOfMom)
         ciTakePicture =view?.findViewById(R.id.ciTakePicture)
         ivTakePicture =view?.findViewById(R.id.ivTakePicture)
@@ -325,16 +418,19 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
 
         cbWithMomNew = view?.findViewById(R.id.cbWithMomNew)
+        cbEarTag = view?.findViewById(R.id.cbEarTag)
+        tvNumberOfMom = view?.findViewById(R.id.tvNumberOfMom)
+        tvNumberOfCalvings = view?.findViewById(R.id.tvNumberOfCalvings)
+        tvComments = view?.findViewById(R.id.tvComments)
+        etNumberOfCalvings = view?.findViewById(R.id.etNumberOfCalvings)
+        ciNumberOfCalvings = view?.findViewById(R.id.ciNumberOfCalvings)
         if(cbWithMomNew?.isChecked == false) {
-            etNumberOfMom?.isEnabled=false
             ciNumberOfMom?.isEnabled=false
         }
         cbWithMomNew?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                etNumberOfMom?.isEnabled=true
                 ciNumberOfMom?.isEnabled=true
             } else {
-                etNumberOfMom?.isEnabled=false
                 ciNumberOfMom?.isEnabled=false
             }
         }
@@ -344,12 +440,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Retrieve the selected item object
                 val selectedItem = parent?.getItemAtPosition(position)
-
-                if(cowTypeArray?.get(0)?.equals(selectedItem) == true){
-                    cbWithMomNew?.visibility=View.VISIBLE
-                }else{
-                    cbWithMomNew?.visibility=View.GONE
-                }
+                updateFieldsByCowType(selectedItem)
               }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -361,15 +452,28 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         tvDate?.text=getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy", requireActivity())
 
         ciNumberOfCalf?.setOnClickListener {
+            isMomNumberField=false
+            isGenderField=false
             speakNow("בחר מספר של העגל",etNumberOfCalf,true)
         }
         ciGenderOfCalf?.setOnClickListener {
-            speakNow("בחר את המין של העגל",etGenderOfCalf,false)
+            isMomNumberField=false
+            isGenderField=true
+            speakNow("בחר את המין של העגל",false)
         }
         ciNumberOfMom?.setOnClickListener {
-            speakNow("בחר מספר של האמא",etNumberOfMom,true)
+            isMomNumberField=true
+            isGenderField=false
+            speakNow("בחר מספר של האמא",true)
+        }
+        ciNumberOfCalvings?.setOnClickListener {
+            isMomNumberField=false
+            isGenderField=false
+            speakNow("בחר מספר של ההמלטות",etNumberOfCalvings,true)
         }
         ciComments?.setOnClickListener {
+            isMomNumberField=false
+            isGenderField=false
             speakNow("הערה",etComments,false)
         }
 
@@ -414,8 +518,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                              if(lat!=null && long!=null) {
                                  cow=CowDetails(
                                      number=etNumberOfCalf?.text.toString().toIntOrNull(),
-                                     number_mom=etNumberOfMom?.text.toString().toIntOrNull(),
-                                     gender=etGenderOfCalf?.text.toString(),
+                                     number_mom=spMoms?.selectedItem.toString().toIntOrNull(),
+                                     gender=spGenderCalf?.selectedItem.toString(),
                                      image_url=myUrl,
                                      user_id=supabase.auth.currentSessionOrNull()?.user?.email,
                                      comment=etComments?.text.toString(),
@@ -424,13 +528,14 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                      Calendar.getInstance().timeInMillis,
                                      Calendar.getInstance().timeInMillis,
                                      cowType,
-                                     with_mom
+                                     with_mom,
+                                     cbEarTag?.isChecked == true
                                  )
                              }else{
                                  cow=CowDetails(
                                      number=etNumberOfCalf?.text.toString().toIntOrNull(),
-                                     number_mom=etNumberOfMom?.text.toString().toIntOrNull(),
-                                     gender=etGenderOfCalf?.text.toString(),
+                                     number_mom=spMoms?.selectedItem.toString().toIntOrNull(),
+                                     gender=spGenderCalf?.selectedItem.toString(),
                                      image_url=myUrl,
                                      user_id=supabase.auth.currentSessionOrNull()?.user?.email,
                                      comment=etComments?.text.toString(),
@@ -439,8 +544,19 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                      null,
                                      Calendar.getInstance().timeInMillis,
                                      cowType,
-                                     with_mom
+                                     with_mom,
+                                     cbEarTag?.isChecked == true
                                  )
+                             }
+
+                             cow.isMarkedTag = cbEarTag?.isChecked == true
+
+                             //mom number only for a calf, number of calvings only for a cow / first-cow
+                             if(!cowType.equals(cowTypeArray?.get(0))){
+                                 cow.number_mom=null
+                             }
+                             if(cowType.equals(cowTypeArray?.get(1)) || cowType.equals(cowTypeArray?.get(2))){
+                                 cow.num_of_calvings=etNumberOfCalvings?.text.toString().toIntOrNull()
                              }
 
                              myViewModelSupbase?.dbInsertCowDetails(cow,object : CowRepositoryCB {
@@ -528,6 +644,16 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         this.myTextOrder = text
         this.hasToBeNumber = hasToBeNumber
         this.etCurrent=etCurrent
+        val params = Bundle()
+        params.putString(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID)
+        textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, params, UTTERANCE_ID)
+    }
+
+    //convert text to speak
+    fun speakNow(text: String,hasToBeNumber:Boolean) {
+        this.myTextOrder = text
+        this.hasToBeNumber = hasToBeNumber
         val params = Bundle()
         params.putString(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID)

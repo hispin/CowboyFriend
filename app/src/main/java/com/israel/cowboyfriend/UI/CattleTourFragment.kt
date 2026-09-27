@@ -24,6 +24,7 @@ import com.israel.cowboyfriend.global.ACTION_TYPE_KEY
 import com.israel.cowboyfriend.global.ACTION_UPDATE_TYPE
 import com.israel.cowboyfriend.global.IMAGE_PATH_KEY
 import com.israel.cowboyfriend.global.IMAGE_TIME_KEY
+import com.israel.cowboyfriend.global.shareVideo
 import com.israel.cowboyfriend.interfaces.InterOnItemClickListener
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
 
@@ -33,6 +34,10 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
     private var myViewModelSupbase: MyViewModelSupbase? = null
     private var myCowsAdapter: MyCowAdapter?=null
     private var fbRefreshCows: FloatingActionButton?=null
+
+    //keep a reference to the currently open large picture/video dialog so we can
+    //stop its progress bar once a callback (e.g. share) it triggered completes
+    private var largePictureVideoDialog: LargePictureVideoDialogFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,6 +172,7 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
         }
 
         val fr=LargePictureVideoDialogFragment(this)
+        largePictureVideoDialog = fr
 
         //deliver selected camera to continue add data
         //val cameraStr = convertToGson(camera)
@@ -180,20 +186,25 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
         fm?.let { fr.show(it, "LargePictureVideoDialogFragment") }
     }
 
+    //placeholder for future multi-language support (values-iw / default strings already exist,
+    //but no language switcher is wired up yet) - nothing to do until that feature is built
     override fun updateLanguage() {
-        TODO("Not yet implemented")
     }
 
+    //not currently triggered from anywhere in the UI; kept as a safe no-op to satisfy the
+    //shared OnFragmentListener contract without crashing if it's ever wired up
     override fun onSaveForShareVideo(cowDetails: CowDetails) {
-        TODO("Not yet implemented")
     }
 
+    //called by LargePictureVideoDialogFragment when the user taps "share" on a video
     override fun onSaveForShareVideo(imgPath: String) {
-        TODO("Not yet implemented")
+        context?.let { shareVideo(imgPath, it) }
+        largePictureVideoDialog?.stopProgressBar()
     }
 
+    //not currently triggered from anywhere in the UI (the dialog's close button dismisses
+    //itself directly); kept as a safe no-op to satisfy the shared OnFragmentListener contract
     override fun onBack() {
-        TODO("Not yet implemented")
     }
 
 }

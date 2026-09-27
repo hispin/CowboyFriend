@@ -1,0 +1,202 @@
+kotlin version: 2.2.10
+error message: java.lang.RuntimeException: Exception while generating code for:
+CONSTRUCTOR visibility:public returnType:com.israel.cowboyfriend.UI.NewCalfFragment [primary]
+  BLOCK_BODY
+    DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in androidx.fragment.app.Fragment'
+    BLOCK type=kotlin.Unit origin=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:uri type:android.net.Uri? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:textToSpeech type:android.speech.tts.TextToSpeech? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:etCurrent type:android.widget.EditText? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:hasToBeNumber type:kotlin.Boolean visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Boolean type=kotlin.Boolean value=false
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:etNumberOfCalf type:android.widget.EditText? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:ciNumberOfCalf type:de.hdodenhof.circleimageview.CircleImageView? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:etGenderOfCalf type:android.widget.EditText? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:ciGenderOfCalf type:de.hdodenhof.circleimageview.CircleImageView? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:etNumberOfMom type:android.widget.EditText? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:ciNumberOfMom type:de.hdodenhof.circleimageview.CircleImageView? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:ciTakePicture type:de.hdodenhof.circleimageview.CircleImageView? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:ivTakePicture type:android.widget.ImageView? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:tvDate type:android.widget.TextView? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:addCowViewModel type:com.israel.cowboyfriend.viewmodel.AddCowViewModel visibility:private [final]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: TYPE_OP type=com.israel.cowboyfriend.viewmodel.AddCowViewModel origin=IMPLICIT_CAST typeOperand=com.israel.cowboyfriend.viewmodel.AddCowViewModel
+          CALL 'public final fun hiltViewModel$default <VM> (viewModelStoreOwner: androidx.lifecycle.ViewModelStoreOwner?, key: kotlin.String?, $mask0: kotlin.Int, $handler: kotlin.Any?): VM of androidx.hilt.navigation.compose.HiltViewModelKt.hiltViewModel$default [inline] declared in androidx.hilt.navigation.compose.HiltViewModelKt' type=VM of androidx.hilt.navigation.compose.HiltViewModelKt.hiltViewModel$default origin=DEFAULT_DISPATCH_CALL
+            TYPE_ARG VM: com.israel.cowboyfriend.viewmodel.AddCowViewModel
+            ARG viewModelStoreOwner: COMPOSITE type=androidx.lifecycle.ViewModelStoreOwner? origin=DEFAULT_VALUE
+              CONST Null type=androidx.lifecycle.ViewModelStoreOwner? value=null
+            ARG key: COMPOSITE type=kotlin.String? origin=DEFAULT_VALUE
+              CONST Null type=kotlin.String? value=null
+            ARG $mask0: CONST Int type=kotlin.Int value=3
+            ARG $handler: CONST Null type=kotlin.Any? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:ciSave type:de.hdodenhof.circleimageview.CircleImageView? visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST Null type=kotlin.Nothing? value=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:UTTERANCE_ID type:kotlin.String visibility:private [final]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: CONST String type=kotlin.String value="my_unique_utterance_id"
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:startCamera type:androidx.activity.result.ActivityResultLauncher<android.content.Intent> visibility:private' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: BLOCK type=androidx.activity.result.ActivityResultLauncher<@[FlexibleNullability] android.content.Intent?> origin=null
+          VAR IR_TEMPORARY_VARIABLE name:tmp0 type:kotlin.Any? [val]
+            CALL 'public final fun registerForActivityResult <I, O> (p0: @[EnhancedNullability] androidx.activity.result.contract.ActivityResultContract<@[EnhancedNullability] I of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult, @[EnhancedNullability] O of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult>, p1: @[EnhancedNullability] androidx.activity.result.ActivityResultCallback<@[EnhancedNullability] O of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult>): @[EnhancedNullability] androidx.activity.result.ActivityResultLauncher<@[FlexibleNullability] I of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult?> [fake_override] declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=@[EnhancedNullability] androidx.activity.result.ActivityResultLauncher<@[FlexibleNullability] android.content.Intent?> origin=null
+              TYPE_ARG I: @[FlexibleNullability] android.content.Intent?
+              TYPE_ARG O: @[FlexibleNullability] androidx.activity.result.ActivityResult?
+              ARG <this>: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=IMPLICIT_ARGUMENT
+              ARG p0: CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult' type=androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult origin=null
+              ARG p1: BLOCK type=com.israel.cowboyfriend.UI.NewCalfFragment.<no name provided> origin=OBJECT_LITERAL
+                COMPOSITE type=kotlin.Unit origin=null
+                BLOCK type=com.israel.cowboyfriend.UI.NewCalfFragment.<no name provided> origin=null
+                  CONSTRUCTOR_CALL 'public/*package*/ constructor <init> (this$0: com.israel.cowboyfriend.UI.NewCalfFragment) [primary] declared in com.israel.cowboyfriend.UI.NewCalfFragment.<no name provided>' type=com.israel.cowboyfriend.UI.NewCalfFragment.<no name provided> origin=OBJECT_LITERAL
+                    ARG this$0: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+          CALL 'public final fun checkNotNullExpressionValue (value: kotlin.Any?, expression: kotlin.String): kotlin.Unit declared in kotlin.jvm.internal.Intrinsics' type=kotlin.Unit origin=null
+            ARG value: GET_VAR 'val tmp0: kotlin.Any? [val] declared in com.israel.cowboyfriend.UI.NewCalfFragment.<init>' type=kotlin.Any? origin=null
+            ARG expression: CONST String type=kotlin.String value="registerForActivityResult(...)"
+          GET_VAR 'val tmp0: kotlin.Any? [val] declared in com.israel.cowboyfriend.UI.NewCalfFragment.<init>' type=kotlin.Any? origin=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:resultSpeakLauncher type:androidx.activity.result.ActivityResultLauncher<@[FlexibleNullability] android.content.Intent?> visibility:private [final]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        receiver: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+        value: BLOCK type=androidx.activity.result.ActivityResultLauncher<@[FlexibleNullability] android.content.Intent?> origin=null
+          VAR IR_TEMPORARY_VARIABLE name:tmp1 type:kotlin.Any? [val]
+            CALL 'public final fun registerForActivityResult <I, O> (p0: @[EnhancedNullability] androidx.activity.result.contract.ActivityResultContract<@[EnhancedNullability] I of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult, @[EnhancedNullability] O of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult>, p1: @[EnhancedNullability] androidx.activity.result.ActivityResultCallback<@[EnhancedNullability] O of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult>): @[EnhancedNullability] androidx.activity.result.ActivityResultLauncher<@[FlexibleNullability] I of com.israel.cowboyfriend.UI.NewCalfFragment.registerForActivityResult?> [fake_override] declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=@[EnhancedNullability] androidx.activity.result.ActivityResultLauncher<@[FlexibleNullability] android.content.Intent?> origin=null
+              TYPE_ARG I: android.content.Intent
+              TYPE_ARG O: androidx.activity.result.ActivityResult
+              ARG <this>: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=IMPLICIT_ARGUMENT
+              ARG p0: CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult' type=androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult origin=null
+              ARG p1: BLOCK type=androidx.activity.result.ActivityResultCallback<@[EnhancedNullability] androidx.activity.result.ActivityResult> origin=LAMBDA
+                COMPOSITE type=kotlin.Unit origin=null
+                CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=androidx.activity.result.ActivityResultCallback<@[EnhancedNullability] androidx.activity.result.ActivityResult> origin=null
+                  TYPE_ARG T: androidx.activity.result.ActivityResultCallback<@[EnhancedNullability] androidx.activity.result.ActivityResult>
+                  ARG dynamicCall: CALL 'public final fun onActivityResult (p0: com.israel.cowboyfriend.UI.NewCalfFragment): androidx.activity.result.ActivityResultCallback<@[EnhancedNullability] androidx.activity.result.ActivityResult> declared in kotlin.jvm.internal.invokeDynamic' type=androidx.activity.result.ActivityResultCallback<@[EnhancedNullability] androidx.activity.result.ActivityResult> origin=null
+                    ARG p0: GET_VAR '<this>: com.israel.cowboyfriend.UI.NewCalfFragment declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=com.israel.cowboyfriend.UI.NewCalfFragment origin=null
+                  ARG bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    ARG tag: CONST Int type=kotlin.Int value=6
+                    ARG owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+                    ARG name: CONST String type=kotlin.String value="metafactory"
+                    ARG descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+                    ARG isInterface: CONST Boolean type=kotlin.Boolean value=false
+                  ARG bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+                    CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                      ARG method: RAW_FUNCTION_REFERENCE 'public abstract fun onActivityResult (result: O of androidx.activity.result.ActivityResultCallback): kotlin.Unit declared in androidx.activity.result.ActivityResultCallback' type=kotlin.Any
+                    RAW_FUNCTION_REFERENCE 'private final fun resultSpeakLauncher$lambda$0 (this$0: com.israel.cowboyfriend.UI.NewCalfFragment, result: @[EnhancedNullability] androidx.activity.result.ActivityResult): kotlin.Unit declared in com.israel.cowboyfriend.UI.NewCalfFragment' type=kotlin.Any
+                    CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                      ARG method: RAW_FUNCTION_REFERENCE 'public abstract fun onActivityResult (result: @[EnhancedNullability] androidx.activity.result.ActivityResult): kotlin.Unit [fake_override] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+          CALL 'public final fun checkNotNullExpressionValue (value: kotlin.Any?, expression: kotlin.String): kotlin.Unit declared in kotlin.jvm.internal.Intrinsics' type=kotlin.Unit origin=null
+            ARG value: GET_VAR 'val tmp1: kotlin.Any? [val] declared in com.israel.cowboyfriend.UI.NewCalfFragment.<init>' type=kotlin.Any? origin=null
+            ARG expression: CONST String type=kotlin.String value="registerForActivityResult(...)"
+          GET_VAR 'val tmp1: kotlin.Any? [val] declared in com.israel.cowboyfriend.UI.NewCalfFragment.<init>' type=kotlin.Any? origin=null
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:50)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate$default(FunctionCodegen.kt:43)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethodNode(ClassCodegen.kt:422)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethod(ClassCodegen.kt:439)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generate(ClassCodegen.kt:164)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.generateFile(JvmIrCodegenFactory.kt:419)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.invokeCodegen(JvmIrCodegenFactory.kt:388)
+	at org.jetbrains.kotlin.cli.jvm.compiler.KotlinToJVMBytecodeCompiler.runCodegen$cli(KotlinToJVMBytecodeCompiler.kt:431)
+	at org.jetbrains.kotlin.cli.pipeline.jvm.JvmBackendPipelinePhase.executePhase(JvmBackendPipelinePhase.kt:95)
+	at org.jetbrains.kotlin.cli.pipeline.jvm.JvmBackendPipelinePhase.executePhase(JvmBackendPipelinePhase.kt:36)
+	at org.jetbrains.kotlin.cli.pipeline.jvm.JvmBackendPipelinePhase.executePhase(JvmBackendPipelinePhase.kt:29)
+	at org.jetbrains.kotlin.cli.pipeline.PipelinePhase.phaseBody(PipelinePhase.kt:68)
+	at org.jetbrains.kotlin.cli.pipeline.PipelinePhase.phaseBody(PipelinePhase.kt:58)
+	at org.jetbrains.kotlin.config.phaser.NamedCompilerPhase.invoke(CompilerPhase.kt:102)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:22)
+	at org.jetbrains.kotlin.config.phaser.CompilerPhaseKt.invokeToplevel(CompilerPhase.kt:53)
+	at org.jetbrains.kotlin.cli.pipeline.AbstractCliPipeline.runPhasedPipeline(AbstractCliPipeline.kt:109)
+	at org.jetbrains.kotlin.cli.pipeline.AbstractCliPipeline.execute(AbstractCliPipeline.kt:68)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecutePhased(K2JVMCompiler.kt:78)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecutePhased(K2JVMCompiler.kt:44)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:90)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.exec(CLICompiler.kt:352)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunnerBase.runCompiler(IncrementalJvmCompilerRunnerBase.kt:175)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunnerBase.runCompiler(IncrementalJvmCompilerRunnerBase.kt:38)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.doCompile(IncrementalCompilerRunner.kt:504)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compileImpl(IncrementalCompilerRunner.kt:421)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally$lambda$10$compile(IncrementalCompilerRunner.kt:254)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally(IncrementalCompilerRunner.kt:272)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compile(IncrementalCompilerRunner.kt:124)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.execIncrementalCompiler(CompileServiceImpl.kt:679)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.access$execIncrementalCompiler(CompileServiceImpl.kt:93)
+	at org.jetbrains.kotlin.daemon.CompileServiceImpl.compile(CompileServiceImpl.kt:1806)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:360)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:714)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:598)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:844)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:721)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:720)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+Caused by: org.jetbrains.kotlin.codegen.CompilationException: Back-end (JVM) Internal error: Couldn't inline method call: CALL 'public final fun hiltViewModel$default <VM> (viewModelStoreOwner: androidx.lifecycle.ViewModelStoreOwner?, key: kotlin.String?, $mask0: kotlin.Int, $handler: kotlin.Any?): VM of androidx.hilt.navigation.compose.HiltViewModelKt.hiltViewModel$default [inline] declared in androidx.hilt.navigation.compose.HiltViewModelKt' type=VM of androidx.hilt.navigation.compose.HiltViewModelKt.hiltViewModel$default origin=DEFAULT_DISPATCH_CALL
+Method: null
+File is unknown
+The root cause java.lang.IllegalStateException was thrown at: org.jetbrains.kotlin.codegen.inline.SourceCompilerForInlineKt.getMethodNode(SourceCompilerForInline.kt:129)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrInlineCodegen.genInlineCall(IrInlineCodegen.kt:82)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrInlineCallGenerator.genCall(IrInlineCallGenerator.kt:36)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:586)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:135)
+	at org.jetbrains.kotlin.ir.expressions.IrCall.accept(IrCall.kt:24)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitTypeOperator(ExpressionCodegen.kt:1075)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitTypeOperator(ExpressionCodegen.kt:135)
+	at org.jetbrains.kotlin.ir.expressions.IrTypeOperatorCall.accept(IrTypeOperatorCall.kt:26)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:824)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:135)
+	at org.jetbrains.kotlin.ir.visitors.IrVisitor.visitSetField(IrVisitor.kt:215)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:858)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:135)
+	at org.jetbrains.kotlin.ir.expressions.IrSetField.accept(IrSetField.kt:21)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:527)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitContainerExpression(ExpressionCodegen.kt:541)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitContainerExpression(ExpressionCodegen.kt:135)
+	at org.jetbrains.kotlin.ir.visitors.IrVisitor.visitBlock(IrVisitor.kt:122)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlock(ExpressionCodegen.kt:413)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlock(ExpressionCodegen.kt:135)
+	at org.jetbrains.kotlin.ir.expressions.IrBlock.accept(IrBlock.kt:18)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:527)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:532)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:135)
+	at org.jetbrains.kotlin.ir.expressions.IrBlockBody.accept(IrBlockBody.kt:20)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.generate(ExpressionCodegen.kt:233)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.doGenerate(FunctionCodegen.kt:126)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	... 46 more
+Caused by: java.lang.IllegalStateException: couldn't find inline method Landroidx/hilt/navigation/compose/HiltViewModelKt;.hiltViewModel$default(Landroidx/lifecycle/ViewModelStoreOwner;Ljava/lang/String;ILjava/lang/Object;)Landroidx/lifecycle/ViewModel;
+	at org.jetbrains.kotlin.codegen.inline.SourceCompilerForInlineKt.getMethodNode(SourceCompilerForInline.kt:129)
+	at org.jetbrains.kotlin.codegen.inline.SourceCompilerForInlineKt.loadCompiledInlineFunction$lambda$2(SourceCompilerForInline.kt:98)
+	at org.jetbrains.kotlin.codegen.inline.InlineCache.computeMethodBytes(InlineCache.kt:90)
+	at org.jetbrains.kotlin.codegen.inline.SourceCompilerForInlineKt.loadCompiledInlineFunction(SourceCompilerForInline.kt:93)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrSourceCompilerForInline.compileInlineFunction(IrSourceCompilerForInline.kt:96)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrInlineCodegen.genInlineCall(IrInlineCodegen.kt:65)
+	... 73 more
+
+

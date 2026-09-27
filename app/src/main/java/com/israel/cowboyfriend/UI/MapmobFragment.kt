@@ -68,7 +68,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
     private var myViewModelSupbase: MyViewModelSupbase? = null
     //private var pointAnnotationManager: PointAnnotationManager? = null
 
-    //private var pointAnnotation: PointAnnotation? = null
+    private var pointAnnotation: PointAnnotation? = null
     //private var pointAnnotationOptions: PointAnnotationOptions?=null
 
     private var annotationApi: AnnotationPlugin? = null
@@ -322,7 +322,7 @@ class MapmobFragment : Fragment() , OnMoveListener{
 
         //remove all markers
         pointAnnotationManager?.deleteAll()
-        //pointAnnotation = null
+        pointAnnotation = null
 
         //clear the markers
         //markersList = ArrayList<Feature>()
@@ -341,21 +341,6 @@ class MapmobFragment : Fragment() , OnMoveListener{
 
     }
 
-//    /**
-//     * show current location marker
-//     */
-//    fun showMarkers() {
-//
-//        //remove all markers
-//        //pointAnnotationManager?.deleteAll()
-//        //pointAnnotation = null
-//
-//        //clear the markers
-//        //markersList = ArrayList<Feature>()
-//
-//        //show current location marker
-//        showCurrentLocationMarker()
-//    }
 
 
     private lateinit var geojsonSource: GeoJsonSource

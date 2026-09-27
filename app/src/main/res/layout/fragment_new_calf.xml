@@ -131,16 +131,18 @@
         app:layout_constraintBottom_toTopOf="@+id/tvNumberOfMom"
         android:text="@string/gender_cow"
         />
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/etGenderOfCalf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <Spinner
+        android:id="@+id/spGenderCalf"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
+        android:entries="@array/gender_options"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvGenderOfCalf"
-        android:ems="12"
-        android:inputType="text"
-        android:background="@drawable/shape_bottom_border"
-        style="@style/edittext_style"
+        android:background="@drawable/shape_bg_subjects_spinner"
+        android:spinnerMode="dropdown"
+        tools:listitem="@layout/support_simple_spinner_dropdown_item"
+        android:theme="@style/spinnerTheme"
+        android:popupBackground="@drawable/shape_bg_subjects_spinner"
         />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ciGenderOfCalf"
@@ -150,25 +152,28 @@
         app:civ_border_width="2dp"
         app:civ_border_color="#FF000000"
         tools:ignore="MissingConstraints"
-        app:layout_constraintTop_toTopOf="@+id/etGenderOfCalf"
-        app:layout_constraintBottom_toBottomOf="@+id/etGenderOfCalf"
-        app:layout_constraintStart_toEndOf="@+id/etGenderOfCalf"
+        app:layout_constraintTop_toTopOf="@+id/spGenderCalf"
+        app:layout_constraintBottom_toBottomOf="@+id/spGenderCalf"
+        app:layout_constraintStart_toEndOf="@+id/spGenderCalf"
         style="@style/button_style"
         />
 
 
-    <CheckBox
-        android:layout_marginStart="5dp"
+    <!-- same row as the mom number spinner and its mic button -->
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_marginStart="16dp"
         android:id="@+id/cbWithMomNew"
         android:textColor="@color/black"
-        android:layout_gravity="end"
         android:text="@string/see_mother"
-        android:textSize="11sp"
+        android:textSize="18sp"
+        android:paddingStart="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:button="@drawable/checkbox_selector"
         app:buttonTint="@color/black"
-        app:layout_constraintStart_toStartOf="@+id/tvNumberOfMom"
-        app:layout_constraintBottom_toTopOf="@+id/tvNumberOfMom"
+        app:layout_constraintStart_toEndOf="@+id/ciNumberOfMom"
+        app:layout_constraintTop_toTopOf="@+id/spMoms"
+        app:layout_constraintBottom_toBottomOf="@+id/spMoms"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -183,8 +188,8 @@
 
     <Spinner
         android:id="@+id/spMoms"
-        android:layout_width="50dp"
-        android:layout_height="20dp"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
         android:entries="@array/cow_type"
         android:layout_marginBottom="25dp"
         android:background="@drawable/shape_bg_subjects_spinner"
@@ -220,7 +225,45 @@
         app:layout_constraintBottom_toBottomOf="@+id/spMoms"
         app:layout_constraintStart_toEndOf="@+id/spMoms"
         style="@style/button_style"
-        android:layout_marginStart="64dp"
+        />
+
+    <!-- number of calvings: shown instead of the mom fields for a cow / first-cow -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvNumberOfCalvings"
+        style="@style/title"
+        android:visibility="gone"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/spGenderCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        android:text="@string/number_of_calvings"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etNumberOfCalvings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfCalvings"
+        android:ems="12"
+        android:inputType="numberDecimal"
+        android:background="@drawable/shape_bottom_border"
+        style="@style/edittext_style"
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciNumberOfCalvings"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_calf"
+        android:visibility="gone"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FF000000"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="@+id/etNumberOfCalvings"
+        app:layout_constraintBottom_toBottomOf="@+id/etNumberOfCalvings"
+        app:layout_constraintStart_toEndOf="@+id/etNumberOfCalvings"
+        style="@style/button_style"
         />
 
 <!--    comments-->
@@ -302,15 +345,17 @@
         android:layout_marginStart="24dp"
         />
 
-    <CheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:layout_marginStart="5dp"
         android:id="@+id/cbEarTag"
         android:textColor="@color/black"
         android:layout_gravity="end"
         android:text="@string/marked_tag"
-        android:textSize="10sp"
+        android:textSize="18sp"
+        android:paddingStart="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:button="@drawable/checkbox_selector"
         app:buttonTint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/frSave"
@@ -323,7 +368,6 @@
         android:layout_height="100dp"
         app:layout_constraintTop_toBottomOf="@+id/tvLocationLatitude"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ciSave"

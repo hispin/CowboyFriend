@@ -50,6 +50,10 @@
     <string name="save_file_success">שמירת הקובץ הצליחה</string>
     <string name="save_file_failed">שמירת הקובץ נכשלה</string>
     <string name="no_photo">אין תמונה</string>
+    <string name="mom_number_not_found">אין מספר אמא כזה ברשימה</string>
+    <string name="select_mom_placeholder">בחר</string>
+    <string name="number_of_calvings">מספר ההמלטות</string>
+    <string name="gender_not_found">אין ערך כזה ברשימה</string>
     <string name="share_title">שליחת וידאו מחבר של הבוקר</string>
     <string name="see_mother">רואים את אימו</string>
     <string name="marked_tag">מסומן בתג אוזן</string>
@@ -60,5 +64,11 @@
         <item>מבכירה</item>
         <item>פרה</item>
         <item>שור</item>
+    </string-array>
+
+    <string-array name="gender_options">
+        <item>בחר</item>
+        <item>זכר</item>
+        <item>נקבה</item>
     </string-array>
 </resources>

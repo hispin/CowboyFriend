@@ -274,7 +274,8 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                         location_updated_at = item.location_updated_at,
                         last_seen_at = item.last_seen_at,
                         cowType=item.cow_type,
-                        with_mom=item.with_mom
+                        with_mom=item.with_mom,
+                        isMarkedTag=item.marked_tag
                     )
                     val id=strArr[idx++]
                     if(id.isDigitsOnly()) {
@@ -284,6 +285,10 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                     if(item.corpse!=null) {
                         cow.isCorpse=item.corpse
                     }
+                    if(item.marked_tag!=null) {
+                        cow.isMarkedTag=item.marked_tag
+                    }
+                    cow.num_of_calvings=item.num_of_calvings
 
                     cowsDetails?.add(cow)
                 }
@@ -433,7 +438,9 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                     corpse = cow.isCorpse,
                     last_seen_at = cow.last_seen_at,
                     cow_type = cow.cowType,
-                    with_mom = cow.with_mom
+                    with_mom = cow.with_mom,
+                    marked_tag = cow.isMarkedTag,
+                    num_of_calvings = cow.num_of_calvings
                 )
                 val result=supabase.postgrest.from("CowDetails").insert(cowDto)
                 //cowRepositoryCallback.onRequestResult(1)
@@ -570,6 +577,9 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
                 item.isCorpse=cow.corpse!!
                 item.last_seen_at=cow.last_seen_at
                 item.location_updated_at=cow.location_updated_at
+                if(cow.marked_tag!=null) {
+                    item.isMarkedTag=cow.marked_tag
+                }
             }
         }
         //_cowsDetails= MutableLiveData<List<CowDetails>>()

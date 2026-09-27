@@ -18,4 +18,6 @@ class CowDto (
     @SerialName("corpse") val corpse: Boolean?,
     @SerialName("last_seen_at") val last_seen_at: Long?,
     @SerialName("cow_type") val cow_type: String?,
-    @SerialName("with_mom") val with_mom: Long?)
+    @SerialName("with_mom") val with_mom: Long?,
+    @SerialName("marked_tag") val marked_tag: Boolean?,
+    @SerialName("num_of_calvings") val num_of_calvings: Int? = null)

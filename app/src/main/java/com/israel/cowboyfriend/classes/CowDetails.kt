@@ -12,9 +12,11 @@ data class CowDetails (
     var location_updated_at: Long?,
     var last_seen_at: Long?,
     var cowType: String?,
-    var with_mom: Long?
+    var with_mom: Long?,
+    var isMarkedTag: Boolean?
 ){
     var isCorpse: Boolean=false
+    var num_of_calvings: Int?=null
     var id: Int?=null
 }
 
