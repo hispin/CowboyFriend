@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Checked checkbox: round dark-bordered box on dark parchment with the rust star mark on top -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" />
-            <corners android:radius="4dp" />
+        <shape android:shape="oval">
+            <solid android:color="@color/ww_parchment_3" />
             <stroke
                 android:width="5dp"
-                android:color="@color/black" />
+                android:color="@color/ww_iron" />
             <size
-                android:width="28dp"
-                android:height="28dp" />
+                android:width="38dp"
+                android:height="38dp" />
         </shape>
     </item>
     <item
-        android:width="20dp"
-        android:height="20dp"
+        android:width="26dp"
+        android:height="26dp"
         android:gravity="center"
         android:drawable="@drawable/ic_checkmark_vector" />
 </layer-list>

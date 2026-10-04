@@ -10,4 +10,23 @@
     <color name="gray">#808080</color>
     <color name="transparent">#00000000</color>
     <color name="orange">#FFA500</color>
+
+    <!-- Wild West theme (New Calf screen) -->
+    <color name="ww_parchment">#F1E4C2</color>
+    <color name="ww_parchment_2">#E7D5A6</color>
+    <color name="ww_parchment_3">#DCC58C</color>
+    <color name="ww_ink">#3A2718</color>
+    <color name="ww_ink_soft">#6B5439</color>
+    <color name="ww_saddle">#8B5A2B</color>
+    <color name="ww_saddle_dark">#6B431E</color>
+    <color name="ww_rust">#B5451D</color>
+    <color name="ww_rust_dark">#8E3416</color>
+    <color name="ww_turquoise">#3F7C74</color>
+    <color name="ww_turquoise_dark">#2C5951</color>
+    <color name="ww_iron">#2A1D14</color>
+    <!-- top tab bar: unselected tab text and the indicator under the selected tab -->
+    <color name="ww_tab_inactive">#C9B583</color>
+    <color name="ww_tab_indicator">#E8924B</color>
+    <color name="ww_brass">#C9A94E</color>
+    <color name="ww_brass_light">#E4CD86</color>
 </resources>

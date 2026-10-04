@@ -39,20 +39,6 @@ import io.github.jan.supabase.SupabaseClient
 import java.util.Locale
 import kotlin.collections.set
 
-//import io.github.jan.supabase.auth.Auth
-
-
-
-
-//val supabase = createSupabaseClient(
-//    supabaseUrl = "https://ymgsasxfgfyagppltvdy.supabase.co",
-//    supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZ3Nhc3hmZ2Z5YWdwcGx0dmR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjg1MTIsImV4cCI6MjA4OTk0NDUxMn0.FcH0j_Ec83MzcE73rV_EfH5BA5xxpNQyGBY-4Wxm1yk"
-//) {
-//
-//    HttpResponseCache.install(Postgrest) // For database interactions
-//    HttpResponseCache.install(Auth)     // For authentication
-//    install(SessionSource.Storage)   // For file storage
-//}
 
 class MyScreensActivity : AppCompatActivity(){
 
@@ -96,7 +82,8 @@ class MyScreensActivity : AppCompatActivity(){
         enableEdgeToEdge()
         setContentView(R.layout.activity_my_screen)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.llMain)) { v, insets ->
-            val systemBars=insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            //ime is included so the content is pushed above the keyboard (edge-to-edge does not resize the window by itself)
+            val systemBars=insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }

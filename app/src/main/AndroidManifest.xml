@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- microphone for the in-app voice input dialog (SpeechRecognizer) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Include this permission to grab user's general location -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- Include only if your app benefits from precise location access. -->
@@ -13,6 +15,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
     <queries>
+        <!-- package visibility (Android 11+) so SpeechRecognizer can find the speech recognition service -->
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
         <intent>
             <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
         </intent>
@@ -35,10 +41,12 @@
 <!--            android:name=".LoginActivity"-->
 <!--            android:exported="false"-->
 <!--            android:label="@string/title_activity_login" />-->
+        <!-- adjustResize: the keyboard shrinks the content so the focused field (e.g. comments) stays above it -->
         <activity
             android:name=".MyScreensActivity"
             android:exported="true"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

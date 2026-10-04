@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Content of CowTypeCarouselView: previous arrow, previous / current / next item, next arrow -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageButton
+        android:id="@+id/btnCarRight"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/shape_ww_arrow_btn_bg"
+        android:src="@drawable/ic_chevron_right"
+        android:padding="6dp"
+        android:contentDescription="@string/next_cow_type" />
+
+    <TextView
+        android:id="@+id/tvCarPrev"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        style="@style/Ww.CarouselSide" />
+
+    <TextView
+        android:id="@+id/tvCarCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        style="@style/Ww.CarouselCenter" />
+
+    <TextView
+        android:id="@+id/tvCarNext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        style="@style/Ww.CarouselSide" />
+
+    <ImageButton
+        android:id="@+id/btnCarLeft"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/shape_ww_arrow_btn_bg"
+        android:src="@drawable/ic_chevron_left"
+        android:padding="6dp"
+        android:contentDescription="@string/prev_cow_type" />
+
+</merge>

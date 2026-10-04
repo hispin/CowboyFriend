@@ -76,20 +76,35 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var myViewModelSupbase: MyViewModelSupbase? = null
     private var etComments: EditText?=null
     private var ciComments: CircleImageView?=null
-    private var progress_bar: ProgressBar?=null
+    //fixed saving overlay (spinning horseshoe) and the result banner shown after a save
+    private var loadingOverlay: View?=null
+    private var ivLoadingSpinner: ImageView?=null
+    private var resultBanner: View?=null
+    private var ivResultIcon: ImageView?=null
+    private var tvResultText: TextView?=null
+    //hides the result banner by itself after RESULT_BANNER_MILLIS
+    private val resultHandler = Handler(Looper.getMainLooper())
+    private val hideResultRunnable = Runnable { hideResult() }
     private var tvLocationLatitude: TextView?=null
     private var tvLocationLongitude: TextView?=null
     private var btnSaveLocation: Button?=null
-    private var spNewCowType: Spinner?=null
+    //status icon + text next to the save location button (location captured / not captured)
+    private var ivLocationStatus: android.widget.ImageView?=null
+    private var tvLocationStatus: TextView?=null
+    private var spNewCowType: com.israel.cowboyfriend.UI.widget.CowTypeCarouselView?=null
     private var cbWithMomNew: CheckBox?=null
     private var cbEarTag: CheckBox?=null
     private var tvNumberOfMom: TextView?=null
     private var tvNumberOfCalvings: TextView?=null
     private var tvComments: TextView?=null
     private var etNumberOfCalvings: EditText?=null
+    //2-digit odometer that shows / edits the hidden etNumberOfCalvings
+    private var odoNumberOfCalvings: com.israel.cowboyfriend.UI.widget.OdometerNumberView?=null
     private var ciNumberOfCalvings: CircleImageView?=null
     private var cowTypeArray: Array<out String?>?=null
     private var spMoms: Spinner? = null
+    //how long the save result banner stays on screen
+    private val RESULT_BANNER_MILLIS = 3200L
     private var isMomNumberField = false
     private var isGenderField = false
     private val UTTERANCE_ID = "my_unique_utterance_id"
@@ -114,7 +129,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                         //only reopen the mic to listen for an answer after speaking a prompt
                         //that expects one - not after a plain spoken message (e.g. an error)
                         if (utteranceId == UTTERANCE_ID) {
-                            openDialogToEnterCalfNumber()
+                            //the in-app voice dialog replaces the system speech dialog
+                            startVoiceInput()
                         }
                     }
 
@@ -166,72 +182,110 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
      * recognize voice and convert to text
      */
     val resultSpeakLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        when (result.resultCode) {
-            Activity.RESULT_OK -> {
-                val res =result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                if(res!=null && res.size>0) {
-
-                    if(hasToBeNumber) {
-                        val number=res[0].toString().toIntOrNull()
-
-                        if (isMomNumberField) {
-                            //mom number is picked from the spMoms spinner, not typed freely
-                            val recognizedDigits = number?.toString() ?: hebrewWordToDigit(res[0].toString())
-                            if (recognizedDigits != null) {
-                                selectInSpinnerOrSpeakError(spMoms, recognizedDigits, R.string.mom_number_not_found)
-                            } else {
-                                speakMessage(resources.getString(R.string.mom_number_not_found))
-                            }
-                        } else if(number!=null){
-                            etCurrent?.setText(number.toString())
-                        }else{
-                            //convert text word to number digits(the problem is just in 1-9)
-                            covertTextToTextDigits(res[0].toString(),etCurrent)}
-                    }else {
-                        if (isGenderField) {
-                            //gender is picked from the spGenderCalf spinner, not typed freely
-                            selectInSpinnerOrSpeakError(spGenderCalf, res[0].toString(), R.string.gender_not_found)
-                        } else {
-                            etCurrent?.setText(res[0].toString())
-                        }
-                    }
-                }
-            }
-            else -> {
-                // logic
+        if (result.resultCode == Activity.RESULT_OK) {
+            val res = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (res != null && res.size > 0) {
+                val value = res.firstNotNullOfOrNull { resolveVoiceCandidate(it) }
+                if (value != null) applyVoiceValue(value) else onVoiceNotUnderstood(res[0])
             }
         }
     }
 
-    /*
-    * convert text word to number digits(the problem is just in 1-9)
-     */
-    private fun covertTextToTextDigits(text: String, etCurrent: EditText?) {
-        val digit = hebrewWordToDigit(text)
-        if (digit != null) {
-            etCurrent?.setText(digit)
+    //asks for the microphone once; when denied the system speech dialog is used instead
+    private val micPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            showVoiceDialog()
         } else {
-            etCurrent?.error="הערך השדה זה צריך להיות מספרי"
+            Toast.makeText(requireActivity(), R.string.voice_permission_denied, Toast.LENGTH_SHORT).show()
+            openSystemVoiceDialog()
         }
     }
 
     /*
-    * map a Hebrew number word (1-9) to its digit string, or null if not recognized
+    * turn a recognized sentence into the value the currently selected field needs:
+    * number fields -> digits, gender -> a spinner option, other fields -> the text itself.
+    * null means the sentence is not a usable answer (noise, unrelated talking)
+     */
+    private fun resolveVoiceCandidate(text: String): String? {
+        val trimmed = text.trim()
+        if (trimmed.isEmpty()) return null
+        return when {
+            hasToBeNumber -> extractNumber(trimmed)
+            isGenderField -> findSpinnerOption(spGenderCalf, trimmed)
+            else -> trimmed
+        }
+    }
+
+    //put a recognized value into the field that started the voice input
+    private fun applyVoiceValue(value: String) {
+        when {
+            hasToBeNumber && isMomNumberField ->
+                //mom number is picked from the spMoms spinner, not typed freely
+                selectInSpinnerOrSpeakError(spMoms, value, R.string.mom_number_not_found)
+            hasToBeNumber -> etCurrent?.setText(value)
+            isGenderField ->
+                //gender is picked from the spGenderCalf spinner, not typed freely
+                selectInSpinnerOrSpeakError(spGenderCalf, value, R.string.gender_not_found)
+            else -> etCurrent?.setText(value)
+        }
+    }
+
+    //nothing usable was recognized: speak / show the matching error (nothing heard at all stays silent)
+    private fun onVoiceNotUnderstood(heard: String?) {
+        when {
+            heard.isNullOrBlank() -> {}
+            hasToBeNumber && isMomNumberField -> speakMessage(resources.getString(R.string.mom_number_not_found))
+            hasToBeNumber -> etCurrent?.error = getString(R.string.field_must_be_number)
+            isGenderField -> speakMessage(resources.getString(R.string.gender_not_found))
+        }
+    }
+
+    /*
+    * pull a number out of a recognized sentence: "123", "1 2 3", "מספר 45", "ארבע"
+     */
+    private fun extractNumber(text: String): String? {
+        if (text.matches(Regex("""[\d\s]+"""))) {
+            return text.replace(" ", "").toIntOrNull()?.toString()
+        }
+        Regex("""\d+""").find(text)?.let { match ->
+            match.value.toIntOrNull()?.let { return it.toString() }
+        }
+        for (word in text.split(" ", ",", ".")) {
+            hebrewWordToDigit(word)?.let { return it }
+        }
+        return null
+    }
+
+    /*
+    * map a Hebrew number word (0-10) to its digit string, or null if not recognized
      */
     private fun hebrewWordToDigit(text: String): String? {
         return when(text){
-            "אחד"-> "1"
-            "שתיים"-> "2"
-            "שניים"-> "2"
-            "שלוש"-> "3"
-            "ארבע"-> "4"
-            "חמש"-> "5"
-            "שש"-> "6"
-            "שבע"-> "7"
+            "אפס"-> "0"
+            "אחד","אחת"-> "1"
+            "שתיים","שניים","שתים","שנים"-> "2"
+            "שלוש","שלושה"-> "3"
+            "ארבע","ארבעה"-> "4"
+            "חמש","חמישה"-> "5"
+            "שש","שישה"-> "6"
+            "שבע","שבעה"-> "7"
             "שמונה"-> "8"
-            "תשע"-> "9"
+            "תשע","תשעה"-> "9"
+            "עשר","עשרה"-> "10"
             else-> null
         }
+    }
+
+    /*
+    * find the spinner option (other than the first "choose" placeholder) that appears in the sentence
+     */
+    private fun findSpinnerOption(spinner: Spinner?, text: String): String? {
+        val adapter = spinner?.adapter ?: return null
+        for (i in 1 until adapter.count) {
+            val option = adapter.getItem(i)?.toString() ?: continue
+            if (option.isNotBlank() && text.contains(option)) return option
+        }
+        return null
     }
 
     /*
@@ -316,6 +370,11 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
        cowTypeArray= context?.resources?.getStringArray(R.array.cow_type)
 
+       val cowTypes = cowTypeArray?.filterNotNull() ?: emptyList()
+       spNewCowType?.setItems(cowTypes, 0)
+       spNewCowType?.onSelectionChanged = { _, value -> updateFieldsByCowType(value) }
+       updateFieldsByCowType(cowTypes.getOrNull(0))
+
        setObservers()
 
        return view
@@ -378,21 +437,87 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
         val calvingsVisibility = if (hasCalvings) View.VISIBLE else View.GONE
         tvNumberOfCalvings?.visibility = calvingsVisibility
-        etNumberOfCalvings?.visibility = calvingsVisibility
+        //the hidden etNumberOfCalvings stays gone, only its odometer is shown
+        odoNumberOfCalvings?.visibility = calvingsVisibility
         ciNumberOfCalvings?.visibility = calvingsVisibility
 
-        //the vertical chain only spaces the labels, so leave room for the calvings field
-        //above the comments label when it is shown
-        tvComments?.let {
-            val params = it.layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = if (hasCalvings) (64 * resources.displayMetrics.density).toInt() else 0
-            it.layoutParams = params
+    }
+
+    /**
+     * the odometer shows / edits the value of a hidden EditText (voice input writes to the EditText)
+     */
+    private fun bindOdometer(odo: com.israel.cowboyfriend.UI.widget.OdometerNumberView?, holder: EditText?) {
+        odo?.onNumberChanged = { holder?.setText(it.toString()) }
+        holder?.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                odo?.setNumber(s?.toString()?.toIntOrNull())
+            }
+        })
+    }
+
+    /**
+     * fixed loading indicator (does not scroll with the form); the horseshoe is an animated vector
+     * so it keeps spinning even while the save blocks the main thread
+     */
+    private fun showLoading() {
+        loadingOverlay?.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).setDuration(150).start()
+        }
+        (ivLoadingSpinner?.drawable as? android.graphics.drawable.Animatable)?.start()
+    }
+
+    private fun hideLoading() {
+        (ivLoadingSpinner?.drawable as? android.graphics.drawable.Animatable)?.stop()
+        loadingOverlay?.visibility = View.GONE
+    }
+
+    /**
+     * fixed result message at the bottom of the screen, slides in and hides itself
+     */
+    private fun showResult(success: Boolean) {
+        val banner = resultBanner ?: return
+        ivResultIcon?.setImageResource(if (success) R.drawable.ic_banner_success else R.drawable.ic_banner_fail)
+        tvResultText?.setText(if (success) R.string.cow_saved else R.string.cow_save_failed)
+        resultHandler.removeCallbacks(hideResultRunnable)
+        banner.visibility = View.VISIBLE
+        banner.alpha = 0f
+        banner.translationY = 80 * resources.displayMetrics.density
+        banner.animate().alpha(1f).translationY(0f).setDuration(220).start()
+        resultHandler.postDelayed(hideResultRunnable, RESULT_BANNER_MILLIS)
+    }
+
+    private fun hideResult() {
+        resultHandler.removeCallbacks(hideResultRunnable)
+        val banner = resultBanner ?: return
+        banner.animate().alpha(0f).translationY(80 * resources.displayMetrics.density).setDuration(200)
+            .withEndAction { banner.visibility = View.GONE }.start()
+    }
+
+    /**
+     * show whether the current location was captured (the coordinates themselves are not shown)
+     */
+    private fun setLocationSaved(saved: Boolean) {
+        ivLocationStatus?.setImageResource(if (saved) R.drawable.ic_location_saved else R.drawable.ic_location_unsaved)
+        tvLocationStatus?.setText(if (saved) R.string.location_saved else R.string.location_not_saved)
+        tvLocationStatus?.setTextColor(
+            ContextCompat.getColor(requireContext(), if (saved) R.color.ww_turquoise_dark else R.color.ww_rust_dark)
+        )
+        if (saved) {
+            ivLocationStatus?.scaleX = 0.6f
+            ivLocationStatus?.scaleY = 0.6f
+            ivLocationStatus?.animate()?.scaleX(1f)?.scaleY(1f)?.setDuration(250)?.start()
         }
     }
 
     private fun initView(view: View?) {
         ciNumberOfCalf=view?.findViewById(R.id.ciNumberOfCalf)
         etNumberOfCalf =view?.findViewById(R.id.etNumberOfCalf)
+        //etNumberOfCalf is the hidden value holder; the odometer shows / edits it (voice input writes to the EditText)
+        bindOdometer(view?.findViewById(R.id.odoNumberOfCalf), etNumberOfCalf)
         spGenderCalf=view?.findViewById(R.id.spGenderCalf)
         //custom item layout: bold black text, larger font - same as spMoms
         val genderOptions = resources.getStringArray(R.array.gender_options).toList()
@@ -406,8 +531,21 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         tvDate=view?.findViewById(R.id.tvDate)
         ciSave=view?.findViewById(R.id.ciSave)
         etComments=view?.findViewById(R.id.etComments)
+        //after the keyboard opened, scroll so the comments field and a bit below it stay visible
+        etComments?.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                v.postDelayed({
+                    v.requestRectangleOnScreen(android.graphics.Rect(0, 0, v.width, v.height + 200), false)
+                }, 350)
+            }
+        }
         ciComments=view?.findViewById(R.id.ciComments)
-        progress_bar=view?.findViewById(R.id.progress_bar)
+        loadingOverlay=view?.findViewById(R.id.loadingOverlay)
+        ivLoadingSpinner=view?.findViewById(R.id.ivLoadingSpinner)
+        resultBanner=view?.findViewById(R.id.resultBanner)
+        ivResultIcon=view?.findViewById(R.id.ivResultIcon)
+        tvResultText=view?.findViewById(R.id.tvResultText)
+        resultBanner?.setOnClickListener { hideResult() }
         tvLocationLatitude=view?.findViewById(R.id.tvLocationLatitude)
         tvLocationLongitude=view?.findViewById(R.id.tvLocationLongitude)
         btnSaveLocation=view?.findViewById(R.id.btnSaveLocation)
@@ -423,30 +561,16 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         tvNumberOfCalvings = view?.findViewById(R.id.tvNumberOfCalvings)
         tvComments = view?.findViewById(R.id.tvComments)
         etNumberOfCalvings = view?.findViewById(R.id.etNumberOfCalvings)
+        //voice input and saving keep using the hidden EditText, the odometer is kept in sync with it
+        odoNumberOfCalvings = view?.findViewById(R.id.odoNumberOfCalvings)
+        bindOdometer(odoNumberOfCalvings, etNumberOfCalvings)
         ciNumberOfCalvings = view?.findViewById(R.id.ciNumberOfCalvings)
-        if(cbWithMomNew?.isChecked == false) {
-            ciNumberOfMom?.isEnabled=false
-        }
-        cbWithMomNew?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                ciNumberOfMom?.isEnabled=true
-            } else {
-                ciNumberOfMom?.isEnabled=false
-            }
-        }
+        ivLocationStatus = view?.findViewById(R.id.ivLocationStatus)
+        tvLocationStatus = view?.findViewById(R.id.tvLocationStatus)
+        //no location captured yet
+        setLocationSaved(false)
 
         spNewCowType = view?.findViewById(R.id.spNewCowType)
-        spNewCowType?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Retrieve the selected item object
-                val selectedItem = parent?.getItemAtPosition(position)
-                updateFieldsByCowType(selectedItem)
-              }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // This callback triggers when the selection disappears (rare in standard spinners)
-            }
-        }
         spMoms= view?.findViewById(R.id.spMoms)
 
         tvDate?.text=getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy", requireActivity())
@@ -454,27 +578,27 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         ciNumberOfCalf?.setOnClickListener {
             isMomNumberField=false
             isGenderField=false
-            speakNow("בחר מספר של העגל",etNumberOfCalf,true)
+            speakNow(getString(R.string.voice_prompt_cow_number),etNumberOfCalf,true)
         }
         ciGenderOfCalf?.setOnClickListener {
             isMomNumberField=false
             isGenderField=true
-            speakNow("בחר את המין של העגל",false)
+            speakNow(getString(R.string.voice_prompt_cow_gender),false)
         }
         ciNumberOfMom?.setOnClickListener {
             isMomNumberField=true
             isGenderField=false
-            speakNow("בחר מספר של האמא",true)
+            speakNow(getString(R.string.voice_prompt_mom_number),true)
         }
         ciNumberOfCalvings?.setOnClickListener {
             isMomNumberField=false
             isGenderField=false
-            speakNow("בחר מספר של ההמלטות",etNumberOfCalvings,true)
+            speakNow(getString(R.string.voice_prompt_calvings_number),etNumberOfCalvings,true)
         }
         ciComments?.setOnClickListener {
             isMomNumberField=false
             isGenderField=false
-            speakNow("הערה",etComments,false)
+            speakNow(getString(R.string.voice_prompt_comment),etComments,false)
         }
 
         ciTakePicture?.setOnClickListener {
@@ -482,7 +606,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         }
 
         ciSave?.setOnClickListener {
-            progress_bar?.visibility=View.VISIBLE
+            //fixed loading overlay instead of the old ProgressBar
+            showLoading()
             // delay to enable visible the progress bar
             Handler(Looper.getMainLooper()).postDelayed({
                     myViewModelSupbase?.uploadCowImage(uri,requireContext(),
@@ -493,6 +618,12 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                 insertCowDetails(myUrl)
                             }
 
+                            //upload failed: stop the loading overlay and tell the user
+                            override fun onError() {
+                                hideLoading()
+                                showResult(false)
+                            }
+
                             /**
                              * insert cow to database
                              */
@@ -500,7 +631,12 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
                              val supabase=   myViewModelSupbase?.getSupabase()
 
-                             if(supabase==null) return
+                             //no connection object: nothing can be saved, do not leave the overlay on
+                             if(supabase==null) {
+                                 hideLoading()
+                                 showResult(false)
+                                 return
+                             }
 
                              val lat: Double?= tvLocationLatitude?.text.toString().toDoubleOrNull()
                              val long: Double?= tvLocationLongitude?.text.toString().toDoubleOrNull()
@@ -562,16 +698,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                              myViewModelSupbase?.dbInsertCowDetails(cow,object : CowRepositoryCB {
 
                                  override fun onRequestResult(result: Int) {
-                                     if(result==1){
-                                         progress_bar?.visibility=View.GONE
-                                         print("success")
-                                         UIHelper.showToast(requireActivity(),"success")
-                                     }
-                                     else {
-                                         progress_bar?.visibility=View.GONE
-                                         print("error")
-                                         UIHelper.showToast(requireActivity(),"failed")
-                                     }
+                                     //the insert finished: stop the loading overlay and show the success / failure banner
+                                     hideLoading()
+                                     showResult(result==1)
                                  }
                              })
                              }
@@ -615,9 +744,47 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
 
         /**
+     * open the in-app voice dialog (microphone permission and a recognition service are required,
+     * otherwise fall back to the system speech dialog)
+     */
+    private fun startVoiceInput() {
+        activity?.runOnUiThread {
+            val ctx = context ?: return@runOnUiThread
+            if (!android.speech.SpeechRecognizer.isRecognitionAvailable(ctx)) {
+                openSystemVoiceDialog()
+            } else if (ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.RECORD_AUDIO)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                micPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+            } else {
+                showVoiceDialog()
+            }
+        }
+    }
+
+    private fun showVoiceDialog() {
+        val ctx = context ?: return
+        val freeText = !hasToBeNumber && !isGenderField
+        val bias = when {
+            isGenderField -> (1 until (spGenderCalf?.adapter?.count ?: 0))
+                .mapNotNull { spGenderCalf?.adapter?.getItem(it)?.toString() }
+            hasToBeNumber -> (0..9).map { it.toString() }
+            else -> emptyList()
+        }
+        com.israel.cowboyfriend.UI.widget.VoiceInputDialog(
+            context = ctx,
+            prompt = myTextOrder ?: "",
+            freeText = freeText,
+            biasStrings = bias,
+            resolve = { resolveVoiceCandidate(it) },
+            onResult = { applyVoiceValue(it) },
+            onFailed = { onVoiceNotUnderstood(it) }
+        ).show()
+    }
+
+        /**
      * open dialog to accept voice
      */
-    private fun openDialogToEnterCalfNumber(){
+    private fun openSystemVoiceDialog(){
 
         val recognizerIntent=Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, myTextOrder)
@@ -695,6 +862,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                     tvLocationLatitude?.text = latitude.toString()
                     tvLocationLongitude?.text = longitude.toString()
                     btnSaveLocation?.text=requireActivity().resources.getString(R.string.save_location)
+                    //location arrived: switch the indicator to saved
+                    setLocationSaved(true)
 
                 } else {
                     Toast.makeText(activity, "error in location2", Toast.LENGTH_LONG).show()

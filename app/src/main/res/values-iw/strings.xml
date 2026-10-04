@@ -54,6 +54,8 @@
     <string name="select_mom_placeholder">בחר</string>
     <string name="number_of_calvings">מספר ההמלטות</string>
     <string name="gender_not_found">אין ערך כזה ברשימה</string>
+    <string name="next_cow_type">סוג פרה הבא</string>
+    <string name="prev_cow_type">סוג פרה קודם</string>
     <string name="share_title">שליחת וידאו מחבר של הבוקר</string>
     <string name="see_mother">רואים את אימו</string>
     <string name="marked_tag">מסומן בתג אוזן</string>
@@ -71,4 +73,26 @@
         <item>זכר</item>
         <item>נקבה</item>
     </string-array>
+    <!-- Location status next to the save location button -->
+    <string name="location_saved">המיקום נשמר</string>
+    <string name="location_not_saved">המיקום לא נשמר</string>
+    <!-- In-app voice input dialog -->
+    <string name="voice_listening">מקשיב…</string>
+    <string name="voice_hearing">שומע אותך…</string>
+    <string name="voice_retry">לא שמעתי, נסה שוב</string>
+    <string name="voice_cancel">ביטול</string>
+    <string name="voice_error">הזיהוי הקולי נכשל</string>
+    <string name="voice_permission_denied">נדרשת הרשאת מיקרופון</string>
+    <!-- Spoken prompts of the voice buttons -->
+    <string name="voice_prompt_cow_number">בחר מספר של הפרה</string>
+    <string name="voice_prompt_cow_gender">בחר את המין של הפרה</string>
+    <string name="voice_prompt_mom_number">בחר מספר של האמא</string>
+    <string name="voice_prompt_calvings_number">בחר מספר של ההמלטות</string>
+    <string name="voice_prompt_comment">הערה</string>
+    <!-- Error shown when a recognized value for a number field is not a number -->
+    <string name="field_must_be_number">הערך בשדה זה צריך להיות מספרי</string>
+    <!-- Saving overlay text and the save result messages -->
+    <string name="saving_cow">שומר את הפרה…</string>
+    <string name="cow_saved">הפרה נשמרה בהצלחה</string>
+    <string name="cow_save_failed">השמירה נכשלה, נסה שוב</string>
 </resources>

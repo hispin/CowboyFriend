@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Styled item of the mom number / gender spinners: bold dark text, same font and size as the other texts -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/black"
-    android:textStyle="bold"
-    android:textSize="20sp"
+    android:textColor="@color/ww_ink"
+    android:fontFamily="@font/heebo_bold"
+    android:textSize="18sp"
     android:gravity="center"
     android:padding="8dp"
     android:singleLine="true"

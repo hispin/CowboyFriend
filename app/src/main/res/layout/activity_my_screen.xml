@@ -9,10 +9,12 @@
 
     >
 
+<!-- llMain background is dark brown so the status bar area blends with the tab bar -->
 <LinearLayout
     android:id="@+id/llMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ww_iron"
     android:orientation="vertical"
     tools:context=".MyScreensActivity"
     >
@@ -30,26 +32,34 @@
 
 
 
+        <!-- Wild West tab bar: brown gradient, sand colored tabs, cream selected tab and an orange indicator under it -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabTextColor="@color/white"
-            app:tabSelectedTextColor="@color/black"
-            app:tabIndicatorColor="@color/black"
+            app:tabTextColor="@color/ww_tab_inactive"
+            app:tabSelectedTextColor="@color/ww_parchment"
+            app:tabTextAppearance="@style/Ww.TabText"
+            app:tabIndicatorColor="@color/ww_tab_indicator"
             app:tabIndicatorHeight="4dp"
             app:tabIndicatorGravity="bottom"
-            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorFullWidth="false"
             app:tabPaddingStart="0dp"
             app:tabPaddingEnd="0dp"
-            android:background="@color/design_default_color_secondary"
+            app:tabPaddingTop="12dp"
+            app:tabPaddingBottom="10dp"
+            app:tabRippleColor="#33E4CD86"
+            android:elevation="6dp"
+            android:background="@drawable/bg_ww_tabbar"
             />
 
 
+    <!-- background = theme background so the screens look as before although llMain is now dark brown -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?android:attr/colorBackground"
 
         />
 

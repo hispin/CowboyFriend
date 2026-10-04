@@ -498,6 +498,8 @@ class MyViewModelSupbase (application: Application) : AndroidViewModel(applicati
 
             }catch (ex: Exception){
                 print(ex.message.toString())
+                //let the caller know, otherwise its loading indicator would never stop
+                cowStorageRespose.onError()
             }
 
         }

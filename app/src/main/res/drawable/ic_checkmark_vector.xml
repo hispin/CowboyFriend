@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Star mark drawn inside a checked checkbox (rust color) -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="20dp"
     android:height="20dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:pathData="M4,12 L9,17 L20,6"
-        android:strokeColor="@color/black"
-        android:strokeWidth="3"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:fillColor="@android:color/transparent" />
+        android:pathData="M12,0.72 L14.64,9.36 L23.52,9.36 L16.32,14.64 L18.96,23.04 L12,18 L5.04,23.04 L7.68,14.64 L0.48,9.36 L9.36,9.36 Z"
+        android:fillColor="@color/ww_rust" />
 </vector>

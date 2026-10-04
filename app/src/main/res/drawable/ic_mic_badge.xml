@@ -1,0 +1,63 @@
+<!-- Voice input button badge: brass coin with gradient/gloss (3D look) and an outlined microphone -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <path
+        android:pathData="M4.5,32 a27.5,27.5 0 1,0 55,0 a27.5,27.5 0 1,0 -55,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="23"
+                android:centerY="19"
+                android:gradientRadius="46">
+                <item android:offset="0.0" android:color="#F4E3A4" />
+                <item android:offset="0.5" android:color="@color/ww_brass" />
+                <item android:offset="1.0" android:color="#9C7E2E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M4.5,32 a27.5,27.5 0 1,0 55,0 a27.5,27.5 0 1,0 -55,0"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M11.5,26 A22,22 0 0 1 34,10.2"
+        android:strokeColor="#99FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M15,47 A22,22 0 0 0 49,47"
+        android:strokeColor="#40000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M26,16 a6,6 0 0 1 12,0 v10 a6,6 0 0 1 -12,0 z"
+        android:fillColor="#EFDFA6"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.4"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M19.5,29 a12.5,12.5 0 0 0 25,0"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M32,41.5 v6.5"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M25.5,48.5 h13"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+</vector>
