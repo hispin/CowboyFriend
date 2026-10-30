@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- landscape: the screen is short, so the rows of the edit window are lower (same style as in values/themes.xml, smaller padding) -->
+    <style name="Ww.EditRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/shape_ww_dialog_row_bg</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">3dp</item>
+    </style>
+</resources>

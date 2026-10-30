@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tour window in landscape (the screen is short): the state on one side, the buttons on the other side.
+     the ids are the same as in the portrait layout -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_ww_dialog_card_bg"
+        android:elevation="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_tour_flag"
+                    android:tint="@color/ww_saddle_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/heebo_extrabold"
+                    android:text="@string/tour_dialog_title"
+                    android:textColor="@color/ww_ink"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTourDialogHeadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/heebo_bold"
+                android:textColor="@color/ww_ink"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/tvTourDialogInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/heebo_medium"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/ww_ink_soft"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:id="@+id/llTourDialogTrack"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_ww_edittext_bg"
+                android:orientation="horizontal"
+                android:padding="2dp"
+                android:visibility="gone"
+                android:weightSum="100">
+
+                <View
+                    android:id="@+id/vTourDialogFill"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/ww_turquoise" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btnTourDialogMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_ww_btn_rect_brass"
+                android:elevation="4dp"
+                android:fontFamily="@font/heebo_extrabold"
+                android:gravity="center"
+                android:paddingTop="11dp"
+                android:paddingBottom="11dp"
+                android:textColor="@color/ww_iron"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/btnTourDialogHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_ww_btn_rect_sand"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_tour_history"
+                android:drawableTint="@color/ww_ink"
+                android:elevation="3dp"
+                android:fontFamily="@font/heebo_bold"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:text="@string/tour_history_short"
+                android:textColor="@color/ww_ink"
+                android:textSize="15sp" />
+
+            <!-- the ranch dashboard: the numbers of the whole herd -->
+            <TextView
+                android:id="@+id/btnTourDialogDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_ww_btn_rect_sand"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_tour_flag"
+                android:drawableTint="@color/ww_ink"
+                android:elevation="3dp"
+                android:fontFamily="@font/heebo_bold"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:text="@string/dash_title"
+                android:textColor="@color/ww_ink"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/btnTourDialogClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_ww_btn_rect_sand"
+                android:elevation="3dp"
+                android:fontFamily="@font/heebo_bold"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/close"
+                android:textColor="@color/ww_ink"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -20,4 +20,6 @@ class CowDto (
     @SerialName("cow_type") val cow_type: String?,
     @SerialName("with_mom") val with_mom: Long?,
     @SerialName("marked_tag") val marked_tag: Boolean?,
-    @SerialName("num_of_calvings") val num_of_calvings: Int? = null)
+    @SerialName("num_of_calvings") val num_of_calvings: Int? = null,
+    //birth date (timestamptz text): sent on insert from the date chosen on the new cow screen, read only from the raw json when listing
+    @SerialName("created_at") val created_at: String? = null)

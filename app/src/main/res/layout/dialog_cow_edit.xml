@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Edit window of one cow (cattle tour): the only place where a cow is edited. big, easy to hit controls in sand rows,
+     grouped in sections; one save button writes all the fields to the database -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_ww_dialog_card_bg"
+        android:elevation="12dp"
+        android:orientation="vertical"
+        android:paddingStart="22dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="18dp">
+
+        <!-- title with the cow number -->
+        <TextView
+            android:id="@+id/tvEditTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/heebo_extrabold"
+            android:gravity="center"
+            android:textColor="@color/ww_ink"
+            android:textSize="22sp" />
+
+        <!-- the fields scroll, the buttons below stay in place -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fadeScrollbars="false"
+            android:paddingBottom="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- section: the visit -->
+                <TextView
+                    style="@style/Ww.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/edit_section_visit" />
+
+                <LinearLayout
+                    style="@style/Ww.EditRow"
+                    android:layout_marginTop="8dp">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbEditSeen"
+                        style="@style/Ww.EditCheck"
+                        android:text="@string/edit_seen_today" />
+                </LinearLayout>
+
+                <!-- calves only: seen together with the mother (hidden by the fragment for the other cow types) -->
+                <LinearLayout
+                    android:id="@+id/llEditWithMom"
+                    style="@style/Ww.EditRow"
+                    android:layout_marginTop="8dp">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbEditWithMom"
+                        style="@style/Ww.EditCheck"
+                        android:text="@string/with_mom" />
+                </LinearLayout>
+
+                <!-- section: the state of the cow -->
+                <TextView
+                    style="@style/Ww.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/edit_section_status" />
+
+                <LinearLayout
+                    style="@style/Ww.EditRow"
+                    android:layout_marginTop="8dp">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbEditCorpse"
+                        style="@style/Ww.EditCheck"
+                        android:text="@string/corpse" />
+                </LinearLayout>
+
+                <!-- calves only: ear tag -->
+                <LinearLayout
+                    android:id="@+id/llEditEarTag"
+                    style="@style/Ww.EditRow"
+                    android:layout_marginTop="8dp">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbEditEarTag"
+                        style="@style/Ww.EditCheck"
+                        android:text="@string/marked_tag" />
+                </LinearLayout>
+
+                <!-- section: health problems. the chips (one for each problem, several can be chosen) are added by the
+                     fragment; the text field of "other" is shown only while the "other" chip is chosen -->
+                <TextView
+                    style="@style/Ww.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/edit_section_health" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cgEditHealth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:chipSpacingHorizontal="8dp"
+                    app:chipSpacingVertical="8dp" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etEditHealthOther"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/shape_ww_dialog_row_bg"
+                    android:fontFamily="@font/heebo_medium"
+                    android:gravity="top|start"
+                    android:hint="@string/health_other_hint"
+                    android:imeOptions="flagNoExtractUi"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLines="3"
+                    android:minLines="2"
+                    android:padding="12dp"
+                    android:textColor="@color/ww_ink"
+                    android:textColorHint="@color/ww_ink_soft"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
+                <!-- cow type: the list; the calf only rows above follow the selected type -->
+                <TextView
+                    style="@style/Ww.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/cow_type" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="8dp">
+
+                    <Spinner
+                        android:id="@+id/spEditCowType"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/shape_ww_dialog_row_bg"
+                        android:popupBackground="@drawable/shape_ww_dialog_row_bg"
+                        android:spinnerMode="dropdown"
+                        android:theme="@style/ww_spinnerTheme" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="14dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_arrow_down" />
+                </FrameLayout>
+
+                <!-- section: location -->
+                <TextView
+                    style="@style/Ww.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/edit_section_location" />
+
+                <LinearLayout
+                    style="@style/Ww.EditRow"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/btnEditLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_ww_btn_rect_brass"
+                        android:drawablePadding="8dp"
+                        android:drawableStart="@drawable/ic_pin_btn"
+                        android:drawableTint="@color/ww_iron"
+                        android:elevation="3dp"
+                        android:fontFamily="@font/heebo_extrabold"
+                        android:paddingStart="16dp"
+                        android:paddingTop="9dp"
+                        android:paddingEnd="18dp"
+                        android:paddingBottom="9dp"
+                        android:text="@string/edit_update_location"
+                        android:textColor="@color/ww_iron"
+                        android:textSize="17sp" />
+
+                    <ImageView
+                        android:id="@+id/ivEditLocationStatus"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_marginStart="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_location_unsaved" />
+
+                    <TextView
+                        android:id="@+id/tvEditLocationStatus"
+                        android:text="@string/edit_location_unchanged"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/heebo_bold"
+                        android:textColor="@color/ww_ink_soft"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <!-- section: comment, typed or dictated -->
+                <!-- title of the comment section with a small "?" button that opens the dictation guide -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Ww.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_section_comment" />
+
+                    <TextView
+                        android:id="@+id/btnDictationGuide"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/shape_ww_photo_ring"
+                        android:contentDescription="@string/dictation_guide_button"
+                        android:fontFamily="@font/heebo_extrabold"
+                        android:gravity="center"
+                        android:text="?"
+                        android:textColor="@color/ww_brass_light"
+                        android:textSize="18sp"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- the microphone badge first (right side), then the field -->
+                    <ImageView
+                        android:id="@+id/ivEditCommentMic"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginEnd="12dp"
+                        android:contentDescription="@string/comment_edit_voice"
+                        android:elevation="8dp"
+                        android:src="@drawable/ic_mic_badge" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/etEditComment"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_ww_dialog_row_bg"
+                        android:fontFamily="@font/heebo_medium"
+                        android:gravity="top|start"
+                        android:hint="@string/comment_hint"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:lineSpacingExtra="4dp"
+                        android:maxHeight="180dp"
+                        android:minLines="3"
+                        android:padding="14dp"
+                        android:textColor="@color/ww_ink"
+                        android:textColorHint="@color/ww_ink_soft"
+                        android:textSize="19sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- save (brass) and cancel (sand), always visible under the fields -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnEditSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/shape_ww_btn_rect_brass"
+                android:elevation="4dp"
+                android:fontFamily="@font/heebo_extrabold"
+                android:gravity="center"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:text="@string/save"
+                android:textColor="@color/ww_iron"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/btnEditCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/shape_ww_btn_rect_sand"
+                android:elevation="4dp"
+                android:fontFamily="@font/heebo_bold"
+                android:gravity="center"
+                android:paddingStart="24dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="12dp"
+                android:text="@string/voice_cancel"
+                android:textColor="@color/ww_ink"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Custom attribute of OdometerNumberView: how many digit tiles it shows (default 3) -->
+<resources>
+    <declare-styleable name="OdometerNumberView">
+        <attr name="digitCount" format="integer" />
+    </declare-styleable>
+</resources>

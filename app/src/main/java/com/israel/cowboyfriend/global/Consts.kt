@@ -14,8 +14,20 @@ package com.israel.cowboyfriend.global
    const val CORPSE_TYPE= 0
    const val LAST_SEEN_AT_TYPE= 1
    const val TYPE_COW = 2
+   //update of the ear tag mark of a cow (checkbox + save on the cow card)
+   const val MARKED_TAG_TYPE = 3
+   //update of the comment of a cow (editing window of the cow card)
+   const val COMMENT_TYPE = 4
+   //update of all the editable fields of the edit window in one request
+   const val ALL_FIELDS_TYPE = 5
    const val ACTION_UPDATE_TYPE = 0
    const val ACTION_SHOW_LARGE_TYPE = 1
+   //tap on the comment mark of a cow card: open the comment window and read it aloud
+   const val ACTION_SHOW_COMMENT_TYPE = 2
+   //tap on a cow card (or its pencil badge): open the edit window of the cow
+   const val ACTION_EDIT_COW_TYPE = 3
+   //tap on the health problems chip of a cow card: open the window with the list of the problems
+   const val ACTION_SHOW_HEALTH_TYPE = 4
    const val ACTION_TYPE_KEY = "actionType"
    const val ACTION_PICTURE_KEY = 1
    const val ACTION_VIDEO_KEY = 2

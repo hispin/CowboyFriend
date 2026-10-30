@@ -1,97 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:bvp="http://schemas.android.com/tools"
+<!-- Large picture / video screen in the style of the app: a dark leather background, the picture (zoomable) or the video
+     in the middle, brass round buttons on a soft dark band at the top (close, and share at the other end), and the
+     spinning horseshoe while the picture loads. there is no download button -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1B130D"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- the picture: fitted inside the screen and zoomed by pinch / double tap (TouchImageView) -->
+    <com.israel.cowboyfriend.classes.TouchImageView
+        android:id="@+id/ivMyCaptureImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray"
-        android:clickable="true"
-        android:focusable="true">
+        android:contentDescription="@null" />
 
-
-    <com.israel.cowboyfriend.classes.TouchImageView
-            android:id="@+id/ivMyCaptureImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
+    <!-- the video player (shown instead of the picture for a video) -->
     <androidx.media3.ui.PlayerView
-            android:id="@+id/ivMyVideo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.807"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.321"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.955"
-            bvp:bvp_captionColor="@android:color/holo_blue_light"
-            bvp:bvp_captionSize="20sp" />
-    <androidx.appcompat.widget.AppCompatImageButton
-            android:padding="5dp"
-            android:id="@+id/ibClose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/description"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close_red" />
+        android:id="@+id/ivMyVideo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ibSaveLargeImgShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="50dp"
-            android:background="@color/transparent"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/ibLargeImgShare"
-            app:layout_constraintEnd_toEndOf="@+id/ibLargeImgShare"
-            app:layout_constraintTop_toTopOf="@+id/ibLargeImgShare"
-            app:srcCompat="@drawable/ic_save_large" />
+    <!-- soft dark band behind the buttons -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_gravity="top"
+        android:background="@drawable/bg_large_scrim_top"
+        android:rotation="180" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/ibLargeImgShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@color/transparent"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_share_large" />
+    <!-- close: the brass X at the start of the top bar -->
+    <ImageButton
+        android:id="@+id/ibClose"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/shape_ww_photo_ring"
+        android:contentDescription="@string/close"
+        android:elevation="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_large_close_badge" />
 
-    <ProgressBar
-            android:id="@+id/pbLoadPhoto"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
-            android:indeterminateTint="@color/white"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+    <!-- share: the brass share button at the end of the top bar -->
+    <ImageButton
+        android:id="@+id/ibLargeImgShare"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="18dp"
+        android:background="@drawable/shape_ww_photo_ring"
+        android:contentDescription="@string/share_picture"
+        android:elevation="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_large_share_badge" />
 
-            />
+    <!-- WhatsApp: shares straight to WhatsApp, next to the share button -->
+    <ImageButton
+        android:id="@+id/ibLargeImgWhatsApp"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="84dp"
+        android:background="@drawable/shape_ww_photo_ring"
+        android:contentDescription="@string/share_whatsapp"
+        android:elevation="8dp"
+        android:padding="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_large_whatsapp_badge" />
 
+    <!-- a short message at the bottom (for example: WhatsApp is not installed) -->
+    <TextView
+        android:id="@+id/tvNotice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/shape_ww_result_banner"
+        android:fontFamily="@font/heebo_bold"
+        android:paddingStart="20dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/ww_parchment"
+        android:textSize="17sp"
+        android:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- loading: the spinning horseshoe in the middle (while the picture loads, or while a video is prepared for sharing) -->
+    <ImageView
+        android:id="@+id/pbLoadPhoto"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:contentDescription="@null"
+        android:src="@drawable/avd_ww_loading"
+        android:visibility="gone" />
+
+    <!-- the picture could not be loaded -->
+    <TextView
+        android:id="@+id/tvPhotoError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_ww_result_banner"
+        android:drawablePadding="10dp"
+        android:fontFamily="@font/heebo_bold"
+        android:paddingStart="18dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="12dp"
+        android:text="@string/photo_load_failed"
+        android:textColor="@color/ww_parchment"
+        android:textSize="17sp"
+        android:visibility="gone" />
+</FrameLayout>

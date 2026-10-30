@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tour history screen: a brown header (title, X) and the list of the tours of the ranch, newest first. each tour is a card
+     (item_tour); the spinning horseshoe shows while the list loads and a message when there are no tours or loading failed -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ww_parchment"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ww_saddle_dark"
+        android:elevation="6dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_tour_history"
+            android:tint="@color/ww_brass_light" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/heebo_extrabold"
+            android:text="@string/history_title"
+            android:textColor="@color/ww_parchment"
+            android:textSize="21sp" />
+
+        <ImageButton
+            android:id="@+id/ibHistoryClose"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/shape_ww_photo_ring"
+            android:contentDescription="@string/close"
+            android:elevation="6dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_large_close_badge" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcTours"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="6dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="16dp" />
+
+        <ImageView
+            android:id="@+id/ivHistoryLoading"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/avd_ww_loading" />
+
+        <TextView
+            android:id="@+id/tvHistoryEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/heebo_bold"
+            android:gravity="center"
+            android:padding="32dp"
+            android:textColor="@color/ww_ink_soft"
+            android:textSize="20sp"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

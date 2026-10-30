@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- In-app voice input dialog in landscape (the screen is short): the pulsing mic on one side, and the prompt, the status,
+     the live text and the cancel button on the other side. the ids are the same as in the portrait layout -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:id="@+id/voiceCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_ww_voice_card"
+        android:clipChildren="false"
+        android:elevation="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="22dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="16dp">
+
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:clipChildren="false">
+
+            <View
+                android:id="@+id/voiceRing"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_ww_voice_ring" />
+
+            <ImageView
+                android:id="@+id/ivVoiceMic"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:elevation="8dp"
+                android:src="@drawable/ic_mic_badge" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvVoicePrompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/heebo_bold"
+                android:gravity="center"
+                android:textColor="@color/ww_ink"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/tvVoiceStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/heebo_medium"
+                android:gravity="center"
+                android:text="@string/voice_listening"
+                android:textColor="@color/ww_ink_soft"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tvVoicePartial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/heebo_bold"
+                android:gravity="center"
+                android:maxLines="2"
+                android:minHeight="40dp"
+                android:textColor="@color/ww_iron"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/btnVoiceCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_ww_voice_cancel"
+                android:elevation="4dp"
+                android:fontFamily="@font/heebo_bold"
+                android:paddingStart="32dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="32dp"
+                android:paddingBottom="8dp"
+                android:text="@string/voice_cancel"
+                android:textColor="@color/ww_ink"
+                android:textSize="17sp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

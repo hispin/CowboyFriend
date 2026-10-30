@@ -1,0 +1,19 @@
+<!-- Placeholder shown in the photo frame before a picture is taken (sun and mountains) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="102dp"
+    android:viewportWidth="120"
+    android:viewportHeight="102">
+    <path
+        android:pathData="M0,0 H120 V102 H0 Z"
+        android:fillColor="#E8D8A8"/>
+    <path
+        android:pathData="M82,28 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"
+        android:fillColor="#F3E3B0"/>
+    <path
+        android:pathData="M0,102 V70 L26,46 L50,68 L76,38 L100,64 L120,52 V102 Z"
+        android:fillColor="#CDB787"/>
+    <path
+        android:pathData="M0,102 V84 L30,66 L62,86 L92,70 L120,84 V102 Z"
+        android:fillColor="#B79B63"/>
+</vector>

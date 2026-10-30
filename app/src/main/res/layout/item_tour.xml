@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One tour in the tour history: the date and the status, who did it and how long, the main numbers as chips, and (for a
+     tour that is still open, when the user may end it) the end button. a tap on the card opens the summary of the tour -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="6dp"
+    android:background="@drawable/shape_ww_card_bg"
+    android:clipToOutline="true"
+    android:elevation="4dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <!-- top band: turquoise = closed, brass = still open, grey brown = cancelled (colored by the adapter) -->
+    <View
+        android:id="@+id/vTourStrip"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:background="@color/ww_turquoise" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="14dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvTourDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/rye_regular"
+                android:textColor="@color/ww_ink"
+                android:textDirection="ltr"
+                android:textSize="19sp"
+                tools:text="30/10/26 07:12" />
+
+            <!-- the status of the tour: open (brass) or cancelled (sand); a closed tour shows nothing -->
+            <TextView
+                android:id="@+id/tvTourStatusChip"
+                style="@style/Ww.StatusChip"
+                android:visibility="gone"
+                tools:text="פעיל" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvTourWho"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/heebo_medium"
+            android:textColor="@color/ww_ink_soft"
+            android:textSize="14sp"
+            tools:text="יוסי · שעתיים ו-10 דקות" />
+
+        <!-- the main numbers of the summary, as chips that wrap -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cgTourNumbers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:chipSpacingHorizontal="8dp"
+            app:chipSpacingVertical="8dp" />
+
+        <TextView
+            android:id="@+id/btnTourEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_ww_btn_rect_sand"
+            android:elevation="3dp"
+            android:fontFamily="@font/heebo_extrabold"
+            android:paddingStart="22dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="7dp"
+            android:text="@string/tour_end"
+            android:textColor="@color/ww_rust_dark"
+            android:textSize="15sp"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,44 @@
+<!-- Alternative camera badge with a cow icon - currently not referenced anywhere -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <path
+        android:pathData="M4,32 a28,28 0 1,0 56,0 a28,28 0 1,0 -56,0"
+        android:fillColor="@color/ww_brass"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2"/>
+
+    <path
+        android:pathData="M12 30 Q4 34 6 44"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M6,45 a2.5,2.5 0 1,0 0.01,0z"
+        android:fillColor="@color/ww_iron"/>
+    <path
+        android:pathData="M30,34 m-19,0 a19,10 0 1,0 38,0 a19,10 0 1,0 -38,0"
+        android:fillColor="@color/ww_iron"/>
+    <path android:pathData="M14,40 h4 v13 h-4 Z" android:fillColor="@color/ww_iron"/>
+    <path android:pathData="M23,41 h4 v13 h-4 Z" android:fillColor="@color/ww_iron"/>
+    <path android:pathData="M35,41 h4 v13 h-4 Z" android:fillColor="@color/ww_iron"/>
+    <path android:pathData="M44,40 h4 v13 h-4 Z" android:fillColor="@color/ww_iron"/>
+    <path
+        android:pathData="M26,30 m-6,0 a6,4 0 1,0 12,0 a6,4 0 1,0 -12,0"
+        android:fillColor="@color/ww_parchment"/>
+    <path
+        android:pathData="M50,26 m-8,0 a8,7 0 1,0 16,0 a8,7 0 1,0 -16,0"
+        android:fillColor="@color/ww_iron"/>
+    <path
+        android:pathData="M57,28 m-5,0 a5,4 0 1,0 10,0 a5,4 0 1,0 -10,0"
+        android:fillColor="@color/ww_iron"/>
+    <path
+        android:pathData="M46,18 m-3,0 a3,4 0 1,0 6,0 a3,4 0 1,0 -6,0"
+        android:fillColor="@color/ww_iron"/>
+    <path
+        android:pathData="M52,24.5 m-1.6,0 a1.6,1.9 0 1,0 3.2,0 a1.6,1.9 0 1,0 -3.2,0"
+        android:fillColor="@color/ww_parchment"/>
+</vector>

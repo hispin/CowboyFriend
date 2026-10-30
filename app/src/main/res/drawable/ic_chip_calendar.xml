@@ -1,0 +1,19 @@
+<!-- Small calendar icon in front of the date plaque: tells that the date can be changed (tinted by the TextView) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M4,6 H20 V20 H4 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2.2"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M4,10.5 H20 M8,3 V7 M16,3 V7"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+</vector>

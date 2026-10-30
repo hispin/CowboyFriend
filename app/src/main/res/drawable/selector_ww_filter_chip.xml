@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Switches the filter chip background when the chip is selected (setSelected in CattleTourFragment) -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true" android:drawable="@drawable/shape_ww_filter_chip_selected" />
+    <item android:drawable="@drawable/shape_ww_filter_chip" />
+</selector>

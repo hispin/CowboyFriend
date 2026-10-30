@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- landscape: the screen is wide and short, so the cow cards are shown in two columns -->
+    <integer name="cow_list_columns">2</integer>
+</resources>

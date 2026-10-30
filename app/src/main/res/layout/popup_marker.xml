@@ -1,38 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Popup of a cow on the map (shown only when its pin is tapped): the number with the birth year, the cow type and the
+     status chips (alive / corpse, seen today / not seen). a parchment card with the double border of the other windows -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/popup"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_ww_dialog_card_bg"
+    android:elevation="10dp"
+    android:minWidth="180dp"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="16dp">
 
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="7dp">
+    <!-- number (Rye) and, next to it, the two digits of the birth year -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
 
-    <TextView
-            android:id="@+id/tvCameraDetails"
+        <TextView
+            android:id="@+id/tvPopupNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/cow_details"
-            android:textAlignment="gravity"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/rye_regular"
+            android:textColor="@color/ww_ink"
+            android:textDirection="ltr"
+            android:textSize="26sp"
+            tools:text="№ 123" />
 
-    <TextView
-            android:id="@+id/tvCameraName1"
+        <TextView
+            android:id="@+id/tvPopupYear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="14sp" />
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/rye_regular"
+            android:textColor="@color/ww_saddle"
+            android:textDirection="ltr"
+            android:textSize="20sp"
+            tools:text="25" />
+    </LinearLayout>
 
     <TextView
-            android:id="@+id/tvCameraType1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="14sp" />
+        android:id="@+id/tvPopupType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/heebo_bold"
+        android:textColor="@color/ww_saddle_dark"
+        android:textSize="16sp"
+        tools:text="עגל" />
+
+    <!-- alive (green) / corpse (dark stamp) -->
+    <TextView
+        android:id="@+id/tvPopupStatus"
+        style="@style/Ww.StatusChip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        tools:text="בחיים" />
+
+    <!-- seen today (green) / not seen today (amber warning); hidden for a corpse -->
+    <TextView
+        android:id="@+id/tvPopupSeen"
+        style="@style/Ww.StatusChip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        tools:text="לא נצפתה מאז 14/09/26" />
 </LinearLayout>

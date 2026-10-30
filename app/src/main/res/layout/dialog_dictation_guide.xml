@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Small guide window shared by the voice features (dictating a comment, searching cows by voice): the title and the steps are set by the caller; the defaults are the comment dictation guide -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_ww_dialog_card_bg"
+        android:elevation="12dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="26dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="22dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/heebo_extrabold"
+            android:gravity="center"
+            android:id="@+id/tvGuideTitle"
+            android:text="@string/dictation_guide_title"
+            android:textColor="@color/ww_ink"
+            android:textSize="22sp" />
+
+        <!-- the steps on a sand plate; the plate scrolls when the text is long (the height is limited by the caller) -->
+        <ScrollView
+            android:id="@+id/svGuide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/shape_ww_dialog_row_bg"
+            android:fadeScrollbars="false">
+
+            <TextView
+                android:id="@+id/tvGuideText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/heebo_medium"
+                android:lineSpacingExtra="6dp"
+                android:padding="16dp"
+                android:text="@string/dictation_guide_text"
+                android:textColor="@color/ww_ink"
+                android:textSize="18sp" />
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/btnGuideClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/shape_ww_btn_rect_sand"
+            android:elevation="4dp"
+            android:fontFamily="@font/heebo_bold"
+            android:paddingStart="36dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="36dp"
+            android:paddingBottom="10dp"
+            android:text="@string/close"
+            android:textColor="@color/ww_ink"
+            android:textSize="18sp" />
+    </LinearLayout>
+</FrameLayout>

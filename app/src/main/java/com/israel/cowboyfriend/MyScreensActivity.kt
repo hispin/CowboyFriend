@@ -12,6 +12,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import com.israel.cowboyfriend.UI.LoginFragment
 import com.israel.cowboyfriend.UI.MapmobFragment
 import com.israel.cowboyfriend.UI.NewCalfFragment
 import com.israel.cowboyfriend.classes.OnFragmentListener
+import com.israel.cowboyfriend.global.AppLanguage
 import com.israel.cowboyfriend.global.MAIN_MENU_NUM_ITEM
 import com.israel.cowboyfriend.global.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.israel.cowboyfriend.viewmodel.MyViewModelSupbase
@@ -40,13 +42,17 @@ import java.util.Locale
 import kotlin.collections.set
 
 
+//index of the login tab (the last one), opened automatically when there is no session
+private const val LOGIN_TAB_INDEX = 3
+//index of the map tab (selected by the ranch dashboard to show the heat map)
+private const val MAP_TAB_INDEX = 2
+
 class MyScreensActivity : AppCompatActivity(){
 
     private lateinit var supabase: SupabaseClient
     private var collectionPagerAdapter: CollectionPagerAdapter1?=null
     private lateinit var viewPager: ViewPager2
     private var llMain: LinearLayout?=null
-    private  var tvConnectAccount: Button?=null
 
     //var vPager: ViewPager? = null
     private var currentItemTopMenu = 0
@@ -54,32 +60,18 @@ class MyScreensActivity : AppCompatActivity(){
     private var myViewModelSupbase: MyViewModelSupbase? = null
     var tabs:TabLayout?=null
 
-    override fun onStart() {
-        super.onStart()
-
-        //check if session is get
-        Handler(Looper.getMainLooper()).postDelayed({
-            if(myViewModelSupbase?.isSessionGetSupabase() == true) {
-                llMain?.alpha = 1.0f
-                tvConnectAccount?.visibility=View.GONE
-            }else{
-                llMain?.alpha = 0.2f
-                tvConnectAccount?.visibility=View.VISIBLE
-            }
-        }, 100)
-
-
-
-
-    }
+    //the session is checked once when the tabs are ready (see showLoginIfNoSession), no button is needed any more
 
     @Composable
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        setAppAsHebrow()
-
+        //the status bar area is dark brown (tab bar colors), so its icons must always be light, also on a light system theme.
+        //edge to edge is set before super.onCreate, as the library asks
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT))
+        //the language (and the direction) of the screens is handled by AppCompat, see AppLanguage
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //the first start: the default language is chosen and the screen is recreated in it, so this one is not opened
+        if (AppLanguage.ensureChosen()) return
         setContentView(R.layout.activity_my_screen)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.llMain)) { v, insets ->
             //ime is included so the content is pushed above the keyboard (edge-to-edge does not resize the window by itself)
@@ -169,46 +161,74 @@ class MyScreensActivity : AppCompatActivity(){
 
 
     /**
-     * set application as hebrew
+     * the language button (at the end of the tab bar) shows the short name of the language in use and opens the list of
+     * the languages of the app
      */
-    private fun setAppAsHebrow() {
-        changeLocale(this, "iw")
+    private fun initLanguageButton() {
+        val button = findViewById<android.widget.TextView>(R.id.btnLanguage)
+        button.text = AppLanguage.current().shortName
+        button.setOnClickListener { showLanguageDialog() }
+    }
 
+    /**
+     * the language window: a row for every language of the app. choosing another language changes the texts, the
+     * direction of the screens and the language of the voice, and AppCompat recreates the screen in the new language
+     */
+    private fun showLanguageDialog() {
+        val content = android.view.LayoutInflater.from(this).inflate(R.layout.dialog_language, null, false)
+        val list = content.findViewById<LinearLayout>(R.id.llLanguages)
+        val current = AppLanguage.current()
 
-        val res=resources
+        val dialog = android.app.Dialog(this).apply {
+            requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+            setContentView(content)
+            window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            com.israel.cowboyfriend.global.DialogSizing.apply(this, 0.86f)
+            window?.setDimAmount(0.55f)
+        }
 
-        // Change locale settings in the app.
-        val dm=res.displayMetrics
-        val conf=res.configuration
-        conf.setLocale(Locale("iw")) // API 17+ only.
-
-        // Use conf.locale = new Locale(...) if targeting lower versions
-        res.updateConfiguration(conf, dm)
-
-
-        window.decorView.layoutDirection=View.LAYOUT_DIRECTION_RTL
-
-        val locale=Locale("iw")
-        Locale.setDefault(locale)
-        val config=Configuration()
-        config.locale=locale
-        applicationContext.resources.updateConfiguration(
-            config, applicationContext.resources.displayMetrics
-        )
-
+        for (language in AppLanguage.SUPPORTED) {
+            val row = android.view.LayoutInflater.from(this).inflate(R.layout.item_language_option, list, false)
+            row.findViewById<android.widget.TextView>(R.id.tvLanguageName).text = language.nativeName
+            row.findViewById<View>(R.id.ivLanguageCheck).visibility =
+                if (language.tag == current.tag) View.VISIBLE else View.INVISIBLE
+            row.setOnClickListener {
+                dialog.dismiss()
+                if (language.tag != current.tag) AppLanguage.set(language)
+            }
+            list.addView(row)
+        }
+        content.findViewById<View>(R.id.btnLanguageCancel).setOnClickListener { dialog.dismiss() }
+        dialog.show()
     }
 
     private fun initViews() {
+        initLanguageButton()
+        //the ranch dashboard asked to see the map (with the heat layer): the map tab is selected, the map screen reads the heat mode
+        supportFragmentManager.setFragmentResultListener(
+            com.israel.cowboyfriend.UI.RanchDashboardDialogFragment.RESULT_DASHBOARD_ACTION, this
+        ) { _, result ->
+            if (result.getString(com.israel.cowboyfriend.UI.RanchDashboardDialogFragment.RESULT_ACTION_KEY) ==
+                com.israel.cowboyfriend.UI.RanchDashboardDialogFragment.ACTION_SHOW_MAP
+            ) {
+                tabs?.getTabAt(MAP_TAB_INDEX)?.select()
+            }
+        }
         //vPager = findViewById(R.id.vPager)
         viewPager = findViewById(R.id.vPager)
         viewPager.offscreenPageLimit = 1
         viewPager.setUserInputEnabled(false)
         llMain = findViewById(R.id.llMain)
-        tvConnectAccount= findViewById(R.id.tvConnectAccount)
-        tvConnectAccount?.setOnClickListener {
-            llMain?.alpha = 1.0f
-            tabs?.getTabAt(3)?.select()
-            tvConnectAccount?.visibility=View.GONE
+    }
+
+
+    /**
+     * on load: when there is no session with the database, the login screen (the last tab) is opened by itself,
+     * so the user does not have to find the login tab. the check waits for the saved session to be loaded
+     */
+    private fun showLoginIfNoSession() {
+        myViewModelSupbase?.checkSession { hasSession ->
+            if (!hasSession) tabs?.getTabAt(LOGIN_TAB_INDEX)?.select()
         }
     }
 
@@ -259,6 +279,9 @@ class MyScreensActivity : AppCompatActivity(){
                 // Called when the already selected tab is clicked again
             }
         })
+
+        //posted so the view model exists (on the first start it is created after configTabs) before the session is checked
+        Handler(Looper.getMainLooper()).post { showLoginIfNoSession() }
 
 
     }
@@ -326,10 +349,4 @@ class MyScreensActivity : AppCompatActivity(){
 
     }
 
-    fun changeLocale(context: Context, locale: String) {
-        val res=context.resources
-        val conf: Configuration=res.configuration
-        conf.locale=Locale(locale)
-        res.updateConfiguration(conf, res.displayMetrics)
-    }
 }

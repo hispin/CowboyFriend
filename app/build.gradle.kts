@@ -16,8 +16,8 @@ android {
         applicationId="com.israel.cowboyfriend"
         minSdk=26
         targetSdk=36
-        versionCode=9
-        versionName="9.0"
+        versionCode=10
+        versionName="10.0"
 
         testInstrumentationRunner="androidx.test.runner.AndroidJUnitRunner"
     }
@@ -69,15 +69,14 @@ dependencies {
 
     ///////supbase libraries
     // Core Supabase BOM (Bill of Materials)
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.6.0"))
-    //implementation(libs.bom)
+    implementation(platform(libs.bom))
     implementation(libs.postgrest.kt)
 
     // Add specific modules you need
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.auth.kt)
     implementation("io.github.jan-tennert.supabase:storage-kt")
-    implementation("io.github.jan-tennert.supabase:realtime-kt:3.6.0")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
 
     implementation(libs.ktor.client.okhttp)
     /////////////////

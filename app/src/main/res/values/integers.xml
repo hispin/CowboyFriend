@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- number of columns of the cow cards list (cattle tour): one in portrait, two in landscape (values-land) -->
+    <integer name="cow_list_columns">1</integer>
+</resources>

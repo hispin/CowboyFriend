@@ -43,9 +43,35 @@ class CowTypeCarouselView @JvmOverloads constructor(
         tvPrev = findViewById(R.id.tvCarPrev)
         tvCenter = findViewById(R.id.tvCarCenter)
         tvNext = findViewById(R.id.tvCarNext)
-        //the screen is RTL: the right arrow goes to the previous item, the left arrow to the next one
-        findViewById<ImageButton>(R.id.btnCarRight).setOnClickListener { step(-1) }
-        findViewById<ImageButton>(R.id.btnCarLeft).setOnClickListener { step(1) }
+        applyDirection()
+    }
+
+    //the arrows follow the direction of the screen (Hebrew is RTL, English is LTR); also when the direction is resolved later
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        applyDirection()
+    }
+
+    override fun onRtlPropertiesChanged(layoutDirection: Int) {
+        super.onRtlPropertiesChanged(layoutDirection)
+        applyDirection()
+    }
+
+    /**
+     * the first button of the layout (btnCarRight) is at the start of the row and the last one (btnCarLeft) at its end.
+     * the start button always goes to the previous item (shown next to it) and the end button to the next one; the
+     * arrows point away from the center: RTL start = right side, LTR start = left side
+     */
+    private fun applyDirection() {
+        val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
+        val start = findViewById<ImageButton>(R.id.btnCarRight)
+        val end = findViewById<ImageButton>(R.id.btnCarLeft)
+        start.setImageResource(if (rtl) R.drawable.ic_chevron_right else R.drawable.ic_chevron_left)
+        end.setImageResource(if (rtl) R.drawable.ic_chevron_left else R.drawable.ic_chevron_right)
+        start.contentDescription = context.getString(R.string.prev_cow_type)
+        end.contentDescription = context.getString(R.string.next_cow_type)
+        start.setOnClickListener { step(-1) }
+        end.setOnClickListener { step(1) }
     }
 
     /**

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ranch dashboard block: births and deaths by year of birth (the bar is the share of the dead cows of that year).
+     included by fragment_ranch_dashboard -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_ww_dialog_row_bg"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/heebo_bold"
+        android:text="@string/dash_years"
+        android:textColor="@color/ww_ink"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/heebo_medium"
+        android:text="@string/dash_years_hint"
+        android:textColor="@color/ww_ink_soft"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:id="@+id/llDashYears"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+</LinearLayout>

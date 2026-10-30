@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         //configure text to speech
         textToSpeech=TextToSpeech(this){ status->
             if(status==TextToSpeech.SUCCESS){
-                val result = textToSpeech?.setLanguage(Locale.getDefault())//Locale("iw"))//Locale.getDefault())
+                val result = textToSpeech?.setLanguage(com.israel.cowboyfriend.global.AppLanguage.speechLocale())
                 if (result==TextToSpeech.LANG_MISSING_DATA
                     || result==TextToSpeech.LANG_NOT_SUPPORTED){
                     Toast.makeText(this,"language is not supported",Toast.LENGTH_SHORT).show()
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
         //intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, REQUEST_CODE)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, com.israel.cowboyfriend.global.AppLanguage.speechTag())
 
         try {
             resultSpeakLauncher.launch(intent)

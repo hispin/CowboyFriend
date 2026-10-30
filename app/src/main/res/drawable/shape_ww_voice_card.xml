@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Parchment card with a double dark border (voice input dialog and the saving overlay) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ww_parchment" />
+            <corners android:radius="22dp" />
+            <stroke
+                android:width="4dp"
+                android:color="@color/ww_iron" />
+        </shape>
+    </item>
+    <item
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="16dp" />
+            <stroke
+                android:width="1.5dp"
+                android:color="@color/ww_saddle" />
+        </shape>
+    </item>
+</layer-list>

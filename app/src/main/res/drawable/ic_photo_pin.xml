@@ -1,0 +1,24 @@
+<!-- Brass pin drawn at the top of the photo frame -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M12,6 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="1.5">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="10.5"
+                android:centerY="4.5"
+                android:gradientRadius="8">
+                <item android:offset="0.0" android:color="#F4E3A4" />
+                <item android:offset="0.6" android:color="@color/ww_brass" />
+                <item android:offset="1.0" android:color="#8F7230" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

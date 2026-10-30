@@ -1,0 +1,46 @@
+<!-- Close button of the large picture screen: a brass coin (gradient and gloss, dark border) with a dark X -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <path android:pathData="M4.5,32 a27.5,27.5 0 1,0 55,0 a27.5,27.5 0 1,0 -55,0">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="23"
+                android:centerY="19"
+                android:gradientRadius="46">
+                <item android:offset="0.0" android:color="#F4E3A4" />
+                <item android:offset="0.5" android:color="@color/ww_brass" />
+                <item android:offset="1.0" android:color="#9C7E2E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M4.5,32 a27.5,27.5 0 1,0 55,0 a27.5,27.5 0 1,0 -55,0"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"/>
+    <!-- gloss on top and soft shade at the bottom, like the other badges -->
+    <path
+        android:pathData="M11.5,26 A22,22 0 0 1 34,10.2"
+        android:strokeColor="#99FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M15,47 A22,22 0 0 0 49,47"
+        android:strokeColor="#40000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <!-- the X -->
+    <path
+        android:pathData="M22,22 L42,42 M42,22 L22,42"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+</vector>

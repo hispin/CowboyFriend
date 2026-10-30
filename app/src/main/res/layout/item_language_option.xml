@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One language in the language window: its name in its own language, and a check mark when it is the language in use -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/shape_ww_dialog_row_bg"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="18dp"
+    android:paddingTop="14dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="14dp">
+
+    <TextView
+        android:id="@+id/tvLanguageName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/heebo_bold"
+        android:textAlignment="viewStart"
+        android:textColor="@color/ww_ink"
+        android:textSize="20sp" />
+
+    <!-- visible only for the language in use -->
+    <ImageView
+        android:id="@+id/ivLanguageCheck"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_chip_check"
+        android:tint="@color/ww_turquoise_dark"
+        android:visibility="invisible" />
+</LinearLayout>

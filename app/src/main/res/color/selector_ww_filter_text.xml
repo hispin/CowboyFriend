@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Text color of the filter chips: light brass on the selected (dark) chip, dark ink otherwise -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true" android:color="@color/ww_brass_light" />
+    <item android:color="@color/ww_ink" />
+</selector>

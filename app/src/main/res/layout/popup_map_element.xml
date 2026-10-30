@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Popup of an element on the map (shown when its icon is tapped): the name of the element and a delete button -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_ww_dialog_card_bg"
+    android:elevation="10dp"
+    android:minWidth="160dp"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/tvElementName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/heebo_extrabold"
+        android:textColor="@color/ww_ink"
+        android:textSize="22sp" />
+
+    <!-- removes the element from the map (and from the database) -->
+    <TextView
+        android:id="@+id/btnElementDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/shape_ww_btn_rect_sand"
+        android:elevation="4dp"
+        android:fontFamily="@font/heebo_bold"
+        android:paddingStart="28dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="8dp"
+        android:text="@string/map_element_delete"
+        android:textColor="@color/ww_rust_dark"
+        android:textSize="17sp" />
+</LinearLayout>

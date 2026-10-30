@@ -17,6 +17,12 @@ data class CowDetails (
 ){
     var isCorpse: Boolean=false
     var num_of_calvings: Int?=null
+    //birth date of the cow: the created_at column of the table (milliseconds), null when unknown
+    var created_at: Long?=null
     var id: Int?=null
+    //the health problems of the cow (column health_issues): codes, see HealthIssues; empty = no problem
+    var healthIssues: List<String> = emptyList()
+    //true when the edit window changed the health problems: only then are they sent to the database (see dbUpdateCowDetails)
+    var healthIssuesChanged: Boolean = false
 }
 

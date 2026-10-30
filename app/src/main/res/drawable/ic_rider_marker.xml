@@ -1,0 +1,61 @@
+<!-- My location marker on the map: a cowboy riding a horse (dark silhouette) on a brass coin with a dark border -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- the coin -->
+    <path
+        android:pathData="M5,50 a45,45 0 1,0 90,0 a45,45 0 1,0 -90,0"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="5">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="36"
+                android:centerY="28"
+                android:gradientRadius="78">
+                <item android:offset="0.0" android:color="#F4E3A4" />
+                <item android:offset="0.55" android:color="@color/ww_brass" />
+                <item android:offset="1.0" android:color="#9C7E2E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- the horse: body, neck and head -->
+    <path
+        android:pathData="M26,58 C26,50 38,47 52,49 C61,50 66,53 69,52 L73,42 L77,38 L85,40 L88,46 L82,47 L78,51 L74,60 C73,66 66,68 58,67 L38,67 C31,67 26,64 26,58 Z"
+        android:fillColor="@color/ww_iron"/>
+    <!-- the horse: ears -->
+    <path
+        android:pathData="M78,38 L79,32 L82,38 Z"
+        android:fillColor="@color/ww_iron"/>
+    <!-- the horse: legs and tail -->
+    <path
+        android:pathData="M32,66 L27,81 M41,67 L41,82 M60,67 L66,82 M69,63 L77,77 M26,55 C20,58 18,66 21,73"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="3.6"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <!-- the rider: body and arm to the reins -->
+    <path
+        android:pathData="M45,50 L47,33 L56,33 L58,50 Z"
+        android:fillColor="@color/ww_iron"/>
+    <path
+        android:pathData="M56,38 L67,46"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <!-- the rider: head and the wide hat -->
+    <path
+        android:pathData="M51.5,27.5 m-4.2,0 a4.2,4.2 0 1,0 8.4,0 a4.2,4.2 0 1,0 -8.4,0"
+        android:fillColor="@color/ww_iron"/>
+    <path
+        android:pathData="M41,24 H62 M46,23.5 C46,15 57,15 57,23.5 Z"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="@color/ww_iron"/>
+</vector>

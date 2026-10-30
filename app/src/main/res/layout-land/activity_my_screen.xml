@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Main screen in landscape: the same as the portrait layout, but the tab bar is lower (the screen is short) -->
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+<!-- llMain background is dark brown so the status bar area blends with the tab bar -->
+<LinearLayout
+    android:id="@+id/llMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ww_iron"
+    android:orientation="vertical"
+    tools:context=".MyScreensActivity"
+    >
+
+
+<!--    <com.israel.cowboyfriend.classes.NonSwipeAbleViewPager-->
+<!--        android:id="@+id/vPager"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+
+<!--        >-->
+
+
+
+        <!-- Wild West tab bar: brown gradient, sand colored tabs, cream selected tab and an orange indicator under it -->
+        <!-- the tab bar row: the tabs, and at its end the language button (opens the list of the languages of the app) -->
+        <LinearLayout
+            android:id="@+id/llTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_ww_tabbar"
+            android:elevation="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            app:tabTextColor="@color/ww_tab_inactive"
+            app:tabSelectedTextColor="@color/ww_parchment"
+            app:tabTextAppearance="@style/Ww.TabText"
+            app:tabIndicatorColor="@color/ww_tab_indicator"
+            app:tabIndicatorHeight="3dp"
+            app:tabIndicatorGravity="bottom"
+            app:tabIndicatorFullWidth="false"
+            app:tabPaddingStart="0dp"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingTop="5dp"
+            app:tabPaddingBottom="4dp"
+            app:tabRippleColor="#33E4CD86"
+            android:background="@android:color/transparent"
+            />
+
+        <!-- language button: a globe and the short name of the current language -->
+        <TextView
+            android:id="@+id/btnLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/shape_ww_chip_ok_bg"
+            android:contentDescription="@string/language_button"
+            android:drawableStart="@drawable/ic_globe"
+            android:drawablePadding="4dp"
+            android:drawableTint="@color/ww_ink"
+            android:fontFamily="@font/heebo_extrabold"
+            android:gravity="center"
+            android:minWidth="56dp"
+            android:paddingStart="8dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="3dp"
+            android:textColor="@color/ww_ink"
+            android:textSize="14sp"
+            tools:text="עב" />
+        </LinearLayout>
+
+
+    <!-- background = theme background so the screens look as before although llMain is now dark brown -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/colorBackground"
+
+        />
+
+
+
+
+
+
+</LinearLayout>
+</FrameLayout>

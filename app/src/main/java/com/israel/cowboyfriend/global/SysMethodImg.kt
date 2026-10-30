@@ -61,10 +61,43 @@ fun shareImage(bitmap: Bitmap, activity: Activity?) {
 
     if (uri != null) {
         val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "image/jpeg"
+        //the shared file is a png (see ImageStorageManager) and the receiving app may read it
+        intent.type = "image/png"
         intent.putExtra(Intent.EXTRA_STREAM, uri)
-        activity.startActivity(Intent.createChooser(intent, "Share Image"))
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        activity.startActivity(Intent.createChooser(intent, activity.getString(com.israel.cowboyfriend.R.string.share_chooser_picture)))
     }
+}
+
+//the packages of WhatsApp and of WhatsApp Business: the first one that is installed gets the share
+private val WHATSAPP_PACKAGES = listOf("com.whatsapp", "com.whatsapp.w4b")
+
+/**
+ * shares a picture ([bitmap]) or a text ([text], for example the link of a video) straight to WhatsApp, without the list
+ * of the apps. returns false when WhatsApp is not installed (nothing was shared), so the caller can tell the user
+ */
+fun shareToWhatsApp(activity: Activity, bitmap: Bitmap? = null, text: String? = null): Boolean {
+    val uri = bitmap?.let { ImageStorageManager.getImageUriByBitmap(it, activity) }
+    if (bitmap != null && uri == null) return false
+
+    for (whatsApp in WHATSAPP_PACKAGES) {
+        val intent = Intent(Intent.ACTION_SEND).setPackage(whatsApp)
+        if (uri != null) {
+            intent.type = "image/png"
+            intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        } else {
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT, text.orEmpty())
+        }
+        try {
+            activity.startActivity(intent)
+            return true
+        } catch (e: ActivityNotFoundException) {
+            //this WhatsApp is not installed: try the next one
+        }
+    }
+    return false
 }
 
 /**

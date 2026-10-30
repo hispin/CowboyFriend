@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notebook style background of the comments field: parchment with three drawn ruled lines (plain shapes, a bitmap tile of a vector crashes at inflate time) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ww_parchment_2" />
+            <corners android:radius="8dp" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/ww_iron" />
+        </shape>
+    </item>
+    <item
+        android:left="10dp"
+        android:right="10dp"
+        android:top="35dp"
+        android:height="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ww_saddle" />
+        </shape>
+    </item>
+    <item
+        android:left="10dp"
+        android:right="10dp"
+        android:top="62dp"
+        android:height="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ww_saddle" />
+        </shape>
+    </item>
+    <item
+        android:left="10dp"
+        android:right="10dp"
+        android:top="89dp"
+        android:height="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ww_saddle" />
+        </shape>
+    </item>
+</layer-list>

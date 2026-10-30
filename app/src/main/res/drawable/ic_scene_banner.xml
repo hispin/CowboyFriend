@@ -1,0 +1,50 @@
+<!-- Desert banner (mountains, sun, cacti) at the top of the new cow screen -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="96dp"
+    android:viewportWidth="400"
+    android:viewportHeight="96">
+
+    <!-- sun -->
+    <path
+        android:pathData="M310,28 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0 Z"
+        android:fillColor="#F6DCA0"
+        android:fillAlpha="0.8" />
+
+    <!-- far mountain ridge -->
+    <path
+        android:pathData="M0,96 L0,58 L40,30 L75,58 L110,20 L150,52 L190,34 L230,58 L270,42 L310,60 L350,38 L400,58 L400,96 Z"
+        android:fillColor="#7A4A2E"
+        android:fillAlpha="0.55" />
+
+    <!-- near mountain ridge -->
+    <path
+        android:pathData="M0,96 L0,74 L55,50 L100,74 L150,48 L210,72 L260,54 L320,74 L370,56 L400,70 L400,96 Z"
+        android:fillColor="#4A2E1D"
+        android:fillAlpha="0.7" />
+
+    <!-- cacti -->
+    <group android:name="cacti">
+        <!-- cactus 1: trunk -->
+        <path android:pathData="M40,58 h12 v32 h-12 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M40,58 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M40,90 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <!-- cactus 1: left arm -->
+        <path android:pathData="M26,55.5 h11 v9 h-11 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M26,55.5 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M26,64.5 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <!-- cactus 1: right arm -->
+        <path android:pathData="M49,63.5 h11 v7 h-11 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M49,63.5 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M49,70.5 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+
+        <!-- cactus 2: trunk -->
+        <path android:pathData="M332,61 h10 v30 h-10 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M332,61 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M332,91 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <!-- cactus 2: arm -->
+        <path android:pathData="M320,65 h10 v6 h-10 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M320,65 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+        <path android:pathData="M320,71 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 Z" android:fillColor="#2A1D14" android:fillAlpha="0.85" />
+    </group>
+</vector>

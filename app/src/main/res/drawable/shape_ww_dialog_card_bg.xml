@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Edit window card: parchment with a double dark border and asymmetric corners, matching the cow card -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ww_parchment" />
+            <corners
+                android:topLeftRadius="26dp"
+                android:topRightRadius="8dp"
+                android:bottomLeftRadius="8dp"
+                android:bottomRightRadius="26dp" />
+            <stroke
+                android:width="4dp"
+                android:color="@color/ww_iron" />
+        </shape>
+    </item>
+    <item
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners
+                android:topLeftRadius="18dp"
+                android:topRightRadius="3dp"
+                android:bottomLeftRadius="3dp"
+                android:bottomRightRadius="18dp" />
+            <stroke
+                android:width="1.5dp"
+                android:color="@color/ww_saddle" />
+        </shape>
+    </item>
+</layer-list>

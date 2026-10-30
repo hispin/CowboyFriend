@@ -72,6 +72,86 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <!-- status chip of the cow card: icon + short text, the background and text color are set by the adapter per state -->
+    <style name="Ww.StatusChip" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">6dp</item>
+        <item name="android:drawableTint">@color/ww_ink</item>
+        <item name="android:fontFamily">@font/heebo_bold</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:textColor">@color/ww_ink</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <!-- a row of the edit window: sand rectangle that holds a checkbox -->
+    <style name="Ww.EditRow" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/shape_ww_dialog_row_bg</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <!-- checkbox of the edit window: round dark box (checkbox_selector), big bold text -->
+    <style name="Ww.EditCheck" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@drawable/checkbox_selector</item>
+        <item name="android:buttonTint">@null</item>
+        <item name="buttonTint">@null</item>
+        <item name="android:fontFamily">@font/heebo_bold</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:textColor">@color/ww_ink</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- colors of the date picker wheels in the date window: dark ink text and a rust accent on the sand plate -->
+    <style name="Ww.DatePickerTheme" parent="android:Theme.Material.Light">
+        <item name="android:textColorPrimary">@color/ww_ink</item>
+        <item name="android:textColorSecondary">@color/ww_ink_soft</item>
+        <item name="android:textColor">@color/ww_ink</item>
+        <item name="android:colorAccent">@color/ww_rust</item>
+        <item name="android:colorControlNormal">@color/ww_ink</item>
+    </style>
+
+    <!-- filter chip of the cattle tour list: selected state is switched with setSelected -->
+    <!-- a health problem chip of the edit window (a smaller chip, chosen = rust) -->
+    <style name="Ww.HealthChip" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/selector_ww_health_chip</item>
+        <item name="android:fontFamily">@font/heebo_bold</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:textColor">@color/selector_ww_health_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Ww.FilterChip" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:background">@drawable/selector_ww_filter_chip</item>
+        <item name="android:fontFamily">@font/heebo_bold</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:textColor">@color/selector_ww_filter_text</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
     <!-- text appearance of the top tabs -->
     <style name="Ww.TabText" parent="TextAppearance.Design.Tab">
         <item name="android:fontFamily">@font/heebo_bold</item>

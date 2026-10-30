@@ -1,0 +1,28 @@
+<!-- Location status icon: muted pin with a rust X (location not captured yet) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:pathData="M18,34 C18,34 6,22.5 6,15 A12,12 0 1 1 30,15 C30,22.5 18,34 18,34 Z"
+        android:fillColor="#CDBB8B"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.2"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M18,15 m-4.2,0 a4.2,4.2 0 1,0 8.4,0 a4.2,4.2 0 1,0 -8.4,0"
+        android:fillColor="#F1E4C2"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="1.6"/>
+    <path
+        android:pathData="M29,29 m-8,0 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0"
+        android:fillColor="@color/ww_rust"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="1.8"/>
+    <path
+        android:pathData="M25.6,25.6 L32.4,32.4 M32.4,25.6 L25.6,32.4"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"/>
+</vector>

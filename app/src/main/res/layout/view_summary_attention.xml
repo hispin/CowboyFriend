@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tour summary, block 3: what needs attention (a row for each problem that exists, added by TourSummaryDialogFragment),
+     the comparison with the previous tour, and the button that shows those cows in the list.
+     included by fragment_tour_summary (portrait and landscape) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_ww_dialog_row_bg"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/heebo_bold"
+            android:text="@string/summary_attention"
+            android:textColor="@color/ww_ink"
+            android:textSize="15sp" />
+
+        <!-- one row for every problem: icon, name and the number of cows -->
+        <LinearLayout
+            android:id="@+id/llSummaryAttention"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/tvSummaryAllGood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/heebo_bold"
+            android:text="@string/summary_all_good"
+            android:textColor="@color/ww_turquoise_dark"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/btnSummaryShowAttention"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/shape_ww_btn_rect_sand"
+            android:elevation="3dp"
+            android:fontFamily="@font/heebo_bold"
+            android:gravity="center"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:text="@string/summary_show_attention"
+            android:textColor="@color/ww_ink"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <!-- the comparison with the previous tour (hidden when there was no previous tour) -->
+    <LinearLayout
+        android:id="@+id/llSummaryVs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shape_ww_chip_ok_bg"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/heebo_bold"
+            android:text="@string/summary_vs_previous"
+            android:textColor="@color/ww_turquoise_dark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvSummaryVs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/heebo_medium"
+            android:textColor="@color/ww_turquoise_dark"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

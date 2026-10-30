@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tour summary, block 1: the coverage of the tour. "N of M seen" with a progress bar, and the numbers of the cows that
+     were not seen (the chips are added by TourSummaryDialogFragment). included by fragment_tour_summary (portrait and landscape) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_ww_dialog_row_bg"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/heebo_bold"
+        android:text="@string/summary_coverage"
+        android:textColor="@color/ww_ink"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tvSummarySeen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/heebo_extrabold"
+        android:textColor="@color/ww_ink"
+        android:textSize="24sp" />
+
+    <!-- the bar: the filled part (turquoise) gets the percent of the weight in code -->
+    <LinearLayout
+        android:id="@+id/llCoverageTrack"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_ww_edittext_bg"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:weightSum="100">
+
+        <View
+            android:id="@+id/vCoverageFill"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/ww_turquoise" />
+    </LinearLayout>
+
+    <!-- the cows that were seen in the tour (turquoise circles with their numbers) -->
+    <TextView
+        android:id="@+id/tvSummarySeenTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/heebo_bold"
+        android:textColor="@color/ww_turquoise_dark"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cgSummarySeen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        app:chipSpacingHorizontal="6dp"
+        app:chipSpacingVertical="6dp" />
+
+    <TextView
+        android:id="@+id/tvSummarySeenMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:fontFamily="@font/heebo_medium"
+        android:textColor="@color/ww_ink"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <!-- the cows that were not seen (sand circles) -->
+    <TextView
+        android:id="@+id/tvSummaryNotSeenTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/heebo_bold"
+        android:textColor="@color/ww_ink"
+        android:textSize="14sp" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cgSummaryNotSeen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        app:chipSpacingHorizontal="6dp"
+        app:chipSpacingVertical="6dp" />
+
+    <!-- "and N more" under the chips (not inside the chip group: a short last child makes the group too short) -->
+    <TextView
+        android:id="@+id/tvSummaryNotSeenMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:fontFamily="@font/heebo_medium"
+        android:textColor="@color/ww_ink"
+        android:textSize="14sp"
+        android:visibility="gone" />
+</LinearLayout>

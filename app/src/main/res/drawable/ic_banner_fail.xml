@@ -1,0 +1,18 @@
+<!-- Rust round icon with an X, used in the save result banner (failure) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="36dp"
+    android:height="36dp"
+    android:viewportWidth="36"
+    android:viewportHeight="36">
+    <path
+        android:pathData="M18,18 m-15,0 a15,15 0 1,0 30,0 a15,15 0 1,0 -30,0"
+        android:fillColor="@color/ww_rust"
+        android:strokeColor="@color/ww_brass_light"
+        android:strokeWidth="2"/>
+    <path
+        android:pathData="M12,12 L24,24 M24,12 L12,24"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+</vector>

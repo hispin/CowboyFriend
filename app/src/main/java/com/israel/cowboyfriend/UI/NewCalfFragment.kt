@@ -37,7 +37,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.israel.cowboyfriend.R
+import com.israel.cowboyfriend.UI.helper.FarmNameLabelBinder
 import com.israel.cowboyfriend.classes.CowDetails
+import com.israel.cowboyfriend.global.AppLanguage
+import com.israel.cowboyfriend.global.CowLabels
+import com.israel.cowboyfriend.global.DialogSizing
 import com.israel.cowboyfriend.global.CURRENT_LOCATION_LATITUDE
 import com.israel.cowboyfriend.global.CURRENT_LOCATION_LONGITUDE
 import com.israel.cowboyfriend.global.GET_CURRENT_SINGLE_LOCATION_KEY
@@ -98,6 +102,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var tvNumberOfCalvings: TextView?=null
     private var tvComments: TextView?=null
     private var etNumberOfCalvings: EditText?=null
+    private var tvBrand : TextView?=null
+    //binds the label above to the farm name of the logged in user
+    private var farmNameBinder: FarmNameLabelBinder? = null
     //2-digit odometer that shows / edits the hidden etNumberOfCalvings
     private var odoNumberOfCalvings: com.israel.cowboyfriend.UI.widget.OdometerNumberView?=null
     private var ciNumberOfCalvings: CircleImageView?=null
@@ -115,7 +122,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
      */
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            val result = textToSpeech?.setLanguage(Locale.US)
+            //the voice speaks in the language chosen in the app
+            val result = textToSpeech?.setLanguage(AppLanguage.speechLocale())
 
             if (result != TextToSpeech.LANG_MISSING_DATA || result != TextToSpeech.LANG_NOT_SUPPORTED) {
                 // Set the progress listener
@@ -210,7 +218,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         val trimmed = text.trim()
         if (trimmed.isEmpty()) return null
         return when {
-            hasToBeNumber -> extractNumber(trimmed)
+            hasToBeNumber -> com.israel.cowboyfriend.global.VoiceNumbers.extractNumber(trimmed)
             isGenderField -> findSpinnerOption(spGenderCalf, trimmed)
             else -> trimmed
         }
@@ -241,51 +249,19 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     }
 
     /*
-    * pull a number out of a recognized sentence: "123", "1 2 3", "מספר 45", "ארבע"
-     */
-    private fun extractNumber(text: String): String? {
-        if (text.matches(Regex("""[\d\s]+"""))) {
-            return text.replace(" ", "").toIntOrNull()?.toString()
-        }
-        Regex("""\d+""").find(text)?.let { match ->
-            match.value.toIntOrNull()?.let { return it.toString() }
-        }
-        for (word in text.split(" ", ",", ".")) {
-            hebrewWordToDigit(word)?.let { return it }
-        }
-        return null
-    }
-
-    /*
-    * map a Hebrew number word (0-10) to its digit string, or null if not recognized
-     */
-    private fun hebrewWordToDigit(text: String): String? {
-        return when(text){
-            "אפס"-> "0"
-            "אחד","אחת"-> "1"
-            "שתיים","שניים","שתים","שנים"-> "2"
-            "שלוש","שלושה"-> "3"
-            "ארבע","ארבעה"-> "4"
-            "חמש","חמישה"-> "5"
-            "שש","שישה"-> "6"
-            "שבע","שבעה"-> "7"
-            "שמונה"-> "8"
-            "תשע","תשעה"-> "9"
-            "עשר","עשרה"-> "10"
-            else-> null
-        }
-    }
-
-    /*
     * find the spinner option (other than the first "choose" placeholder) that appears in the sentence
      */
     private fun findSpinnerOption(spinner: Spinner?, text: String): String? {
         val adapter = spinner?.adapter ?: return null
+        //ignoring the case, and the longest option wins: in English "female" also contains the option "male"
+        var found: String? = null
         for (i in 1 until adapter.count) {
             val option = adapter.getItem(i)?.toString() ?: continue
-            if (option.isNotBlank() && text.contains(option)) return option
+            if (option.isNotBlank() && text.contains(option, ignoreCase = true) && option.length > (found?.length ?: 0)) {
+                found = option
+            }
         }
-        return null
+        return found
     }
 
     /*
@@ -317,7 +293,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
      */
     private fun speakMessage(text: String) {
         val params = Bundle()
-        params.putString(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")
+        params.putString(RecognizerIntent.EXTRA_LANGUAGE, AppLanguage.speechTag())
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID_MESSAGE)
         textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, params, UTTERANCE_ID_MESSAGE)
     }
@@ -358,7 +334,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         //configure text to speech
         textToSpeech=TextToSpeech(requireActivity()){ status->
             if(status== TextToSpeech.SUCCESS){
-                val result = textToSpeech?.setLanguage(Locale.getDefault())//Locale("iw"))//Locale.getDefault())
+                val result = textToSpeech?.setLanguage(AppLanguage.speechLocale())
                 if (result== TextToSpeech.LANG_MISSING_DATA
                     || result== TextToSpeech.LANG_NOT_SUPPORTED){
                     Toast.makeText(requireActivity(),"language is not supported", Toast.LENGTH_SHORT).show()
@@ -375,7 +351,13 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
        spNewCowType?.onSelectionChanged = { _, value -> updateFieldsByCowType(value) }
        updateFieldsByCowType(cowTypes.getOrNull(0))
 
+       //the farm name label is handled by the shared binder (the same class the login screen uses)
+       farmNameBinder = tvBrand?.let { label -> myViewModelSupbase?.let { FarmNameLabelBinder(label, it) } }
+       farmNameBinder?.bind(viewLifecycleOwner)
+
        setObservers()
+
+       farmNameBinder?.load()
 
        return view
     }
@@ -395,7 +377,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             val iterator=cows.iterator()
             while (iterator.hasNext()) {
                 val item=iterator.next()
-                if(item.cowType.equals(cowTypeArray?.get(2))) {
+                //only a cow (not a calf or a bull) can be the mother; the type is saved in Hebrew, so it is compared by position
+                if(CowLabels.typeIndex(item.cowType) == CowLabels.TYPE_COW) {
                     moms.add(item.number.toString())
                 }
             }
@@ -410,6 +393,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         //Attach the adapter to the spinner
             spMoms?.adapter = adapter
         }
+
     }
 
 
@@ -418,9 +402,10 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
      * calf -> mom fields, cow / first-cow -> number of calvings, bull -> neither
      */
     private fun updateFieldsByCowType(selectedType: Any?) {
-        val isCalf = cowTypeArray?.get(0)?.equals(selectedType) == true
-        val hasCalvings = cowTypeArray?.get(1)?.equals(selectedType) == true
-                || cowTypeArray?.get(2)?.equals(selectedType) == true
+        //the position of the selected type in the list of the current language: 0 calf, 1 first-cow, 2 cow, 3 bull
+        val typeIndex = cowTypeArray?.indexOf(selectedType) ?: -1
+        val isCalf = typeIndex == CowLabels.TYPE_CALF
+        val hasCalvings = typeIndex == CowLabels.TYPE_FIRST_COW || typeIndex == CowLabels.TYPE_COW
 
         val momVisibility = if (isCalf) View.VISIBLE else View.GONE
         tvNumberOfMom?.visibility = momVisibility
@@ -513,6 +498,63 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         }
     }
 
+    /**
+     * the day shown on the date plaque (today until another one is chosen), as a calendar; the time of day is not
+     * important, it is added when the cow is saved
+     */
+    private var selectedDate: Calendar = Calendar.getInstance()
+
+    //shows the chosen day on the plaque in the same format as before (dd/MM/yy)
+    private fun showSelectedDate() {
+        tvDate?.text = getStringFromCalendar(selectedDate, "dd/MM/yy", requireActivity())
+    }
+
+    //the chosen day with the current time of day, in milliseconds: saved as the birth date (created_at) of the new cow
+    private fun selectedDateMillis(): Long {
+        val now = Calendar.getInstance()
+        val result = selectedDate.clone() as Calendar
+        result.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY))
+        result.set(Calendar.MINUTE, now.get(Calendar.MINUTE))
+        result.set(Calendar.SECOND, now.get(Calendar.SECOND))
+        return result.timeInMillis
+    }
+
+    /**
+     * the date window (parchment card, wheels in the app colors): choose a day other than today for the new cow.
+     * the day cannot be in the future; the "today" button goes back to today
+     */
+    private fun showDatePickerDialog() {
+        val ctx = context ?: return
+        val content = LayoutInflater.from(ctx).inflate(R.layout.dialog_date_picker, null, false)
+        val picker = content.findViewById<android.widget.DatePicker>(R.id.datePicker)
+        picker.maxDate = System.currentTimeMillis()
+        picker.updateDate(
+            selectedDate.get(Calendar.YEAR),
+            selectedDate.get(Calendar.MONTH),
+            selectedDate.get(Calendar.DAY_OF_MONTH)
+        )
+
+        val dialog = android.app.Dialog(ctx).apply {
+            requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+            setContentView(content)
+            window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            DialogSizing.apply(this, 0.94f)
+            window?.setDimAmount(0.55f)
+        }
+        content.findViewById<View>(R.id.btnDateOk).setOnClickListener {
+            selectedDate = Calendar.getInstance().apply { set(picker.year, picker.month, picker.dayOfMonth) }
+            showSelectedDate()
+            dialog.dismiss()
+        }
+        content.findViewById<View>(R.id.btnDateToday).setOnClickListener {
+            selectedDate = Calendar.getInstance()
+            showSelectedDate()
+            dialog.dismiss()
+        }
+        content.findViewById<View>(R.id.btnDateCancel).setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
     private fun initView(view: View?) {
         ciNumberOfCalf=view?.findViewById(R.id.ciNumberOfCalf)
         etNumberOfCalf =view?.findViewById(R.id.etNumberOfCalf)
@@ -561,6 +603,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         tvNumberOfCalvings = view?.findViewById(R.id.tvNumberOfCalvings)
         tvComments = view?.findViewById(R.id.tvComments)
         etNumberOfCalvings = view?.findViewById(R.id.etNumberOfCalvings)
+        tvBrand = view?.findViewById(R.id.tvBrand)
         //voice input and saving keep using the hidden EditText, the odometer is kept in sync with it
         odoNumberOfCalvings = view?.findViewById(R.id.odoNumberOfCalvings)
         bindOdometer(odoNumberOfCalvings, etNumberOfCalvings)
@@ -573,7 +616,9 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         spNewCowType = view?.findViewById(R.id.spNewCowType)
         spMoms= view?.findViewById(R.id.spMoms)
 
-        tvDate?.text=getStringFromCalendar(Calendar.getInstance(), "dd/MM/yy", requireActivity())
+        //the plaque shows today, tapping it opens the date window to choose another day (the birth date of the cow)
+        showSelectedDate()
+        tvDate?.setOnClickListener { showDatePickerDialog() }
 
         ciNumberOfCalf?.setOnClickListener {
             isMomNumberField=false
@@ -640,10 +685,12 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
                              val lat: Double?= tvLocationLatitude?.text.toString().toDoubleOrNull()
                              val long: Double?= tvLocationLongitude?.text.toString().toDoubleOrNull()
-                             val cowType = spNewCowType?.selectedItem.toString()
+                             //the type is saved as the Hebrew text of its position, whatever the language of the app is
+                             val typeIndex = cowTypeArray?.indexOf(spNewCowType?.selectedItem?.toString()) ?: -1
+                             val cowType = CowLabels.storedType(typeIndex) ?: spNewCowType?.selectedItem.toString()
 
                              var with_mom: Long? = null
-                             if(cowType.equals(cowTypeArray?.get(0))
+                             if(typeIndex == CowLabels.TYPE_CALF
                                  && cbWithMomNew?.isChecked==true){
                                  with_mom=Calendar.getInstance().timeInMillis
                              }
@@ -655,7 +702,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                  cow=CowDetails(
                                      number=etNumberOfCalf?.text.toString().toIntOrNull(),
                                      number_mom=spMoms?.selectedItem.toString().toIntOrNull(),
-                                     gender=spGenderCalf?.selectedItem.toString(),
+                                     gender=CowLabels.storedGenderFromSpinner(spGenderCalf?.selectedItemPosition ?: 0),
                                      image_url=myUrl,
                                      user_id=supabase.auth.currentSessionOrNull()?.user?.email,
                                      comment=etComments?.text.toString(),
@@ -671,7 +718,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                  cow=CowDetails(
                                      number=etNumberOfCalf?.text.toString().toIntOrNull(),
                                      number_mom=spMoms?.selectedItem.toString().toIntOrNull(),
-                                     gender=spGenderCalf?.selectedItem.toString(),
+                                     gender=CowLabels.storedGenderFromSpinner(spGenderCalf?.selectedItemPosition ?: 0),
                                      image_url=myUrl,
                                      user_id=supabase.auth.currentSessionOrNull()?.user?.email,
                                      comment=etComments?.text.toString(),
@@ -686,12 +733,14 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                              }
 
                              cow.isMarkedTag = cbEarTag?.isChecked == true
+                             //the day on the plaque is the birth date of the cow (created_at in the table)
+                             cow.created_at = selectedDateMillis()
 
                              //mom number only for a calf, number of calvings only for a cow / first-cow
-                             if(!cowType.equals(cowTypeArray?.get(0))){
+                             if(typeIndex != CowLabels.TYPE_CALF){
                                  cow.number_mom=null
                              }
-                             if(cowType.equals(cowTypeArray?.get(1)) || cowType.equals(cowTypeArray?.get(2))){
+                             if(typeIndex == CowLabels.TYPE_FIRST_COW || typeIndex == CowLabels.TYPE_COW){
                                  cow.num_of_calvings=etNumberOfCalvings?.text.toString().toIntOrNull()
                              }
 
@@ -791,7 +840,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         recognizerIntent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, AppLanguage.speechTag())
         //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,  Long(2000))
         // Set longer silence detection
         //recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L) // 5 seconds
@@ -812,7 +861,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         this.hasToBeNumber = hasToBeNumber
         this.etCurrent=etCurrent
         val params = Bundle()
-        params.putString(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
+        params.putString(RecognizerIntent.EXTRA_LANGUAGE, AppLanguage.speechTag())
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID)
         textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, params, UTTERANCE_ID)
     }
@@ -822,7 +871,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         this.myTextOrder = text
         this.hasToBeNumber = hasToBeNumber
         val params = Bundle()
-        params.putString(RecognizerIntent.EXTRA_LANGUAGE, "he-IL")//""en-US")
+        params.putString(RecognizerIntent.EXTRA_LANGUAGE, AppLanguage.speechTag())
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID)
         textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, params, UTTERANCE_ID)
     }

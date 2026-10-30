@@ -40,8 +40,9 @@ class ImageStorageManager {
         fun getImageUriByBitmap(bmp: Bitmap, context: Context?): Uri? {
             var bmpUri: Uri? = null
             try {
+                //the Pictures folder of the app, or the cache folder when the external storage is not available
                 val file = File(
-                    context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: context?.cacheDir,
                     "share_image_" + System.currentTimeMillis() + ".png"
                 )
                 val out = FileOutputStream(file)

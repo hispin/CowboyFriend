@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">CowboyFriend</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="new_cow">פרה חדש</string>
+    <string name="new_cow">פרה חדשה</string>
     <string name="cattle_tour">סיור בקר</string>
     <string name="settings">הגדרות</string>
     <string name="number_cow">מספר פרה</string>
@@ -42,7 +42,7 @@
     <string name="connect">התחברות</string>
     <string name="login">התחברות</string>
     <string name="success_login">ההתחברות הצליחה</string>
-    <string name="load_my_location">טוען את המיקום שלי …</string>
+    <string name="load_my_location">טוען את המיקום שלי…</string>
     <string name="connect_to_account">התחבר לחשבון שלך</string>
     <string name="cow_type">סוג פרה</string>
     <string name="with_mom">עם אימו</string>
@@ -95,4 +95,199 @@
     <string name="saving_cow">שומר את הפרה…</string>
     <string name="cow_saved">הפרה נשמרה בהצלחה</string>
     <string name="cow_save_failed">השמירה נכשלה, נסה שוב</string>
+    <!-- Content descriptions of the password visibility toggle on the login screen -->
+    <string name="show_password">הצג סיסמה</string>
+    <string name="hide_password">הסתר סיסמה</string>
+    <!-- Login screen validation messages (shown under the fields) -->
+    <string name="error_user_empty">הזן שם משתמש</string>
+    <string name="error_password_empty">הזן סיסמה</string>
+    <string name="error_email_invalid">פורמט האימייל אינו תקין</string>
+    <!-- Compact texts of the cow card in the cattle tour list (the icons replace the long labels) -->
+    <string name="card_cow_number">№ %1$s</string>
+    <string name="card_mom">אמא %1$s</string>
+    <string name="card_seen">נצפתה %1$s</string>
+    <string name="refresh_cows">רענן את רשימת הפרות</string>
+    <!-- Cattle tour: filter chips, cows counter and the empty list message -->
+    <string name="filter_all">הכל</string>
+    <string name="filter_calves">עגלים</string>
+    <string name="filter_calves_not_seen">עגלים שלא נראו היום</string>
+    <string name="filter_bulls">שוורים</string>
+    <string name="cows_count_all">%1$d פרות</string>
+    <string name="cows_count_filtered">מוצגות %1$d מתוך %2$d</string>
+    <string name="no_cows_match_filter">אין פרות שמתאימות לסינון</string>
+    <!-- Cattle tour voice search: spoken prompt, errors, the search chip and the empty result message -->
+    <string name="voice_prompt_search_cow">אמור מספר פרה ושנת לידה, פסיק בין פרות, וסוף לסיום</string>
+    <string name="voice_search_not_understood">לא הבנתי את המספר</string>
+    <string name="voice_search_cow">חיפוש קולי של פרה</string>
+    <string name="search_number_chip">חיפוש: %1$s ×</string>
+    <string name="no_cow_with_number">לא נמצאו פרות שמתאימות לחיפוש</string>
+    <!-- Cow card: comment mark and the comment window -->
+    <string name="has_comment">יש הערה</string>
+    <string name="add_comment">הוסף הערה</string>
+    <string name="comment_hint">כתוב או הקלט הערה</string>
+    <string name="comment_edit_voice">הקלטת הערה</string>
+    <string name="comment_title">הערה לפרה</string>
+    <string name="close">סגור</string>
+    <!-- Cow card status chips and the edit window of a cow -->
+    <string name="edit_cow_title">עריכת פרה</string>
+    <string name="comment_read_again">הקרא שוב</string>
+    <string name="status_seen_today">נצפתה היום</string>
+    <string name="status_not_seen_since">לא נצפתה מאז %1$s</string>
+    <string name="status_with_mom">עם אימו</string>
+    <string name="status_no_mom">בלי אימו</string>
+    <string name="status_tag_yes">תג אוזן</string>
+    <string name="status_tag_no">ללא תג</string>
+    <string name="status_no_comment">אין הערה</string>
+    <string name="edit_seen_today">נצפתה היום</string>
+    <string name="edit_update_location">עדכן מיקום</string>
+    <string name="edit_location_waiting">מחפש מיקום…</string>
+    <string name="edit_location_done">המיקום עודכן</string>
+    <string name="edit_location_unchanged">ללא שינוי</string>
+    <string name="edit_section_visit">ביקור</string>
+    <string name="edit_section_status">מצב</string>
+    <string name="edit_section_location">מיקום</string>
+    <string name="edit_section_comment">הערה</string>
+    <string name="edit_saved">הפרה עודכנה</string>
+    <!-- Comment dictation: how to finish, and the small guide window -->
+    <string name="voice_dictation_hint">אמור ”סוף” או ”end” כדי לסיים</string>
+    <string name="dictation_guide_title">איך מכתיבים הערה</string>
+    <string name="dictation_guide_text">1. לחץ על המיקרופון והתחל לדבר.\n2. אפשר לעשות הפסקות ולהמשיך, הכול נוסף להערה.\n3. כדי לסיים אמור ”סוף” או ”end” בסוף המשפט האחרון.\n4. הטקסט יופיע בשדה ההערה, אפשר לתקן אותו ואז ללחוץ שמור.\n5. ”ביטול” סוגר בלי להוסיף את מה שנאמר.</string>
+    <string name="dictation_guide_button">הדרכה להכתבה</string>
+    <string name="search_guide_title">איך מחפשים פרות בקול</string>
+    <string name="search_guide_text">1. לחץ על המיקרופון ואמור מספר פרה.\n2. כדי לחפש לפי שנת לידה, אמור אחרי המספר את שתי ספרות השנה. לדוגמה: ”2” ... ”26” מציג את פרה 2 שנולדה ב-2026.\n3. מספר בלי שנה מציג את כל הפרות עם המספר הזה, בכל שנה.\n4. כמה פרות: אמור ”פסיק” או ”comma” בין פרה לפרה. לדוגמה: ”2, 26, פסיק, 7, פסיק, 15, 24”.\n5. לסיום אמור ”סוף” או ”end”. ההקשבה לא נסגרת לפני כן, אפשר לעשות הפסקות.\n6. ”ביטול” סוגר בלי לחפש.</string>
+    <string name="search_guide_button">הדרכה לחיפוש קולי</string>
+    <string name="birth_year_description">נולדה בשנת %1$d</string>
+    <!-- Date window of the new cow screen -->
+    <string name="date_dialog_title">תאריך לידה</string>
+    <string name="date_dialog_ok">בחר</string>
+    <string name="date_dialog_today">היום</string>
+    <string name="date_change_description">שינוי התאריך</string>
+    <!-- Map screen -->
+    <string name="map_locate_me">המיקום שלי</string>
+    <string name="map_cows_count">%1$d פרות במפה</string>
+    <string name="map_status_alive">בחיים</string>
+    <!-- Tours: the tour bar of the cattle tour screen, the end window and the summary of a tour -->
+    <string name="tour_start">התחל סיור</string>
+    <string name="tour_end">סיים סיור</string>
+    <string name="tour_idle_hint">אין סיור פעיל</string>
+    <string name="tour_dialog_title">סיור</string>
+    <string name="tour_history_short">היסטוריה</string>
+    <string name="tour_dialog_idle_headline">אין סיור פעיל</string>
+    <string name="tour_dialog_idle_info">התחל סיור כדי לעקוב אחרי הפרות שנראו, ולקבל סיכום בסיומו.</string>
+    <string name="tour_dialog_active_headline">סיור פעיל</string>
+    <string name="tour_dialog_since">התחיל ב-%1$s</string>
+    <string name="tour_active_status">סיור פעיל · נראו %1$d/%2$d</string>
+    <string name="tour_started">הסיור התחיל</string>
+    <string name="tour_start_failed">לא ניתן להתחיל סיור. נסה שוב</string>
+    <string name="tour_end_title">לסיים את הסיור?</string>
+    <string name="tour_end_not_seen">%1$d פרות עדיין לא נראו.</string>
+    <string name="tour_end_all_seen">כל הפרות נראו.</string>
+    <string name="tour_continue">המשך סיור</string>
+    <string name="tour_ending">מסכם את הסיור…</string>
+    <string name="tour_end_failed">לא ניתן לסיים את הסיור. נסה שוב</string>
+    <string name="summary_title">סיכום סיור</string>
+    <string name="summary_by">על ידי %1$s</string>
+    <string name="summary_duration_hm">%1$d שעות ו-%2$d דקות</string>
+    <string name="summary_duration_m">%1$d דקות</string>
+    <string name="summary_duration_lt1">פחות מדקה</string>
+    <string name="summary_seen_title">נראו (%1$d)</string>
+    <string name="history_title">היסטוריית סיורים</string>
+    <string name="history_empty">עדיין אין סיורים. התחל את הראשון ממסך סיור בקר.</string>
+    <string name="history_load_failed">לא ניתן לטעון את הסיורים. נסה שוב</string>
+    <string name="history_open_failed">לא ניתן לטעון את הסיכום. נסה שוב</string>
+    <string name="history_status_open">פעיל</string>
+    <string name="history_status_cancelled">בוטל</string>
+    <string name="history_chip_seen">נראו %1$d/%2$d</string>
+    <string name="history_chip_calves">עגלים חדשים %1$d</string>
+    <string name="history_chip_corpses">פגרים חדשים %1$d</string>
+    <string name="history_chip_changed">שונו %1$d</string>
+    <string name="history_end_message">הסיור של %1$s ייסגר.</string>
+    <!-- Ranch dashboard -->
+    <string name="dash_title">לוח ענף</string>
+    <string name="dash_herd">העדר</string>
+    <string name="dash_alive">פרות חיות</string>
+    <string name="dash_dead">פגרים %1$d</string>
+    <string name="dash_health">בעיות בריאות</string>
+    <string name="dash_health_count">%1$d פרות עם בעיה</string>
+    <string name="dash_health_none">אין בעיות בריאות</string>
+    <string name="dash_years">לידות ותמותה לפי שנת לידה</string>
+    <string name="dash_years_hint">שנה (נרשמו) · אחוז הפרות שמתו</string>
+    <string name="dash_trend">מגמת כיסוי הסיורים</string>
+    <string name="dash_trend_empty">המגמה תופיע אחרי הסיור הסגור הראשון.</string>
+    <string name="dash_trend_last">סיור אחרון: נראו %1$d%% מהפרות</string>
+    <string name="dash_trend_up">עלייה של %1$d נקודות מהסיור הקודם</string>
+    <string name="dash_trend_down">ירידה של %1$d נקודות מהסיור הקודם</string>
+    <string name="dash_trend_same">ללא שינוי מהסיור הקודם</string>
+    <string name="dash_map">מפת חום</string>
+    <string name="dash_map_hint">איפה הפרות מרוכזות</string>
+    <string name="dash_heat_all">כל הפרות</string>
+    <string name="dash_heat_attention">שדורשות טיפול</string>
+    <string name="dash_share_text">שתף כטקסט</string>
+    <string name="dash_share_pdf">שתף PDF</string>
+    <string name="dash_pdf_failed">לא ניתן ליצור PDF. נסה שוב</string>
+    <string name="map_heat_toggle">מפת חום</string>
+    <string name="map_heat_off">מפת החום כבויה</string>
+    <string name="map_heat_all">מפת חום: כל הפרות</string>
+    <string name="map_heat_attention">מפת חום: פרות שדורשות טיפול</string>
+    <string name="summary_coverage">כיסוי הסיור</string>
+    <string name="summary_seen_of">%1$d מתוך %2$d נראו</string>
+    <string name="summary_not_seen">לא נראו (%1$d)</string>
+    <string name="summary_and_more">ועוד %1$d</string>
+    <string name="summary_new_calves">עגלים חדשים</string>
+    <string name="summary_new_corpses">פגרים חדשים</string>
+    <string name="summary_changed">פרות ששונו</string>
+    <string name="summary_comments">הערות שנוספו</string>
+    <string name="summary_attention">דורש טיפול</string>
+    <string name="summary_all_good">שום דבר לא דורש טיפול</string>
+    <string name="summary_show_attention">הצג את הפרות שדורשות טיפול</string>
+    <string name="summary_share">שתף סיכום</string>
+    <string name="summary_vs_previous">לעומת הסיור הקודם</string>
+    <string name="summary_vs_seen">נראו</string>
+    <string name="summary_vs_calves">עגלים חדשים</string>
+    <string name="summary_vs_no_mom">עגלים בלי אמא</string>
+    <string name="attention_calf_without_mom">עגלים בלי אמא</string>
+    <string name="attention_calf_without_tag">עגלים בלי תג אוזן</string>
+    <string name="attention_health">בעיות בריאות</string>
+    <string name="attention_not_seen_14d">לא נראו 14 ימים ויותר</string>
+    <string name="attention_never_seen">מעולם לא נראו</string>
+    <string name="attention_no_location">בלי מיקום</string>
+    <string name="filter_attention">דורש טיפול</string>
+    <!-- Health problems of a cow (edit window, cow card, filter) -->
+    <string name="edit_section_health">בריאות</string>
+    <string name="health_lameness">צולעת / הליכה לא יציבה</string>
+    <string name="health_swollen_udder">עטין נפוח</string>
+    <string name="health_eye">בעיית עיניים</string>
+    <string name="health_respiratory">שיעול / הפרשה מהאף</string>
+    <string name="health_diarrhea">שלשול</string>
+    <string name="health_bloat">בטן נפוחה</string>
+    <string name="health_wound_skin">פצע / נגע בעור</string>
+    <string name="health_thin">רזה / ירידה במשקל</string>
+    <string name="health_lethargic">אפאטית / לא אוכלת</string>
+    <string name="health_parasites">קרציות / טפילים</string>
+    <string name="health_calving">קרובה להמלטה / קשיי המלטה</string>
+    <string name="health_weak_calf">עגל חלש / לא יונק</string>
+    <string name="health_other">אחר</string>
+    <string name="health_other_hint">תאר את הבעיה</string>
+    <string name="health_chip_count">%1$d בעיות בריאות</string>
+    <string name="health_dialog_title">בעיות בריאות</string>
+    <string name="health_edit">עריכה</string>
+    <string name="filter_health">בעיות בריאות</string>
+    <!-- Large picture screen -->
+    <string name="share_picture">שיתוף</string>
+    <string name="share_whatsapp">שיתוף בווטסאפ</string>
+    <string name="whatsapp_not_installed">ווטסאפ לא מותקן בטלפון</string>
+    <string name="photo_load_failed">לא ניתן לטעון את התמונה</string>
+    <string name="share_chooser_picture">שיתוף התמונה</string>
+    <!-- Language of the app -->
+    <string name="language_title">שפה</string>
+    <string name="language_button">החלפת שפה</string>
+    <!-- Map elements (added by a long press on the map) -->
+    <string name="map_add_title">הוספה למפה</string>
+    <string name="map_element_gate">שער</string>
+    <string name="map_element_delete">מחק</string>
+    <string name="map_element_added">נוסף למפה</string>
+    <string name="map_element_deleted">הוסר מהמפה</string>
+    <string name="map_element_failed">הפעולה נכשלה, נסה שוב</string>
+    <!-- Map type toggle (normal map / satellite) -->
+    <string name="map_type_toggle">מעבר בין מפה ללוויין</string>
 </resources>

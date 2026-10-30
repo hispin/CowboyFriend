@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Same field background as shape_ww_edittext_bg but with a thicker rust border: shown on a field that failed validation -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#F3DCC4" />
+    <corners android:radius="8dp" />
+    <stroke
+        android:width="3dp"
+        android:color="@color/ww_rust" />
+    <padding
+        android:left="10dp"
+        android:top="6dp"
+        android:right="10dp"
+        android:bottom="6dp" />
+</shape>

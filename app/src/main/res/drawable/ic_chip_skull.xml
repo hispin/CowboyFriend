@@ -1,0 +1,22 @@
+<!-- Cow skull with horns (the Wild West sign for a dead animal), in front of the corpse stamp (tinted by the TextView) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="22dp"
+    android:height="22dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M1.5,9 C2.5,4.5 7,4.5 8.5,8 M22.5,9 C21.5,4.5 17,4.5 15.5,8"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M8,8 H16 L15.2,14 L14,16 V20.5 H10 V16 L8.8,14 Z"
+        android:fillColor="#FF000000"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="1.2"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M10.2,11.6 m-1.3,0 a1.3,1.3 0 1,0 2.6,0 a1.3,1.3 0 1,0 -2.6,0 M13.8,11.6 m-1.3,0 a1.3,1.3 0 1,0 2.6,0 a1.3,1.3 0 1,0 -2.6,0"
+        android:fillColor="#FFFFFFFF"/>
+</vector>

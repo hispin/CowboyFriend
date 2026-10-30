@@ -1,0 +1,35 @@
+<!-- Round brass edit badge (pencil) of the cow card: opens the edit window -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="44"
+    android:viewportHeight="44">
+    <path
+        android:pathData="M3,22 a19,19 0 1,0 38,0 a19,19 0 1,0 -38,0"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.6">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="16"
+                android:centerY="12"
+                android:gradientRadius="34">
+                <item android:offset="0.0" android:color="#F4E3A4" />
+                <item android:offset="0.55" android:color="@color/ww_brass" />
+                <item android:offset="1.0" android:color="#9C7E2E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M13,31 L14.5,25 L27,12.5 L31.5,17 L19,29.5 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.2"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M24.5,15 L29,19.5"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"/>
+</vector>

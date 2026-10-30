@@ -1,0 +1,29 @@
+<!-- Map pin of a dead cow: dark iron drop with a brass border and a cow skull; tap it to see the details of the cow -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="56dp"
+    android:viewportWidth="44"
+    android:viewportHeight="56">
+    <path
+        android:pathData="M22,54 C22,54 3,34 3,20 A19,19 0 1 1 41,20 C41,34 22,54 22,54 Z"
+        android:fillColor="@color/ww_iron"
+        android:strokeColor="@color/ww_brass"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round"/>
+    <!-- skull: horns, head, eyes -->
+    <path
+        android:pathData="M8,15 C9,9 15,9 17,14 M36,15 C35,9 29,9 27,14"
+        android:strokeColor="@color/ww_brass_light"
+        android:strokeWidth="2.6"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+    <path
+        android:pathData="M16,13 H28 L27,22 L25.5,25 V32 H18.5 V25 L17,22 Z"
+        android:fillColor="@color/ww_brass_light"
+        android:strokeColor="@color/ww_brass_light"
+        android:strokeWidth="1.6"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M18.8,19 m-1.7,0 a1.7,1.7 0 1,0 3.4,0 a1.7,1.7 0 1,0 -3.4,0 M25.2,19 m-1.7,0 a1.7,1.7 0 1,0 3.4,0 a1.7,1.7 0 1,0 -3.4,0"
+        android:fillColor="@color/ww_iron"/>
+</vector>

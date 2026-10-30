@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ranch dashboard block: the heat map. two buttons open the map screen with the heat layer (all the cows, or only the
+     cows that need attention). included by fragment_ranch_dashboard -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_ww_dialog_row_bg"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/heebo_bold"
+        android:text="@string/dash_map"
+        android:textColor="@color/ww_ink"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/heebo_medium"
+        android:text="@string/dash_map_hint"
+        android:textColor="@color/ww_ink_soft"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnDashHeatAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape_ww_btn_rect_sand"
+            android:elevation="3dp"
+            android:fontFamily="@font/heebo_bold"
+            android:gravity="center"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:text="@string/dash_heat_all"
+            android:textColor="@color/ww_ink"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/btnDashHeatAttention"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_ww_btn_rect_sand"
+            android:elevation="3dp"
+            android:fontFamily="@font/heebo_bold"
+            android:gravity="center"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:text="@string/dash_heat_attention"
+            android:textColor="@color/ww_rust_dark"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

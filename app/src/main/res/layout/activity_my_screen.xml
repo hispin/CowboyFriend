@@ -33,9 +33,20 @@
 
 
         <!-- Wild West tab bar: brown gradient, sand colored tabs, cream selected tab and an orange indicator under it -->
+        <!-- the tab bar row: the tabs, and at its end the language button (opens the list of the languages of the app) -->
+        <LinearLayout
+            android:id="@+id/llTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_ww_tabbar"
+            android:elevation="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             app:tabTextColor="@color/ww_tab_inactive"
             app:tabSelectedTextColor="@color/ww_parchment"
@@ -49,9 +60,32 @@
             app:tabPaddingTop="12dp"
             app:tabPaddingBottom="10dp"
             app:tabRippleColor="#33E4CD86"
-            android:elevation="6dp"
-            android:background="@drawable/bg_ww_tabbar"
+            android:background="@android:color/transparent"
             />
+
+        <!-- language button: a globe and the short name of the current language -->
+        <TextView
+            android:id="@+id/btnLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/shape_ww_chip_ok_bg"
+            android:contentDescription="@string/language_button"
+            android:drawableStart="@drawable/ic_globe"
+            android:drawablePadding="4dp"
+            android:drawableTint="@color/ww_ink"
+            android:fontFamily="@font/heebo_extrabold"
+            android:gravity="center"
+            android:minWidth="56dp"
+            android:paddingStart="8dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/ww_ink"
+            android:textSize="14sp"
+            tools:text="עב" />
+        </LinearLayout>
 
 
     <!-- background = theme background so the screens look as before although llMain is now dark brown -->
@@ -69,14 +103,4 @@
 
 
 </LinearLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:textColor="@color/black"
-        android:layout_gravity="center"
-        android:text="@string/connect_to_account"
-        android:visibility="gone"
-        android:id="@+id/tvConnectAccount"
-        />
 </FrameLayout>

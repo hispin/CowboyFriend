@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- landscape: the location status (icon and text) is under the save location button, the column is too narrow for one row -->
+<!-- New cow screen in landscape: the screen is wide and short, so the form is split into THREE columns (guidelines at a third
+     and two thirds) instead of one long column:
+       column 1: the photo (camera button + polaroid) and the cow type,
+       column 2: the cow number, the gender and the mother / number of calvings,
+       column 3: the comments, the location, the ear tag and the save button.
+     the ids are the same as in the portrait layout, so the code is shared. fixed overlays (loading, result) are at the end -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ww_parchment"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
+    android:clipToPadding="false">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <!-- the two guidelines that split the form into three columns -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glColumn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3333" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glColumn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6666" />
+
+    <!-- thin full-bleed desert banner at the top (the screen is short) -->
+    <FrameLayout
+        android:id="@+id/sceneBanner"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="-16dp"
+        android:layout_marginEnd="-16dp"
+        android:background="@drawable/shape_ww_banner_sky"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_scene_banner"
+            android:contentDescription="@null" />
+    </FrameLayout>
+
+    <!-- ===== column 1: photo and cow type ===== -->
+
+    <TextView
+        android:id="@+id/tvBrand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/rye_regular"
+        android:text="RANCH №7"
+        android:textColor="@color/ww_saddle_dark"
+        android:textSize="14sp"
+        android:letterSpacing="0.08"
+        android:alpha="0.75"
+        android:textDirection="ltr"
+        app:layout_constraintTop_toTopOf="@+id/tvDate"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDate"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <!-- date: the tilted iron plaque, at the end of the first column -->
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:drawableStart="@drawable/ic_chip_calendar"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/ww_brass_light"
+        android:contentDescription="@string/date_change_description"
+        android:fontFamily="@font/rye_regular"
+        android:textColor="@color/ww_brass_light"
+        android:background="@drawable/shape_ww_date_tag_bg"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:rotation="-3"
+        android:elevation="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="14dp"
+        app:layout_constraintTop_toBottomOf="@+id/sceneBanner"
+        app:layout_constraintEnd_toStartOf="@+id/glColumn1"
+        android:text="22/6" />
+
+    <TextView
+        android:id="@+id/tvTakePicture"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/take_picture"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciTakePicture"
+        style="@style/button_style"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_camera_badge"
+        app:civ_border_width="0dp"
+        app:layout_constraintTop_toTopOf="@+id/ivTakePicture"
+        app:layout_constraintBottom_toBottomOf="@+id/ivTakePicture"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/ivTakePicture"
+        android:layout_width="116dp"
+        android:layout_height="112dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:paddingBottom="24dp"
+        android:background="@drawable/shape_ww_photo_frame"
+        android:foreground="@drawable/ic_photo_pin"
+        android:foregroundGravity="top|center_horizontal"
+        android:src="@drawable/ic_photo_placeholder"
+        android:scaleType="centerCrop"
+        android:cropToPadding="true"
+        android:rotation="-3"
+        android:elevation="8dp"
+        android:clipToOutline="true"
+        android:contentDescription="@string/take_picture"
+        app:layout_constraintTop_toBottomOf="@+id/tvTakePicture"
+        app:layout_constraintStart_toEndOf="@+id/ciTakePicture" />
+
+    <TextView
+        android:id="@+id/tvCowType"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="@string/cow_type"
+        app:layout_constraintTop_toBottomOf="@+id/ivTakePicture"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.israel.cowboyfriend.UI.widget.CowTypeCarouselView
+        android:id="@+id/spNewCowType"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="14dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvCowType"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/glColumn1" />
+
+    <!-- ===== column 2: cow number, gender, mother / number of calvings ===== -->
+
+    <TextView
+        android:id="@+id/tvNumberOfCalf"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/number_cow"
+        app:layout_constraintTop_toBottomOf="@+id/sceneBanner"
+        app:layout_constraintStart_toStartOf="@+id/glColumn1" />
+
+    <!-- hidden value holder of the cow number; the odometer shows and edits it, voice input writes to it -->
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etNumberOfCalf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.israel.cowboyfriend.UI.widget.OdometerNumberView
+        android:id="@+id/odoNumberOfCalf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:elevation="8dp"
+        app:layout_constraintStart_toEndOf="@+id/ciNumberOfCalf"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfCalf" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciNumberOfCalf"
+        style="@style/button_style"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_mic_badge"
+        app:civ_border_width="0dp"
+        app:layout_constraintTop_toTopOf="@+id/odoNumberOfCalf"
+        app:layout_constraintBottom_toBottomOf="@+id/odoNumberOfCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tvGenderOfCalf"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="@string/gender_cow"
+        app:layout_constraintTop_toBottomOf="@+id/odoNumberOfCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf" />
+
+    <Spinner
+        android:id="@+id/spGenderCalf"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
+        android:entries="@array/gender_options"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/shape_ww_spinner_bg"
+        android:spinnerMode="dropdown"
+        android:theme="@style/ww_spinnerTheme"
+        android:popupBackground="@drawable/shape_ww_spinner_bg"
+        app:layout_constraintStart_toEndOf="@+id/ciGenderOfCalf"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenderOfCalf"
+        tools:listitem="@layout/support_simple_spinner_dropdown_item" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciGenderOfCalf"
+        style="@style/button_style"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_mic_badge"
+        app:civ_border_width="0dp"
+        app:layout_constraintTop_toTopOf="@+id/spGenderCalf"
+        app:layout_constraintBottom_toBottomOf="@+id/spGenderCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        tools:ignore="MissingConstraints" />
+
+    <!-- mother (calf only) -->
+    <TextView
+        android:id="@+id/tvNumberOfMom"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="@string/number_of_mom"
+        app:layout_constraintTop_toBottomOf="@+id/spGenderCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf" />
+
+    <Spinner
+        android:id="@+id/spMoms"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
+        android:entries="@array/cow_type"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/shape_ww_spinner_bg"
+        android:spinnerMode="dropdown"
+        android:theme="@style/ww_spinnerTheme"
+        android:popupBackground="@drawable/shape_ww_spinner_bg"
+        app:layout_constraintStart_toEndOf="@+id/ciNumberOfMom"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom"
+        tools:listitem="@layout/support_simple_spinner_dropdown_item" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etNumberOfMom"
+        style="@style/edittext_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="12"
+        android:visibility="gone"
+        android:inputType="numberDecimal"
+        android:background="@drawable/shape_bottom_border"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfMom" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciNumberOfMom"
+        style="@style/button_style"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_mic_badge"
+        app:civ_border_width="0dp"
+        app:layout_constraintTop_toTopOf="@+id/spMoms"
+        app:layout_constraintBottom_toBottomOf="@+id/spMoms"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/cbWithMomNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:button="@drawable/checkbox_selector"
+        android:buttonTint="@null"
+        android:fontFamily="@font/heebo_bold"
+        android:paddingStart="8dp"
+        android:text="@string/see_mother"
+        android:textColor="@color/ww_ink"
+        android:textSize="18sp"
+        app:buttonTint="@null"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        app:layout_constraintTop_toBottomOf="@+id/spMoms" />
+
+    <!-- number of calvings (cow / first-cow only): takes the place of the mother fields -->
+    <TextView
+        android:id="@+id/tvNumberOfCalvings"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:visibility="gone"
+        android:text="@string/number_of_calvings"
+        app:layout_constraintTop_toBottomOf="@+id/spGenderCalf"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etNumberOfCalvings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.israel.cowboyfriend.UI.widget.OdometerNumberView
+        android:id="@+id/odoNumberOfCalvings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:elevation="8dp"
+        android:visibility="gone"
+        app:digitCount="2"
+        app:layout_constraintStart_toEndOf="@+id/ciNumberOfCalvings"
+        app:layout_constraintTop_toBottomOf="@+id/tvNumberOfCalvings" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciNumberOfCalvings"
+        style="@style/button_style"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_mic_badge"
+        android:visibility="gone"
+        android:elevation="8dp"
+        app:civ_border_width="0dp"
+        app:layout_constraintTop_toTopOf="@+id/odoNumberOfCalvings"
+        app:layout_constraintBottom_toBottomOf="@+id/odoNumberOfCalvings"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        tools:ignore="MissingConstraints" />
+
+    <!-- ===== column 3: comments, location, ear tag, save ===== -->
+
+    <TextView
+        android:id="@+id/tvComments"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/comments"
+        app:layout_constraintTop_toBottomOf="@+id/sceneBanner"
+        app:layout_constraintStart_toStartOf="@+id/glColumn2" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etComments"
+        android:imeOptions="flagNoExtractUi"
+        style="@style/Ww.EditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/shape_ww_ledger_bg"
+        android:gravity="top"
+        android:inputType="text|textMultiLine"
+        android:lineSpacingExtra="6dp"
+        android:lines="2"
+        android:minLines="2"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/ciComments"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvComments" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ciComments"
+        style="@style/button_style"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_mic_badge"
+        app:civ_border_width="0dp"
+        app:layout_constraintTop_toTopOf="@+id/etComments"
+        app:layout_constraintBottom_toBottomOf="@+id/etComments"
+        app:layout_constraintStart_toStartOf="@+id/tvComments"
+        tools:ignore="MissingConstraints" />
+
+    <!-- location values are kept in hidden holders; the status row below shows whether they were saved -->
+    <TextView
+        android:id="@+id/tvLocationLatitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvLocationLongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnSaveLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="@string/save_location"
+        android:textColor="@color/white"
+        android:fontFamily="@font/heebo_bold"
+        android:textSize="18sp"
+        android:elevation="6dp"
+        app:icon="@drawable/ic_pin_btn"
+        app:iconTint="@null"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:backgroundTint="@color/ww_turquoise"
+        app:strokeColor="@color/ww_iron"
+        app:strokeWidth="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/etComments"
+        app:layout_constraintStart_toStartOf="@+id/tvComments" />
+
+    <ImageView
+        android:id="@+id/ivLocationStatus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:src="@drawable/ic_location_unsaved"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toBottomOf="@+id/btnSaveLocation"
+        app:layout_constraintStart_toStartOf="@+id/tvComments" />
+
+    <TextView
+        android:id="@+id/tvLocationStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="@font/heebo_bold"
+        android:text="@string/location_not_saved"
+        android:textColor="@color/ww_rust_dark"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@+id/ivLocationStatus"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLocationStatus"
+        app:layout_constraintStart_toEndOf="@+id/ivLocationStatus"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/cbEarTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="14dp"
+        android:button="@drawable/checkbox_selector"
+        android:buttonTint="@null"
+        android:fontFamily="@font/heebo_bold"
+        android:paddingStart="8dp"
+        android:text="@string/marked_tag"
+        android:textColor="@color/ww_ink"
+        android:textSize="18sp"
+        app:buttonTint="@null"
+        app:layout_constraintStart_toStartOf="@+id/tvComments"
+        app:layout_constraintTop_toBottomOf="@+id/ivLocationStatus" />
+
+    <!-- save button: centered in the third column, clipChildren off so its shadow is not cut -->
+    <FrameLayout
+        android:id="@+id/frSave"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginTop="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@+id/cbEarTag"
+        app:layout_constraintStart_toStartOf="@+id/glColumn2"
+        app:layout_constraintEnd_toEndOf="parent">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ciSave"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="8dp"
+            android:src="@drawable/ic_horseshoe_badge"
+            app:civ_border_width="0dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:elevation="12dp"
+            android:fontFamily="@font/heebo_bold"
+            android:paddingBottom="12dp"
+            android:text="@string/save"
+            android:textColor="@color/ww_saddle_dark"
+            android:textSize="17sp" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+
+    <!-- fixed (not scrolling) loading indicator shown while a cow is being saved -->
+    <!-- Fixed full-screen loading overlay (does not scroll with the form), blocks touches while saving -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#990F0905"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="20dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/shape_ww_voice_card"
+            android:elevation="12dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="40dp"
+            android:paddingTop="30dp"
+            android:paddingEnd="40dp"
+            android:paddingBottom="26dp">
+
+            <ImageView
+                android:id="@+id/ivLoadingSpinner"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:contentDescription="@null"
+                android:src="@drawable/avd_ww_loading" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/heebo_bold"
+                android:text="@string/saving_cow"
+                android:textColor="@color/ww_ink"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- fixed result message shown after the save finished -->
+    <!-- Fixed result message at the bottom, slides in after a save and hides itself -->
+    <LinearLayout
+        android:id="@+id/resultBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/shape_ww_result_banner"
+        android:elevation="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivResultIcon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/tvResultText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/heebo_bold"
+            android:textColor="@color/ww_parchment"
+            android:textSize="17sp" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ranch dashboard block: the health problems (the most common first, with bars). included by fragment_ranch_dashboard -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_ww_dialog_row_bg"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <TextView
+        android:id="@+id/tvDashHealthTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/heebo_bold"
+        android:text="@string/dash_health"
+        android:textColor="@color/ww_ink"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:id="@+id/llDashHealth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/tvDashHealthEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/heebo_medium"
+        android:text="@string/dash_health_none"
+        android:textColor="@color/ww_turquoise_dark"
+        android:textSize="15sp"
+        android:visibility="gone" />
+</LinearLayout>
