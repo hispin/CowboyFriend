@@ -28,6 +28,10 @@ package com.israel.cowboyfriend.global
    const val ACTION_EDIT_COW_TYPE = 3
    //tap on the health problems chip of a cow card: open the window with the list of the problems
    const val ACTION_SHOW_HEALTH_TYPE = 4
+   //tap on the small camera of a cow card: open the window that takes a new picture of the cow
+   const val ACTION_TAKE_PHOTO_TYPE = 5
+   //the storage bucket that holds the pictures of the cows (the part after "object/public/" in baseUrl)
+   const val COW_IMAGES_BUCKET = "CowsAndCalf"
    const val ACTION_TYPE_KEY = "actionType"
    const val ACTION_PICTURE_KEY = 1
    const val ACTION_VIDEO_KEY = 2

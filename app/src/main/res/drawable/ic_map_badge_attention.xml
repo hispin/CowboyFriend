@@ -1,0 +1,21 @@
+<!-- Small badge on the top corner of a cow pin of the map: the cow needs attention for another reason (not seen for a long time,
+     a calf without its mother or ear tag): amber disc with a dark exclamation mark -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M12,12 m-10.5,0 a10.5,10.5 0 1,0 21,0 a10.5,10.5 0 1,0 -21,0"
+        android:fillColor="#F2B544"
+        android:strokeColor="@color/ww_iron"
+        android:strokeWidth="2" />
+    <path
+        android:pathData="M12,6.5 V13.5"
+        android:strokeColor="@color/ww_iron"
+        android:strokeLineCap="round"
+        android:strokeWidth="2.8" />
+    <path
+        android:pathData="M12,17.3 m-1.6,0 a1.6,1.6 0 1,0 3.2,0 a1.6,1.6 0 1,0 -3.2,0"
+        android:fillColor="@color/ww_iron" />
+</vector>

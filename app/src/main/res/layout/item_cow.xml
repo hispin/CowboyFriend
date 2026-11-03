@@ -97,6 +97,18 @@
                     tools:text="עגל" />
             </LinearLayout>
 
+            <!-- small quiet camera (outline, no background): opens the window that takes a new picture of this cow -->
+            <ImageView
+                android:id="@+id/ivCowCamera"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:alpha="0.8"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/cow_photo_open"
+                android:padding="9dp"
+                android:src="@drawable/ic_card_camera"
+                android:tint="@color/ww_saddle" />
+
             <!-- edit badge: opens the edit window of this cow -->
             <ImageView
                 android:id="@+id/ivEditCow"
@@ -171,6 +183,36 @@
                 android:drawableStart="@drawable/ic_chip_note"
                 tools:text="יש הערה" />
 
+            <!-- number of calvings: only for a first-cow and a cow (it is changed in the edit window) -->
+            <TextView
+                android:id="@+id/tvCalvings"
+                style="@style/Ww.StatusChip"
+                android:background="@drawable/shape_ww_chip_info_bg"
+                android:drawableStart="@drawable/ic_chip_cow"
+                android:visibility="gone"
+                tools:text="המלטות: 3" />
+
+            <!-- offline: a change of this cow waits on the phone to be sent (faded, hidden once it was sent) -->
+            <TextView
+                android:id="@+id/tvPending"
+                style="@style/Ww.StatusChip"
+                android:alpha="0.75"
+                android:background="@drawable/shape_ww_chip_info_bg"
+                android:drawableStart="@drawable/ic_chip_sync"
+                android:text="@string/card_pending"
+                android:visibility="gone" />
+
+            <!-- a hard calving in the last days (rust): the cow is watched for the problems that follow it; hidden otherwise -->
+            <TextView
+                android:id="@+id/tvHardCalving"
+                style="@style/Ww.StatusChip"
+                android:background="@drawable/shape_ww_chip_bad_bg"
+                android:drawableStart="@drawable/ic_chip_health"
+                android:text="@string/card_hard_calving"
+                android:textColor="@color/ww_rust_dark"
+                android:drawableTint="@color/ww_rust_dark"
+                android:visibility="gone" />
+
             <!-- health problems (rust): the name of the problem, or the number of problems; tap = the list of them.
                  hidden when the cow has no problem -->
             <TextView
@@ -184,7 +226,7 @@
             <androidx.constraintlayout.helper.widget.Flow
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tvGender,tvMonNum,tvLastSeen,tvHealth,tvWithMomStatus,tvEarTagStatus,tvCorpseStamp,tvLastDateLocation,tvComment"
+                app:constraint_referenced_ids="tvPending,tvGender,tvMonNum,tvCalvings,tvHardCalving,tvLastSeen,tvHealth,tvWithMomStatus,tvEarTagStatus,tvCorpseStamp,tvLastDateLocation,tvComment"
                 app:flow_horizontalAlign="start"
                 app:flow_horizontalBias="0"
                 app:flow_horizontalGap="8dp"

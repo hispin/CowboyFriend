@@ -1,0 +1,18 @@
+<!-- Icon of the offline plate: a cloud with a slash (tinted by the TextView) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M6.5,19 A4.5,4.5 0 0,1 6,10.1 A6,6 0 0,1 17.5,8.5 A4.2,4.2 0 0,1 17.5,19 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeLineJoin="round"
+        android:strokeWidth="2" />
+    <path
+        android:pathData="M3.5,3.5 L20.5,20.5"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeWidth="2.2" />
+</vector>

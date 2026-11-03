@@ -40,6 +40,7 @@ import com.israel.cowboyfriend.global.ACTION_PICTURE_KEY
 import com.israel.cowboyfriend.global.ACTION_EDIT_COW_TYPE
 import com.israel.cowboyfriend.global.ACTION_SHOW_COMMENT_TYPE
 import com.israel.cowboyfriend.global.ALL_FIELDS_TYPE
+import com.israel.cowboyfriend.global.LAST_SEEN_AT_TYPE
 import com.israel.cowboyfriend.global.CURRENT_LOCATION_LATITUDE
 import com.israel.cowboyfriend.global.CURRENT_LOCATION_LONGITUDE
 import com.israel.cowboyfriend.global.GET_CURRENT_SINGLE_LOCATION_KEY
@@ -52,6 +53,8 @@ import android.os.Build
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.israel.cowboyfriend.global.ACTION_SHOW_HEALTH_TYPE
+import com.israel.cowboyfriend.global.ACTION_TAKE_PHOTO_TYPE
+import com.israel.cowboyfriend.classes.CalvingDifficulty
 import com.israel.cowboyfriend.classes.HealthIssues
 import com.israel.cowboyfriend.global.ACTION_SHOW_LARGE_TYPE
 import com.israel.cowboyfriend.global.ACTION_TYPE_KEY
@@ -86,6 +89,8 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
     private var tvResultText: TextView? = null
     //how long the result banner stays on the screen
     private val RESULT_BANNER_MILLIS = 3200L
+    //the most calvings the stepper of the edit window goes up to
+    private val MAX_CALVINGS = 30
     //hides the result banner by itself after RESULT_BANNER_MILLIS
     private val resultHandler = Handler(Looper.getMainLooper())
     private val hideResultRunnable = Runnable { hideResult() }
@@ -167,12 +172,80 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
             tourState = it
             updateTourBar()
         }
+        //work without a network: the plate under the tabs shows that there is no network, and how many changes wait to be sent
+        myViewModelSupbase?.syncStatus?.observe(viewLifecycleOwner) { showSyncStatus(it) }
+        view?.findViewById<View>(R.id.tvSyncStatus)?.setOnClickListener { myViewModelSupbase?.syncNow() }
+        //the cow picture window replaced the picture of a cow
+        activity?.supportFragmentManager?.setFragmentResultListener(CowPhotoDialogFragment.RESULT_KEY, viewLifecycleOwner) { _, result ->
+            showPhotoReplaced(result.getBoolean(CowPhotoDialogFragment.RESULT_OLD_DELETED, true))
+            markSeenByPhoto(result.getInt(CowPhotoDialogFragment.RESULT_COW_ID, -1))
+        }
         //the summary of a tour asked to show the cows that need attention
         activity?.supportFragmentManager?.setFragmentResultListener(TourSummaryDialogFragment.RESULT_KEY, viewLifecycleOwner) { _, result ->
             if (result.getString(TourSummaryDialogFragment.RESULT_ACTION) == TourSummaryDialogFragment.ACTION_SHOW_ATTENTION) {
                 selectFilter(CowFilter.ATTENTION)
+                //the summary may have been opened from the tour history, which is a full screen window under it: close it too,
+                //otherwise the user lands back in the history instead of the list of the cows
+                (activity?.supportFragmentManager?.findFragmentByTag("TourHistoryDialogFragment") as? androidx.fragment.app.DialogFragment)?.dismiss()
             }
         }
+    }
+
+    /**
+     * the plate of the work without a network: no network (amber), changes that are being sent or wait (sand), changes that gave up
+     * (rust), or nothing (hidden)
+     */
+    private fun showSyncStatus(status: com.israel.cowboyfriend.offline.SyncStatus) {
+        val plate = view?.findViewById<TextView>(R.id.tvSyncStatus) ?: return
+        val color = when {
+            status.failed > 0 -> R.color.ww_rust_dark
+            else -> R.color.ww_saddle_dark
+        }
+        val text = when {
+            !status.online && status.pending > 0 -> getString(R.string.sync_offline_pending, status.pending)
+            !status.online -> getString(R.string.sync_offline)
+            status.failed > 0 -> getString(R.string.sync_failed, status.failed)
+            status.syncing -> getString(R.string.sync_sending, status.pending)
+            status.pending > 0 -> getString(R.string.sync_waiting, status.pending)
+            else -> null
+        }
+        if (text == null) {
+            plate.visibility = View.GONE
+            return
+        }
+        plate.text = text
+        plate.setTextColor(ContextCompat.getColor(plate.context, color))
+        plate.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            if (status.online) R.drawable.ic_chip_sync else R.drawable.ic_chip_offline, 0, 0, 0
+        )
+        plate.compoundDrawableTintList = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(plate.context, color))
+        plate.setBackgroundResource(if (status.failed > 0) R.drawable.shape_ww_chip_bad_bg else R.drawable.shape_ww_chip_warn_bg)
+        plate.visibility = View.VISIBLE
+    }
+
+    //the cow picture window replaced the picture of a cow: the list is already refreshed, the banner tells how it went
+    private fun showPhotoReplaced(oldDeleted: Boolean) {
+        showTourMessage(if (oldDeleted) R.string.cow_photo_replaced else R.string.cow_photo_replaced_old_kept, oldDeleted)
+    }
+
+    /**
+     * a new picture of a cow means the cowboy saw it: during an open tour the cow is marked as seen (a visit of the tour), like
+     * after editing it. nothing happens without an open tour, for a dead cow, or for a cow that was already seen in this tour
+     */
+    private fun markSeenByPhoto(cowId: Int) {
+        val cow = allCows.firstOrNull { it.id == cowId } ?: return
+        if (tourState.openTourId == null || cow.isCorpse) return
+        val tourStart = tourState.startedAtMillis
+        val seenInTour = isSeenToday(cow) && (tourStart == null || (cow.last_seen_at ?: 0L) >= tourStart)
+        if (seenInTour) return
+        cow.last_seen_at = System.currentTimeMillis()
+        lastPosition = allCows.indexOf(cow).takeIf { it >= 0 } ?: lastPosition
+        myViewModelSupbase?.dbUpdateCowDetails(cow, LAST_SEEN_AT_TYPE, object : CowRepositoryCB {
+            override fun onRequestResult(result: Int) {
+                //the progress of the tour changed
+                if (isAdded && result == 1) myViewModelSupbase?.dbLoadTourState()
+            }
+        })
     }
 
     //the chip "needs attention" shows how many cows need attention
@@ -439,7 +512,7 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
             CowFilter.CALVES_NOT_SEEN_TODAY -> allCows.filter { isCalf(it) && !isSeenToday(it) }
             CowFilter.BULLS -> allCows.filter { isBull(it) }
             //the cows with a health problem (a corpse is not shown)
-            CowFilter.HEALTH -> allCows.filter { it.healthIssues.isNotEmpty() && !it.isCorpse }
+            CowFilter.HEALTH -> allCows.filter { HealthIssues.hasProblem(it.healthIssues) && !it.isCorpse }
         }
         showCowsDetails(ArrayList(filtered))
 
@@ -646,6 +719,31 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
         val cbCorpse = content.findViewById<android.widget.CheckBox>(R.id.cbEditCorpse)
         val cbEarTag = content.findViewById<android.widget.CheckBox>(R.id.cbEditEarTag)
         val llEarTag = content.findViewById<View>(R.id.llEditEarTag)
+        //number of calvings (first-cow and cow only): a minus / plus stepper; an unknown number counts as 0
+        val llCalvings = content.findViewById<View>(R.id.llEditCalvings)
+        //records a calf that was born dead (shown with the number of calvings, for a first-cow and a cow)
+        val btnCalvingDead = content.findViewById<View>(R.id.btnEditCalvingDead)
+        val tvCalvings = content.findViewById<TextView>(R.id.tvEditCalvings)
+        var calvings = cow.num_of_calvings ?: 0
+        tvCalvings.text = calvings.toString()
+        btnCalvingDead.setOnClickListener {
+            showStillbirthDialog(cow) { count ->
+                //the number of calvings went up in the table and in the cow: the stepper shows it, and saving the window
+                //does not see it as a change
+                calvings = count
+                cow.num_of_calvings = count
+                lastPosition = position
+                tvCalvings.text = count.toString()
+            }
+        }
+        content.findViewById<View>(R.id.btnEditCalvingsMinus).setOnClickListener {
+            if (calvings > 0) calvings--
+            tvCalvings.text = calvings.toString()
+        }
+        content.findViewById<View>(R.id.btnEditCalvingsPlus).setOnClickListener {
+            if (calvings < MAX_CALVINGS) calvings++
+            tvCalvings.text = calvings.toString()
+        }
         val spType = content.findViewById<Spinner>(R.id.spEditCowType)
         val etComment = content.findViewById<android.widget.EditText>(R.id.etEditComment)
         val ivLocationStatus = content.findViewById<android.widget.ImageView>(R.id.ivEditLocationStatus)
@@ -656,10 +754,14 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
         //tour started, can be marked as seen again (it counts as seen in the tour)
         val tourStart = tourState.startedAtMillis
         val wasSeenToday = isSeenToday(cow) && (tourStart == null || (cow.last_seen_at ?: 0L) >= tourStart)
-        cbSeen.isChecked = wasSeenToday
+        //during an open tour, editing a cow means the cowboy is with it: it is marked as seen (in the tour) by itself when
+        //the window opens, so saving the edit also records the visit. the checkbox can still be cleared before saving
+        val seenByEditing = tourState.openTourId != null && !cow.isCorpse && !wasSeenToday
+        cbSeen.isChecked = wasSeenToday || seenByEditing
         //already recorded for today: it cannot be taken back, so the checkbox is only shown
         cbSeen.isEnabled = !wasSeenToday
-        cbWithMom.isChecked = cow.with_mom != null && cow.with_mom == cow.last_seen_at
+        //"with mom" belongs to a visit: a visit that starts now begins without it until the cowboy chooses it
+        cbWithMom.isChecked = !seenByEditing && cow.with_mom != null && cow.with_mom == cow.last_seen_at
         cbCorpse.isChecked = cow.isCorpse
         cbEarTag.isChecked = cow.isMarkedTag == true
         etComment.setText(cow.comment?.trim().orEmpty())
@@ -710,6 +812,10 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
                 val isCalf = pos == CowLabels.TYPE_CALF
                 llWithMom.visibility = if (isCalf) View.VISIBLE else View.GONE
                 llEarTag.visibility = if (isCalf) View.VISIBLE else View.GONE
+                //the number of calvings follows the type: a first-cow and a cow have it
+                val hasCalvings = pos == CowLabels.TYPE_FIRST_COW || pos == CowLabels.TYPE_COW
+                llCalvings.visibility = if (hasCalvings) View.VISIBLE else View.GONE
+                btnCalvingDead.visibility = if (hasCalvings) View.VISIBLE else View.GONE
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
@@ -819,6 +925,13 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
                 }
             }
 
+            //the number of calvings is saved only for a first-cow / cow, and only when it was changed in the window
+            val hasCalvings = spType.selectedItemPosition == CowLabels.TYPE_FIRST_COW || spType.selectedItemPosition == CowLabels.TYPE_COW
+            if (hasCalvings && calvings != (cow.num_of_calvings ?: 0)) {
+                cow.num_of_calvings = calvings
+                cow.calvingsChanged = true
+            }
+
             //an empty comment is saved as null, so the card shows "no comment"
             cow.comment = etComment.text.toString().trim().ifEmpty { null }
 
@@ -841,6 +954,56 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
             dialog.dismiss()
             //loading overlay and success / failure banner, like the new cow screen
             saveEditedCow(cow, position)
+        }
+        dialog.show()
+    }
+
+    /**
+     * the window that records a calf that was born dead (it is not registered in the app): it asks how the calving went and
+     * records the calving of the cow in the table calvings (without a calf), which raises her number of calvings.
+     * [onRecorded] gets the new number of calvings; a failure is told in a message and the window stays open to try again
+     */
+    private fun showStillbirthDialog(cow: CowDetails, onRecorded: (Int) -> Unit) {
+        val ctx = context ?: return
+        val cowId = cow.id ?: return
+        val content = LayoutInflater.from(ctx).inflate(R.layout.dialog_calving_dead, null, false)
+        content.findViewById<TextView>(R.id.tvCalvingDeadMessage).text =
+            getString(R.string.calving_dead_message, cow.number?.toString() ?: "-")
+
+        //one chip for every level of the difficulty (the same chip as the new cow screen); the chosen one is rust
+        var difficulty = CalvingDifficulty.NONE
+        val group = content.findViewById<android.view.ViewGroup>(R.id.cgCalvingDeadDifficulty)
+        CalvingDifficulty.LABELS.forEachIndexed { level, labelRes ->
+            val chip = TextView(ctx, null, 0, R.style.Ww_HealthChip)
+            chip.setText(labelRes)
+            chip.isSelected = level == difficulty
+            chip.setOnClickListener {
+                difficulty = level
+                for (i in 0 until group.childCount) group.getChildAt(i).isSelected = i == level
+            }
+            group.addView(chip)
+        }
+
+        val dialog = newAppDialog(ctx, content, 0.92f, null)
+        val btnSave = content.findViewById<View>(R.id.btnCalvingDeadSave)
+        val btnCancel = content.findViewById<View>(R.id.btnCalvingDeadCancel)
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        btnSave.setOnClickListener {
+            //one tap records one calving: the buttons wait for the answer
+            btnSave.isEnabled = false
+            btnCancel.isEnabled = false
+            myViewModelSupbase?.dbRecordStillbirth(cowId, difficulty) { count ->
+                if (!isAdded) return@dbRecordStillbirth
+                if (count != null) {
+                    dialog.dismiss()
+                    onRecorded(count)
+                    Toast.makeText(ctx, R.string.calving_dead_saved, Toast.LENGTH_SHORT).show()
+                } else {
+                    btnSave.isEnabled = true
+                    btnCancel.isEnabled = true
+                    Toast.makeText(ctx, R.string.calving_dead_failed, Toast.LENGTH_LONG).show()
+                }
+            }
         }
         dialog.show()
     }
@@ -975,6 +1138,11 @@ class CattleTourFragment : Fragment() ,OnFragmentListener{
                     } else if (action == ACTION_SHOW_HEALTH_TYPE) {
                         //the health problems chip of the card: the list of the problems
                         showHealthDialog(item, position)
+                    } else if (action == ACTION_TAKE_PHOTO_TYPE) {
+                        //the small camera of the card: the window that takes a new picture (share it / replace the cow picture);
+                        //the row is remembered so the list refreshes it when the picture was replaced
+                        lastPosition = position
+                        activity.supportFragmentManager.let { CowPhotoDialogFragment.newInstance(item).show(it, "CowPhotoDialogFragment") }
                     } else if (action == ACTION_EDIT_COW_TYPE) {
                         //the card (or its pencil) was tapped: the edit window of the cow
                         showEditCowDialog(item, position)

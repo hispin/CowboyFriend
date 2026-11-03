@@ -30,6 +30,10 @@ class TourSummary private constructor(private val json: JSONObject) {
     val startedAtMillis: Long? = parseTimestampMillis(json.optString("started_at", null))
     val durationMinutes: Int = json.optInt("duration_minutes")
 
+    //true for a summary that was made on the phone (see LocalSummary): the numbers are the ones of the phone, the real summary of
+    //the server replaces it in the tour history once the tour was sent
+    val provisional: Boolean = json.optBoolean("provisional", false)
+
     //the living cows at the end of the tour, and how many of them were seen in it
     val alive: Int = json.optJSONObject("herd")?.optInt("alive") ?: 0
     val seen: Int = json.optInt("seen")
@@ -90,7 +94,7 @@ class TourSummary private constructor(private val json: JSONObject) {
     companion object {
         //the problems of the summary, in the order they are shown (the keys of the object "problems")
         val ATTENTION_KEYS = listOf(
-            "calf_without_mom", "calf_without_tag", "health_issue", "not_seen_14d", "never_seen", "no_location"
+            "calf_without_mom", "calf_without_tag", "health_issue", "hard_calving", "not_seen_14d", "never_seen", "no_location"
         )
 
         //the name of a problem in the language of the app
@@ -98,6 +102,7 @@ class TourSummary private constructor(private val json: JSONObject) {
             "calf_without_mom" -> R.string.attention_calf_without_mom
             "calf_without_tag" -> R.string.attention_calf_without_tag
             "health_issue" -> R.string.attention_health
+            "hard_calving" -> R.string.attention_hard_calving
             "not_seen_14d" -> R.string.attention_not_seen_14d
             "never_seen" -> R.string.attention_never_seen
             else -> R.string.attention_no_location

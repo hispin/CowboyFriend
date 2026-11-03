@@ -69,6 +69,19 @@ fun shareImage(bitmap: Bitmap, activity: Activity?) {
     }
 }
 
+/**
+ * shares a picture file (a jpg, for example a photo that was just taken) with the share sheet of the phone, as it is -
+ * unlike [shareImage] it keeps the full quality and does not need the picture in memory
+ */
+fun shareImageFile(file: File, activity: Activity) {
+    val uri = FileProvider.getUriForFile(activity, "${activity.packageName}.contentprovider", file)
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = "image/jpeg"
+    intent.putExtra(Intent.EXTRA_STREAM, uri)
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.share_chooser_picture)))
+}
+
 //the packages of WhatsApp and of WhatsApp Business: the first one that is installed gets the share
 private val WHATSAPP_PACKAGES = listOf("com.whatsapp", "com.whatsapp.w4b")
 

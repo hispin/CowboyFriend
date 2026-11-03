@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cow picture window (portrait): the title with a close button, the taken picture (or a camera to start with), the busy
+     horseshoe, and the buttons - replace the picture of the cow (brass), share (sand), retake (text). the code of
+     CowPhotoDialogFragment shows the buttons that fit the state (no picture yet / picture taken) -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false"
+    android:overScrollMode="never">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_ww_dialog_card_bg"
+            android:elevation="12dp"
+            android:orientation="vertical"
+            android:paddingStart="22dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="20dp">
+
+            <!-- title (the cow number) and the close button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvCowPhotoTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/heebo_extrabold"
+                    android:textColor="@color/ww_ink"
+                    android:textSize="22sp"
+                    tools:text="צילום פרה 123" />
+
+                <ImageButton
+                    android:id="@+id/ibCowPhotoClose"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@null"
+                    android:contentDescription="@string/close"
+                    android:padding="0dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_large_close_badge" />
+            </LinearLayout>
+
+            <!-- the picture area: the taken picture, or the big camera to start with (a tap takes the picture), and the busy horseshoe -->
+            <FrameLayout
+                android:id="@+id/flCowPhotoArea"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/shape_ww_cow_photo_area"
+                android:padding="3dp">
+
+                <ImageView
+                    android:id="@+id/ivCowPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter" />
+
+                <LinearLayout
+                    android:id="@+id/llCowPhotoEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="84dp"
+                        android:layout_height="84dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_camera_badge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/heebo_bold"
+                        android:text="@string/cow_photo_empty"
+                        android:textColor="@color/ww_parchment"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivCowPhotoBusy"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/avd_ww_loading"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <!-- the message of a failure (for example: the replace failed) -->
+            <TextView
+                android:id="@+id/tvCowPhotoNotice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/heebo_bold"
+                android:gravity="center"
+                android:textColor="@color/ww_rust_dark"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <!-- no picture yet: one big button that opens the camera -->
+            <TextView
+                android:id="@+id/btnCowPhotoTake"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_ww_btn_rect_brass"
+                android:elevation="4dp"
+                android:fontFamily="@font/heebo_extrabold"
+                android:gravity="center"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:text="@string/take_picture"
+                android:textColor="@color/ww_iron"
+                android:textSize="18sp" />
+
+            <!-- a picture was taken: replace the cow picture / share it / retake -->
+            <LinearLayout
+                android:id="@+id/llCowPhotoActions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/btnCowPhotoReplace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_ww_btn_rect_brass"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_dialog_replace"
+                    android:drawableTint="@color/ww_iron"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/heebo_extrabold"
+                    android:gravity="center"
+                    android:paddingStart="18dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="18dp"
+                    android:paddingBottom="12dp"
+                    android:text="@string/cow_photo_replace"
+                    android:textColor="@color/ww_iron"
+                    android:textSize="18sp" />
+
+                <!-- what the replace does to the old picture -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:fontFamily="@font/heebo_medium"
+                    android:gravity="center"
+                    android:text="@string/cow_photo_replace_hint"
+                    android:textColor="@color/ww_ink_soft"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/btnCowPhotoShare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/shape_ww_btn_rect_sand"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_dialog_share"
+                    android:drawableTint="@color/ww_ink"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/heebo_bold"
+                    android:gravity="center"
+                    android:paddingStart="18dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="18dp"
+                    android:paddingBottom="12dp"
+                    android:text="@string/share_picture"
+                    android:textColor="@color/ww_ink"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/btnCowPhotoRetake"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:fontFamily="@font/heebo_bold"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/cow_photo_retake"
+                    android:textColor="@color/ww_saddle_dark"
+                    android:textSize="17sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>

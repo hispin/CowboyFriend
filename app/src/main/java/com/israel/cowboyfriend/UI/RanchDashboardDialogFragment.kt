@@ -198,7 +198,7 @@ class RanchDashboardDialogFragment : DialogFragment() {
     private fun attentionIcon(key: String): Int = when (key) {
         "calf_without_mom" -> R.drawable.ic_chip_cow
         "calf_without_tag" -> R.drawable.ic_chip_tag
-        "health_issue" -> R.drawable.ic_chip_health
+        "health_issue", "hard_calving" -> R.drawable.ic_chip_health
         "not_seen_14d", "never_seen" -> R.drawable.ic_chip_eye
         else -> R.drawable.ic_chip_pin
     }

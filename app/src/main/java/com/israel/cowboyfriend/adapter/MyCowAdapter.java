@@ -4,6 +4,7 @@ import static com.israel.cowboyfriend.global.ConstsKt.ACTION_EDIT_COW_TYPE;
 import static com.israel.cowboyfriend.global.ConstsKt.ACTION_SHOW_COMMENT_TYPE;
 import static com.israel.cowboyfriend.global.ConstsKt.ACTION_SHOW_HEALTH_TYPE;
 import static com.israel.cowboyfriend.global.ConstsKt.ACTION_SHOW_LARGE_TYPE;
+import static com.israel.cowboyfriend.global.ConstsKt.ACTION_TAKE_PHOTO_TYPE;
 import static com.israel.cowboyfriend.global.ConstsKt.NONE_TYPE;
 import static com.israel.cowboyfriend.global.SysMethodDateKt.getStringFromCalendar;
 
@@ -23,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.israel.cowboyfriend.R;
 import com.israel.cowboyfriend.classes.CowDetails;
 import com.israel.cowboyfriend.classes.HealthIssues;
+import com.israel.cowboyfriend.global.CowIssues;
 import com.israel.cowboyfriend.global.CowLabels;
 import com.israel.cowboyfriend.interfaces.InterOnItemClickListener;
 
@@ -90,12 +92,20 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
         Context context;
         ImageView ivCowImg;
         ImageView ivEditCow;
+        //small camera: take a new picture of the cow
+        ImageView ivCowCamera;
         TextView tvCowNum;
         //the last two digits of the birth year, next to the number
         TextView tvCowYear;
         TextView tvCowType;
         TextView tvGender;
         TextView tvMonNum;
+        //number of calvings (first-cow and cow only)
+        TextView tvCalvings;
+        //a hard calving in the last days (rust chip)
+        TextView tvHardCalving;
+        //offline: a change of the cow waits to be sent
+        TextView tvPending;
         TextView tvLastSeen;
         TextView tvWithMomStatus;
         TextView tvEarTagStatus;
@@ -112,11 +122,15 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             this.context = context;
             ivCowImg = itemView.findViewById(R.id.ivCowImg);
             ivEditCow = itemView.findViewById(R.id.ivEditCow);
+            ivCowCamera = itemView.findViewById(R.id.ivCowCamera);
             tvCowNum = itemView.findViewById(R.id.tvCowNum);
             tvCowYear = itemView.findViewById(R.id.tvCowYear);
             tvCowType = itemView.findViewById(R.id.tvCowType);
             tvGender = itemView.findViewById(R.id.tvGender);
             tvMonNum = itemView.findViewById(R.id.tvMonNum);
+            tvCalvings = itemView.findViewById(R.id.tvCalvings);
+            tvHardCalving = itemView.findViewById(R.id.tvHardCalving);
+            tvPending = itemView.findViewById(R.id.tvPending);
             tvLastSeen = itemView.findViewById(R.id.tvLastSeen);
             tvWithMomStatus = itemView.findViewById(R.id.tvWithMomStatus);
             tvEarTagStatus = itemView.findViewById(R.id.tvEarTagStatus);
@@ -155,7 +169,11 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
 
             //the mom chip is shown only when the cow has a mom number
             if(item.getNumber_mom()!=null){
-                tvMonNum.setText(String.format(context.getString(R.string.card_mom), String.valueOf(item.getNumber_mom())));
+                //the mother is named like in the mother list of the new cow screen: her number and, after an apostrophe, the last
+                //two digits of her birth year ("12 ’24"), the year smaller and brown like the year in the head of the card
+                String momName = item.getMomLabel() != null ? item.getMomLabel() : String.valueOf(item.getNumber_mom());
+                String momText = String.format(context.getString(R.string.card_mom), CowLabels.INSTANCE.momLabelForScreen(momName));
+                tvMonNum.setText(CowLabels.INSTANCE.styleMomYear(momText, ContextCompat.getColor(context, R.color.ww_saddle)));
                 tvMonNum.setVisibility(View.VISIBLE);
             }else{
                 tvMonNum.setVisibility(View.GONE);
@@ -168,6 +186,23 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             }else{
                 tvGender.setVisibility(View.GONE);
             }
+
+            //the number of calvings exists only for a first-cow and a cow (an unknown number counts as 0)
+            int typeIndex = CowLabels.INSTANCE.typeIndex(cowType);
+            if((typeIndex == CowLabels.TYPE_FIRST_COW || typeIndex == CowLabels.TYPE_COW) && !item.isCorpse()){
+                Integer calvings = item.getNum_of_calvings();
+                tvCalvings.setText(context.getString(R.string.card_calvings, calvings != null ? calvings : 0));
+                tvCalvings.setVisibility(View.VISIBLE);
+            }else{
+                tvCalvings.setVisibility(View.GONE);
+            }
+
+            //offline: a small faded chip while a change of the cow waits to be sent
+            tvPending.setVisibility(item.getPendingSync() ? View.VISIBLE : View.GONE);
+
+            //a hard calving in the last days: a rust chip (a dead cow shows nothing)
+            tvHardCalving.setVisibility(!item.isCorpse() && CowIssues.INSTANCE.isInHardCalvingPeriod(item, System.currentTimeMillis())
+                    ? View.VISIBLE : View.GONE);
 
             //the with mom and ear tag chips exist only for calves
             boolean isCalf = CowLabels.INSTANCE.typeIndex(cowType) == CowLabels.TYPE_CALF;
@@ -230,8 +265,11 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             //list of them. a corpse shows no health problems
             final java.util.List<String> health = item.getHealthIssues();
             if(!isCorpse && health!=null && !health.isEmpty()){
-                setChip(tvHealth, R.drawable.shape_ww_chip_bad_bg, R.drawable.ic_chip_health,
-                        R.color.ww_rust_dark, 0);
+                //only a state of the cow (pregnant) is not a problem: the chip is the quiet sand one, not the rust one
+                boolean isProblem = HealthIssues.INSTANCE.hasProblem(health);
+                setChip(tvHealth, isProblem ? R.drawable.shape_ww_chip_bad_bg : R.drawable.shape_ww_chip_info_bg,
+                        isProblem ? R.drawable.ic_chip_health : R.drawable.ic_chip_cow,
+                        isProblem ? R.color.ww_rust_dark : R.color.ww_ink, 0);
                 tvHealth.setText(health.size() == 1
                         ? HealthIssues.INSTANCE.labels(context, health).get(0)
                         : context.getString(R.string.health_chip_count, health.size()));
@@ -264,6 +302,14 @@ public class MyCowAdapter extends RecyclerView.Adapter<MyCowAdapter.MyViewHolder
             };
             ivEditCow.setOnClickListener(editListener);
             itemView.setOnClickListener(editListener);
+
+            //the small camera opens the window that takes a new picture of the cow
+            ivCowCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(item,NONE_TYPE,position,ACTION_TAKE_PHOTO_TYPE);
+                }
+            });
         }
 
         /**

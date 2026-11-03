@@ -38,6 +38,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.israel.cowboyfriend.R
 import com.israel.cowboyfriend.UI.helper.FarmNameLabelBinder
+import com.israel.cowboyfriend.classes.CalvingDifficulty
 import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.global.AppLanguage
 import com.israel.cowboyfriend.global.CowLabels
@@ -110,6 +111,14 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     private var ciNumberOfCalvings: CircleImageView?=null
     private var cowTypeArray: Array<out String?>?=null
     private var spMoms: Spinner? = null
+    //the small "?" next to the title of the mother (the guide of choosing her by voice)
+    private var btnMomGuide: View? = null
+    //how the calving went: the title, the chips (one for every CalvingDifficulty) and the chosen level
+    private var tvCalvingDifficulty: View? = null
+    private var cgCalvingDifficulty: android.view.ViewGroup? = null
+    private var calvingDifficulty = CalvingDifficulty.NONE
+    //the cows of the mother list, in the order of its items (the first item of the list is the placeholder, not a cow)
+    private var momCows: List<CowDetails> = emptyList()
     //how long the save result banner stays on screen
     private val RESULT_BANNER_MILLIS = 3200L
     private var isMomNumberField = false
@@ -229,7 +238,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
         when {
             hasToBeNumber && isMomNumberField ->
                 //mom number is picked from the spMoms spinner, not typed freely
-                selectInSpinnerOrSpeakError(spMoms, value, R.string.mom_number_not_found)
+                selectMomByNumber(value)
             hasToBeNumber -> etCurrent?.setText(value)
             isGenderField ->
                 //gender is picked from the spGenderCalf spinner, not typed freely
@@ -262,6 +271,107 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             }
         }
         return found
+    }
+
+    //the mother that is chosen in the list, or null while the placeholder is selected
+    private fun selectedMom(): CowDetails? = momCows.getOrNull((spMoms?.selectedItemPosition ?: 0) - 1)
+
+    /*
+    * a mother number was said: the list shows the number with the year (12 ’24), so the cows with that number are searched.
+    * one cow is selected; several cows (the number of different years) open the list so the user chooses; none is an error
+     */
+    private fun selectMomByNumber(number: String) = selectMomByVoice(number.toIntOrNull(), null)
+
+    /*
+    * the mother was said: her tag [number] and, when it was said, the last two digits of her birth [year]. one matching cow is
+    * selected; several matching cows open the list to choose from; no matching cow is an error message
+     */
+    private fun selectMomByVoice(number: Int?, year: Int?) {
+        val matches = momCows.indices.filter {
+            momCows[it].number == number && (year == null || birthYearTwoDigits(momCows[it]) == year)
+        }
+        when {
+            matches.size == 1 -> spMoms?.setSelection(matches[0] + 1)
+            matches.size > 1 -> {
+                speakMessage(resources.getString(R.string.mom_number_several))
+                spMoms?.performClick()
+            }
+            else -> speakMessage(resources.getString(R.string.mom_number_not_found))
+        }
+    }
+
+    //one chip for every level of CalvingDifficulty (the same chip as the health problems of the edit window); the chosen one is rust
+    private fun buildCalvingDifficultyChips() {
+        val group = cgCalvingDifficulty ?: return
+        val ctx = context ?: return
+        group.removeAllViews()
+        CalvingDifficulty.LABELS.forEachIndexed { level, labelRes ->
+            val chip = TextView(ctx, null, 0, R.style.Ww_HealthChip)
+            chip.setText(labelRes)
+            chip.isSelected = level == calvingDifficulty
+            chip.setOnClickListener {
+                calvingDifficulty = level
+                for (i in 0 until group.childCount) group.getChildAt(i).isSelected = i == level
+            }
+            group.addView(chip)
+        }
+    }
+
+    //back to "no difficulty": the next calf starts from the usual answer
+    private fun resetCalvingDifficulty() {
+        calvingDifficulty = CalvingDifficulty.NONE
+        val group = cgCalvingDifficulty ?: return
+        for (i in 0 until group.childCount) group.getChildAt(i).isSelected = i == CalvingDifficulty.NONE
+    }
+
+    //the last two digits of the year of birth of the cow (created_at), or null when the birth date is not known
+    private fun birthYearTwoDigits(cow: CowDetails): Int? {
+        val created = cow.created_at ?: return null
+        return Calendar.getInstance().apply { timeInMillis = created }.get(Calendar.YEAR) % 100
+    }
+
+    /*
+    * the voice window for the mother: the tag number, a pause, the last two digits of the year of birth, and the word "end"
+    * (the window keeps listening, pauses are allowed, and closes only when the last word of a sentence is "end" / "סוף";
+    * the Hebrew recognizer may write "end" in Hebrew letters, so "אנד" counts too)
+     */
+    private fun showMomVoiceDialog() {
+        val ctx = context ?: return
+        com.israel.cowboyfriend.UI.widget.VoiceInputDialog(
+            context = ctx,
+            prompt = myTextOrder ?: "",
+            freeText = true,
+            biasStrings = (0..9).map { it.toString() },
+            resolve = { it.trim().takeIf { text -> text.isNotEmpty() } },
+            endWords = listOf("סוף", "end", "אנד"),
+            onResult = { text ->
+                //the first number is the tag of the mother, the second one the year (a four digit year is understood too)
+                val query = com.israel.cowboyfriend.global.VoiceNumbers.parseCowQueries(text).firstOrNull()
+                if (query == null) speakMessage(resources.getString(R.string.mom_number_not_found))
+                else selectMomByVoice(query.number, query.year)
+            },
+            onFailed = { onVoiceNotUnderstood(it) }
+        ).show()
+    }
+
+    //the guide window of choosing the mother by voice: a card with the title, the steps and a close button
+    private fun showMomGuide() {
+        val ctx = context ?: return
+        val content = LayoutInflater.from(ctx).inflate(R.layout.dialog_dictation_guide, null, false)
+        content.findViewById<TextView>(R.id.tvGuideTitle).setText(R.string.mom_guide_title)
+        content.findViewById<TextView>(R.id.tvGuideText).setText(R.string.mom_guide_text)
+        //the guide is long: its plate has a limited height and scrolls, so the close button always stays on the screen
+        val plateFraction = if (com.israel.cowboyfriend.global.DialogSizing.isLandscape(ctx)) 0.4f else 0.55f
+        content.findViewById<View>(R.id.svGuide).layoutParams.height = (ctx.resources.displayMetrics.heightPixels * plateFraction).toInt()
+        val dialog = android.app.Dialog(ctx).apply {
+            requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+            setContentView(content)
+            window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            com.israel.cowboyfriend.global.DialogSizing.apply(this, 0.92f)
+            window?.setDimAmount(0.55f)
+        }
+        content.findViewById<View>(R.id.btnGuideClose).setOnClickListener { dialog.dismiss() }
+        dialog.show()
     }
 
     /*
@@ -371,16 +481,19 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
             if(activity==null) return@observe
             val cows =ArrayList<CowDetails>()
             cows.addAll(it)
-            val moms =ArrayList<String>()
+            val moms =ArrayList<CharSequence>()
             //placeholder shown by default instead of auto-selecting the first mom number
             moms.add(resources.getString(R.string.select_mom_placeholder))
-            val iterator=cows.iterator()
-            while (iterator.hasNext()) {
-                val item=iterator.next()
-                //only a cow (not a calf or a bull) can be the mother; the type is saved in Hebrew, so it is compared by position
-                if(CowLabels.typeIndex(item.cowType) == CowLabels.TYPE_COW) {
-                    moms.add(item.number.toString())
-                }
+            //only a cow (not a calf or a bull) can be the mother; the type is saved in Hebrew, so it is compared by position.
+            //the same number is used again in other years, so every mother is shown as her number and, after an apostrophe,
+            //the last two digits of her birth year ("12 ’24" = cow 12 born in 2024), the year smaller and brown;
+            //momCows keeps the cows in the order of the list (after the placeholder)
+            momCows = cows.filter { CowLabels.typeIndex(it.cowType) == CowLabels.TYPE_COW }
+                .sortedWith(compareBy({ it.number }, { it.created_at }))
+            val yearColor = androidx.core.content.ContextCompat.getColor(requireActivity(), R.color.ww_saddle)
+            for (mom in momCows) {
+                val label = CowLabels.momLabel(mom.number, mom.created_at) ?: "-"
+                moms.add(CowLabels.styleMomYear(CowLabels.momLabelForScreen(label), yearColor))
             }
             //custom item layout: bold black text, larger font, so the selected mom
             //number stands out in the spinner
@@ -409,6 +522,10 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
         val momVisibility = if (isCalf) View.VISIBLE else View.GONE
         tvNumberOfMom?.visibility = momVisibility
+        btnMomGuide?.visibility = momVisibility
+        //how the calving went is asked only for a calf
+        tvCalvingDifficulty?.visibility = momVisibility
+        cgCalvingDifficulty?.visibility = momVisibility
         spMoms?.visibility = momVisibility
         ciNumberOfMom?.visibility = momVisibility
         cbWithMomNew?.visibility = momVisibility
@@ -615,6 +732,14 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
 
         spNewCowType = view?.findViewById(R.id.spNewCowType)
         spMoms= view?.findViewById(R.id.spMoms)
+        //the small "?" next to the title of the mother opens the guide of choosing her by voice
+        btnMomGuide = view?.findViewById(R.id.btnMomGuide)
+        btnMomGuide?.setOnClickListener { showMomGuide() }
+
+        //how the calving went (calf only): one chip for every level, one of them is chosen
+        tvCalvingDifficulty = view?.findViewById(R.id.tvCalvingDifficulty)
+        cgCalvingDifficulty = view?.findViewById(R.id.cgCalvingDifficulty)
+        buildCalvingDifficultyChips()
 
         //the plaque shows today, tapping it opens the date window to choose another day (the birth date of the cow)
         showSelectedDate()
@@ -659,7 +784,8 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                         object :
                         CowStorageRespose {
                             override fun onRequestResult(url: String) {
-                                var myUrl=baseUrl+""+url
+                                //the picture is on the phone (a path of a file): it is sent to the storage together with the cow when there is a network
+                                var myUrl=url
                                 insertCowDetails(myUrl)
                             }
 
@@ -701,10 +827,10 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                              if(lat!=null && long!=null) {
                                  cow=CowDetails(
                                      number=etNumberOfCalf?.text.toString().toIntOrNull(),
-                                     number_mom=spMoms?.selectedItem.toString().toIntOrNull(),
+                                     number_mom=selectedMom()?.number,
                                      gender=CowLabels.storedGenderFromSpinner(spGenderCalf?.selectedItemPosition ?: 0),
                                      image_url=myUrl,
-                                     user_id=supabase.auth.currentSessionOrNull()?.user?.email,
+                                     user_id=myViewModelSupbase?.currentEmail(),
                                      comment=etComments?.text.toString(),
                                      lat,
                                      long,
@@ -717,10 +843,10 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                              }else{
                                  cow=CowDetails(
                                      number=etNumberOfCalf?.text.toString().toIntOrNull(),
-                                     number_mom=spMoms?.selectedItem.toString().toIntOrNull(),
+                                     number_mom=selectedMom()?.number,
                                      gender=CowLabels.storedGenderFromSpinner(spGenderCalf?.selectedItemPosition ?: 0),
                                      image_url=myUrl,
-                                     user_id=supabase.auth.currentSessionOrNull()?.user?.email,
+                                     user_id=myViewModelSupbase?.currentEmail(),
                                      comment=etComments?.text.toString(),
                                      null,
                                      null,
@@ -739,6 +865,10 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                              //mom number only for a calf, number of calvings only for a cow / first-cow
                              if(typeIndex != CowLabels.TYPE_CALF){
                                  cow.number_mom=null
+                             } else {
+                                 //the exact cow that was chosen as the mother (the number alone can belong to cows of other years)
+                                 cow.momId = selectedMom()?.id
+                                 cow.calvingDifficulty = calvingDifficulty
                              }
                              if(typeIndex == CowLabels.TYPE_FIRST_COW || typeIndex == CowLabels.TYPE_COW){
                                  cow.num_of_calvings=etNumberOfCalvings?.text.toString().toIntOrNull()
@@ -750,6 +880,7 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
                                      //the insert finished: stop the loading overlay and show the success / failure banner
                                      hideLoading()
                                      showResult(result==1)
+                                     if (result==1) resetCalvingDifficulty()
                                  }
                              })
                              }
@@ -811,6 +942,11 @@ class NewCalfFragment : Fragment() , TextToSpeech.OnInitListener{
     }
 
     private fun showVoiceDialog() {
+        //the mother has her own way: tag number, pause, year, "end"
+        if (isMomNumberField) {
+            showMomVoiceDialog()
+            return
+        }
         val ctx = context ?: return
         val freeText = !hasToBeNumber && !isGenderField
         val bias = when {

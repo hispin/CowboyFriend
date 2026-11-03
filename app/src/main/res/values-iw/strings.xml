@@ -86,7 +86,10 @@
     <!-- Spoken prompts of the voice buttons -->
     <string name="voice_prompt_cow_number">בחר מספר של הפרה</string>
     <string name="voice_prompt_cow_gender">בחר את המין של הפרה</string>
-    <string name="voice_prompt_mom_number">בחר מספר של האמא</string>
+    <string name="voice_prompt_mom_number">בחר אמא</string>
+    <string name="mom_guide_button">הדרכה לבחירת אמא בקול</string>
+    <string name="mom_guide_title">איך בוחרים אמא בקול</string>
+    <string name="mom_guide_text">1. לחץ על המיקרופון ואמור את מספר התג של האמא.\n2. עצור רגע, ואז אמור את שתי הספרות האחרונות של שנת הלידה שלה. לדוגמה: ”12” ... ”24” היא פרה 12 שנולדה ב-2024.\n3. לסיום אמור ”סוף” או ”end”. ההקשבה לא נסגרת לפני כן, אפשר לעשות הפסקות.\n4. מספר בלי שנה בוחר את האמא כשיש רק פרה אחת עם המספר הזה; אם יש כמה פרות עם אותו מספר, הרשימה נפתחת כדי שתבחר.\n5. אם הפרה לא נמצאת ברשימה תישמע הודעה. ”ביטול” סוגר בלי לבחור.</string>
     <string name="voice_prompt_calvings_number">בחר מספר של ההמלטות</string>
     <string name="voice_prompt_comment">הערה</string>
     <!-- Error shown when a recognized value for a number field is not a number -->
@@ -264,7 +267,8 @@
     <string name="health_thin">רזה / ירידה במשקל</string>
     <string name="health_lethargic">אפאטית / לא אוכלת</string>
     <string name="health_parasites">קרציות / טפילים</string>
-    <string name="health_calving">קרובה להמלטה / קשיי המלטה</string>
+    <string name="health_pregnant">בהריון</string>
+    <string name="health_calving">קרובה להמלטה</string>
     <string name="health_weak_calf">עגל חלש / לא יונק</string>
     <string name="health_other">אחר</string>
     <string name="health_other_hint">תאר את הבעיה</string>
@@ -290,4 +294,44 @@
     <string name="map_element_failed">הפעולה נכשלה, נסה שוב</string>
     <!-- Map type toggle (normal map / satellite) -->
     <string name="map_type_toggle">מעבר בין מפה ללוויין</string>
+    <!-- Cow picture window (the small camera of the cow card): take a picture, then share it or replace the picture of the cow -->
+    <string name="cow_photo_open">צלם תמונה חדשה של הפרה</string>
+    <string name="cow_photo_title">צילום פרה %1$s</string>
+    <string name="cow_photo_empty">צלם את הפרה</string>
+    <string name="cow_photo_retake">צלם שוב</string>
+    <string name="cow_photo_replace">החלף תמונת פרה</string>
+    <string name="cow_photo_replace_hint">התמונה הקודמת תימחק לצמיתות</string>
+    <string name="cow_photo_replaced">תמונת הפרה הוחלפה</string>
+    <string name="cow_photo_replaced_old_kept">התמונה הוחלפה, אך מחיקת התמונה הישנה מהאחסון נכשלה</string>
+    <string name="cow_photo_replace_failed">החלפת התמונה נכשלה, נסה שוב</string>
+    <string name="cow_photo_no_camera">לא נמצאה אפליקציית מצלמה בטלפון</string>
+    <!-- Number of calvings of a cow / first-cow: chip of the cow card and the row of the edit window -->
+    <string name="card_calvings">המלטות: %1$d</string>
+    <!-- How a calving went (new cow screen, calf only), the chip of the mother's card and the attention list -->
+    <string name="calving_difficulty_title">איך הייתה ההמלטה?</string>
+    <string name="calving_diff_none">ללא קושי</string>
+    <string name="calving_diff_easy_pull">משיכה קלה</string>
+    <string name="calving_diff_hard_pull">משיכה קשה</string>
+    <string name="calving_diff_caesarean">ניתוח קיסרי</string>
+    <string name="calving_diff_wrong_position">הצגה לא תקינה</string>
+    <string name="card_hard_calving">המלטה קשה</string>
+    <!-- A calf that was born dead (it is not registered in the app): recorded from the edit window of its mother -->
+    <string name="calving_dead_button">עגל שנולד מת</string>
+    <string name="calving_dead_title">עגל שנולד מת</string>
+    <string name="calving_dead_message">תיעוד שפרה %1$s המליטה והעגל נולד מת. מספר ההמלטות שלה יעלה ב-1.</string>
+    <string name="calving_dead_save">תעד</string>
+    <string name="calving_dead_saved">ההמלטה תועדה</string>
+    <string name="calving_dead_failed">תיעוד ההמלטה נכשל, נסה שוב</string>
+    <string name="attention_hard_calving">אחרי המלטה קשה</string>
+    <!-- Work without a network: the plate on the cow list, the mark on a cow card and the note of a temporary summary -->
+    <string name="sync_offline">אין חיבור - השינויים נשמרים בטלפון</string>
+    <string name="sync_offline_pending">אין חיבור - %1$d שינויים ממתינים לשליחה</string>
+    <string name="sync_sending">שולח %1$d שינויים…</string>
+    <string name="sync_waiting">%1$d שינויים ממתינים לשליחה (לחץ לשליחה עכשיו)</string>
+    <string name="sync_failed">%1$d שינויים לא נשלחו (לחץ לנסות שוב)</string>
+    <string name="card_pending">ממתין לשליחה</string>
+    <string name="summary_provisional">סיכום זמני (יתעדכן אחרי השליחה)</string>
+    <string name="mom_number_several">יש כמה פרות עם המספר הזה, בחר מהרשימה</string>
+    <string name="edit_calvings_minus">המלטה אחת פחות</string>
+    <string name="edit_calvings_plus">המלטה אחת יותר</string>
 </resources>

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- offline: the app has to know whether there is a network (the changes wait on the phone and are sent when it comes back) -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- microphone for the in-app voice input dialog (SpeechRecognizer) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Include this permission to grab user's general location -->

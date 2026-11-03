@@ -57,6 +57,44 @@ object CowLabels {
         return if (index >= 0 && index + GENDER_OPTIONS_OFFSET in options.indices) options[index + GENDER_OPTIONS_OFFSET] else stored.orEmpty()
     }
 
+    //the sign in front of the year of birth, like in "class of '24": it tells the year from the number
+    private const val YEAR_SIGN = '’'
+
+    /**
+     * how a cow is named when it is chosen or shown as a mother: its number, a space and the last two digits of its birth year
+     * after an apostrophe, for example "12 ’24" is cow 12 born in 2024 (the same number is used again in other years). only
+     * the number when the birth date is unknown, null when there is no number
+     */
+    fun momLabel(number: Int?, createdAt: Long?, zone: java.util.TimeZone = java.util.TimeZone.getDefault()): String? {
+        if (number == null) return null
+        if (createdAt == null) return number.toString()
+        val year = java.util.Calendar.getInstance(zone).apply { timeInMillis = createdAt }.get(java.util.Calendar.YEAR)
+        return String.format(java.util.Locale.US, "%d %c%02d", number, YEAR_SIGN, year % 100)
+    }
+
+    /**
+     * the label of a mother ([momLabel]) made safe for a right to left screen: it is always shown left to right, so the number
+     * stays first and the year after it, whatever the language of the text around it
+     */
+    fun momLabelForScreen(label: String): String =
+        androidx.core.text.BidiFormatter.getInstance().unicodeWrap(label, androidx.core.text.TextDirectionHeuristicsCompat.LTR)
+
+    /**
+     * styles the year of birth of a mother inside [text] (a text that holds a label of [momLabel]): the year after the
+     * apostrophe is smaller and has the color [yearColor], like the year next to the number in the head of the cow card.
+     * the same text when there is no year in it
+     */
+    fun styleMomYear(text: CharSequence, yearColor: Int): CharSequence {
+        val start = text.indexOf(YEAR_SIGN)
+        if (start < 0) return text
+        var end = start + 1
+        while (end < text.length && text[end].isDigit()) end++
+        return android.text.SpannableString(text).apply {
+            setSpan(android.text.style.RelativeSizeSpan(0.8f), start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(android.text.style.ForegroundColorSpan(yearColor), start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
     /**
      * the text to save for the position selected in the gender spinner (0 is the "choose" placeholder, which is saved
      * as the Hebrew placeholder text, like before)

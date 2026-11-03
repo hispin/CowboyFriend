@@ -93,6 +93,11 @@ class MyScreensActivity : AppCompatActivity(){
 
         myViewModelSupbase?.setListenerRealtimeCowDetails()//
 
+        //the saved login is not valid any more (the server refused it): the login tab opens by itself
+        myViewModelSupbase?.needLogin?.observe(this) {
+            if (it == true) tabs?.getTabAt(LOGIN_TAB_INDEX)?.select()
+        }
+
 
 
     }

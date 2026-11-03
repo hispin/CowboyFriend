@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A calf that was born dead: the window opened from the edit window of its mother. it says what will be recorded, asks how the
+     calving went (one of the levels of CalvingDifficulty, the chips are added by the fragment) and has a brass record button and a
+     sand cancel button. the same layout serves portrait and landscape (it scrolls when the screen is short) -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:overScrollMode="never">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_ww_dialog_card_bg"
+            android:elevation="12dp"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/heebo_extrabold"
+                android:gravity="center"
+                android:text="@string/calving_dead_title"
+                android:textColor="@color/ww_ink"
+                android:textSize="22sp" />
+
+            <!-- what will be recorded (the cow number is set by the fragment) -->
+            <TextView
+                android:id="@+id/tvCalvingDeadMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/heebo_medium"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/ww_ink"
+                android:textSize="17sp" />
+
+            <TextView
+                style="@style/Ww.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/calving_difficulty_title" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cgCalvingDeadDifficulty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btnCalvingDeadSave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_ww_btn_rect_brass"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/heebo_extrabold"
+                    android:gravity="center"
+                    android:paddingTop="11dp"
+                    android:paddingBottom="11dp"
+                    android:text="@string/calving_dead_save"
+                    android:textColor="@color/ww_iron"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/btnCalvingDeadCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/shape_ww_btn_rect_sand"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/heebo_bold"
+                    android:gravity="center"
+                    android:paddingStart="22dp"
+                    android:paddingTop="11dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="11dp"
+                    android:text="@string/voice_cancel"
+                    android:textColor="@color/ww_ink"
+                    android:textSize="17sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>

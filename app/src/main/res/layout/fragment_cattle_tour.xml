@@ -13,6 +13,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- work without a network: a thin plate that shows when the phone has no network, and how many changes wait to be sent
+             (tap = send now); hidden when there is a network and nothing waits -->
+        <TextView
+            android:id="@+id/tvSyncStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shape_ww_chip_warn_bg"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_chip_offline"
+            android:drawableTint="@color/ww_saddle_dark"
+            android:fontFamily="@font/heebo_bold"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="6dp"
+            android:textColor="@color/ww_saddle_dark"
+            android:textSize="15sp"
+            android:visibility="gone"
+            tools:text="אין חיבור - 3 שינויים ממתינים לשליחה"
+            tools:visibility="visible" />
+
         <!-- top bar: the counter of the cows shown right now and the voice search button (say a cow number) -->
         <LinearLayout
             android:layout_width="match_parent"

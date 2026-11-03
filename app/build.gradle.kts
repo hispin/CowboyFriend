@@ -16,8 +16,8 @@ android {
         applicationId="com.israel.cowboyfriend"
         minSdk=26
         targetSdk=36
-        versionCode=10
-        versionName="10.0"
+        versionCode=11
+        versionName="11.0"
 
         testInstrumentationRunner="androidx.test.runner.AndroidJUnitRunner"
     }
@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.androidx.runtime)
     implementation(libs.play.services.location)
     testImplementation(libs.junit)
+    //the json classes of Android are not in the unit tests of the computer: the offline tests (CowJson, LocalSummary) need these
+    testImplementation("org.json:json:20240303")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.circleimageview)
@@ -103,5 +105,8 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.9.2")
     implementation("androidx.media3:media3-ui:1.9.2")
     implementation("androidx.media3:media3-exoplayer-dash:1.9.2")
+
+    //offline: sends the changes that were made without a network when the network comes back, also when the app is closed
+    implementation("androidx.work:work-runtime-ktx:2.10.1")
 
 }

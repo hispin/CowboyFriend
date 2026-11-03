@@ -50,6 +50,8 @@ class TourSummaryDialogFragment : DialogFragment() {
         }
         subtitle.add(summary.durationText(context))
         if (summary.startedBy.isNotBlank()) subtitle.add(getString(R.string.summary_by, summary.startedBy.substringBefore('@')))
+        //a summary made on the phone (the tour ended before the data was sent) says so; the real one is in the tour history later
+        if (summary.provisional) subtitle.add(getString(R.string.summary_provisional))
         view.findViewById<TextView>(R.id.tvSummarySubtitle).text = subtitle.joinToString(" · ")
 
         //coverage: N of M seen, the bar, and the numbers of the cows that were not seen
@@ -148,7 +150,7 @@ class TourSummaryDialogFragment : DialogFragment() {
     private fun attentionIcon(key: String): Int = when (key) {
         "calf_without_mom" -> R.drawable.ic_chip_cow
         "calf_without_tag" -> R.drawable.ic_chip_tag
-        "health_issue" -> R.drawable.ic_chip_health
+        "health_issue", "hard_calving" -> R.drawable.ic_chip_health
         "not_seen_14d", "never_seen" -> R.drawable.ic_chip_eye
         else -> R.drawable.ic_chip_pin
     }

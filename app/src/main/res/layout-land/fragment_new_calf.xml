@@ -265,6 +265,24 @@
         app:layout_constraintTop_toBottomOf="@+id/spGenderCalf"
         app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf" />
 
+    <!-- small "?" at the end of the mother list (on its left in Hebrew): opens the guide of choosing the mother by voice (calf only) -->
+    <TextView
+        android:id="@+id/btnMomGuide"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/shape_ww_photo_ring"
+        android:contentDescription="@string/mom_guide_button"
+        android:fontFamily="@font/heebo_extrabold"
+        android:gravity="center"
+        android:text="?"
+        android:textColor="@color/ww_brass_light"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/spMoms"
+        app:layout_constraintStart_toEndOf="@+id/spMoms"
+        app:layout_constraintTop_toTopOf="@+id/spMoms"
+        tools:ignore="HardcodedText" />
+
     <Spinner
         android:id="@+id/spMoms"
         android:layout_width="110dp"
@@ -319,6 +337,28 @@
         app:buttonTint="@null"
         app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
         app:layout_constraintTop_toBottomOf="@+id/spMoms" />
+
+    <!-- how the calving went (calf only): one choice, the chips are added by the fragment (see CalvingDifficulty) -->
+    <TextView
+        android:id="@+id/tvCalvingDifficulty"
+        style="@style/Ww.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/calving_difficulty_title"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        app:layout_constraintTop_toBottomOf="@+id/cbWithMomNew" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cgCalvingDifficulty"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        app:chipSpacingHorizontal="8dp"
+        app:chipSpacingVertical="6dp"
+        app:layout_constraintEnd_toStartOf="@+id/glColumn2"
+        app:layout_constraintStart_toStartOf="@+id/tvNumberOfCalf"
+        app:layout_constraintTop_toBottomOf="@+id/tvCalvingDifficulty" />
 
     <!-- number of calvings (cow / first-cow only): takes the place of the mother fields -->
     <TextView

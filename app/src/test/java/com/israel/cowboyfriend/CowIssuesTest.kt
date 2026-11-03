@@ -50,4 +50,41 @@ class CowIssuesTest {
         c.isCorpse = true
         assertTrue(CowIssues.of(c, now).isEmpty())
     }
+
+    //a hard calving (a hard pull or worse) in the last 21 days: the cow is watched for the problems that follow it
+    @Test
+    fun hardCalvingInTheLastThreeWeeksIsReported() {
+        val c = cow("פרה", now - day)
+        c.lastCalvingAt = now - 20 * day
+        c.lastCalvingDifficulty = 2
+        assertEquals(listOf("hard_calving"), CowIssues.of(c, now))
+    }
+
+    @Test
+    fun hardCalvingOlderThanThreeWeeksOrEasyCalvingIsNotReported() {
+        val old = cow("פרה", now - day)
+        old.lastCalvingAt = now - 21 * day
+        old.lastCalvingDifficulty = 3
+        assertTrue(CowIssues.of(old, now).isEmpty())
+
+        val easy = cow("פרה", now - day)
+        easy.lastCalvingAt = now - day
+        easy.lastCalvingDifficulty = 1
+        assertTrue(CowIssues.of(easy, now).isEmpty())
+    }
+
+    //"pregnant" is a state of the cow, not a problem: it does not make the cow need attention
+    @Test
+    fun aPregnantCowDoesNotNeedAttention() {
+        val c = cow("פרה", now - day)
+        c.healthIssues = listOf("pregnant")
+        assertTrue(CowIssues.of(c, now).isEmpty())
+    }
+
+    @Test
+    fun aPregnantCowWithARealProblemIsReported() {
+        val c = cow("פרה", now - day)
+        c.healthIssues = listOf("pregnant", "lameness")
+        assertEquals(listOf("health_issue"), CowIssues.of(c, now))
+    }
 }

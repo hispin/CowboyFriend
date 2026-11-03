@@ -87,7 +87,10 @@
     <!-- Spoken prompts of the voice buttons -->
     <string name="voice_prompt_cow_number">Choose the cow number</string>
     <string name="voice_prompt_cow_gender">Choose the cow gender</string>
-    <string name="voice_prompt_mom_number">Choose the mother number</string>
+    <string name="voice_prompt_mom_number">Choose the mother</string>
+    <string name="mom_guide_button">Guide to choosing the mother by voice</string>
+    <string name="mom_guide_title">How to choose the mother by voice</string>
+    <string name="mom_guide_text">1. Tap the microphone and say the tag number of the mother.\n2. Pause for a moment, then say the last two digits of her year of birth. For example: “12” ... “24” is cow 12 born in 2024.\n3. To finish, say “end”. Listening does not stop before that, you can pause.\n4. A number without a year selects the mother when only one cow has that number; when several cows have it, the list opens so you can choose.\n5. If the cow is not in the list you hear a message. Cancel closes without choosing.</string>
     <string name="voice_prompt_calvings_number">Choose the number of calvings</string>
     <string name="voice_prompt_comment">Comment</string>
     <!-- Error shown when a recognized value for a number field is not a number -->
@@ -265,7 +268,8 @@
     <string name="health_thin">Thin / weight loss</string>
     <string name="health_lethargic">Lethargic / off feed</string>
     <string name="health_parasites">Ticks / parasites</string>
-    <string name="health_calving">Close to calving / calving trouble</string>
+    <string name="health_pregnant">Pregnant</string>
+    <string name="health_calving">Close to calving</string>
     <string name="health_weak_calf">Weak calf / not suckling</string>
     <string name="health_other">Other</string>
     <string name="health_other_hint">Describe the problem</string>
@@ -291,4 +295,44 @@
     <string name="map_element_failed">The change failed, please try again</string>
     <!-- Map type toggle (normal map / satellite) -->
     <string name="map_type_toggle">Switch between map and satellite</string>
+    <!-- Cow picture window (the small camera of the cow card): take a picture, then share it or replace the picture of the cow -->
+    <string name="cow_photo_open">Take a new picture of the cow</string>
+    <string name="cow_photo_title">Picture of cow %1$s</string>
+    <string name="cow_photo_empty">Take a picture of the cow</string>
+    <string name="cow_photo_retake">Retake</string>
+    <string name="cow_photo_replace">Replace the cow picture</string>
+    <string name="cow_photo_replace_hint">The previous picture is deleted for good</string>
+    <string name="cow_photo_replaced">The cow picture was replaced</string>
+    <string name="cow_photo_replaced_old_kept">The picture was replaced, but the old one could not be deleted from the storage</string>
+    <string name="cow_photo_replace_failed">Replacing the picture failed, please try again</string>
+    <string name="cow_photo_no_camera">No camera app was found on this phone</string>
+    <!-- Number of calvings of a cow / first-cow: chip of the cow card and the row of the edit window -->
+    <string name="card_calvings">Calvings: %1$d</string>
+    <!-- How a calving went (new cow screen, calf only), the chip of the mother's card and the attention list -->
+    <string name="calving_difficulty_title">How was the calving?</string>
+    <string name="calving_diff_none">No difficulty</string>
+    <string name="calving_diff_easy_pull">Easy pull</string>
+    <string name="calving_diff_hard_pull">Hard pull</string>
+    <string name="calving_diff_caesarean">Caesarean</string>
+    <string name="calving_diff_wrong_position">Wrong position</string>
+    <string name="card_hard_calving">Hard calving</string>
+    <!-- A calf that was born dead (it is not registered in the app): recorded from the edit window of its mother -->
+    <string name="calving_dead_button">Calf born dead</string>
+    <string name="calving_dead_title">Calf born dead</string>
+    <string name="calving_dead_message">Record that cow %1$s calved and the calf was born dead. Her number of calvings goes up by one.</string>
+    <string name="calving_dead_save">Record</string>
+    <string name="calving_dead_saved">The calving was recorded</string>
+    <string name="calving_dead_failed">Recording the calving failed, please try again</string>
+    <string name="attention_hard_calving">After a hard calving</string>
+    <!-- Work without a network: the plate on the cow list, the mark on a cow card and the note of a temporary summary -->
+    <string name="sync_offline">No network - changes are kept on the phone</string>
+    <string name="sync_offline_pending">No network - %1$d changes wait to be sent</string>
+    <string name="sync_sending">Sending %1$d changes…</string>
+    <string name="sync_waiting">%1$d changes wait to be sent (tap to send now)</string>
+    <string name="sync_failed">%1$d changes were not sent (tap to try again)</string>
+    <string name="card_pending">Waiting to be sent</string>
+    <string name="summary_provisional">Temporary summary (updated after sending)</string>
+    <string name="mom_number_several">Several cows have this number, choose from the list</string>
+    <string name="edit_calvings_minus">One calving less</string>
+    <string name="edit_calvings_plus">One calving more</string>
 </resources>

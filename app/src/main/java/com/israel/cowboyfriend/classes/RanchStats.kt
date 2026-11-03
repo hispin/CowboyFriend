@@ -44,7 +44,7 @@ class RanchStats(cows: List<CowDetails>, now: Long = System.currentTimeMillis())
             val issues = CowIssues.of(cow, now)
             if (issues.isNotEmpty()) withIssue++
             for (issue in issues) byKey[issue] = (byKey[issue] ?: 0) + 1
-            if (cow.healthIssues.isNotEmpty()) withHealth++
+            if (HealthIssues.hasProblem(cow.healthIssues)) withHealth++
             for (code in HealthIssues.selectedCodes(cow.healthIssues)) health[code] = (health[code] ?: 0) + 1
             val lat = cow.latitude
             val lon = cow.longitude

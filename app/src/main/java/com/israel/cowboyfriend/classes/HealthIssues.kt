@@ -32,9 +32,18 @@ object HealthIssues {
         Issue("thin", R.string.health_thin),
         Issue("lethargic", R.string.health_lethargic),
         Issue("parasites", R.string.health_parasites),
+        //a status, not a problem: a pregnant cow is not flagged as needing attention (see NOT_PROBLEMS)
+        Issue("pregnant", R.string.health_pregnant),
         Issue("calving", R.string.health_calving),
         Issue("weak_calf", R.string.health_weak_calf)
     )
+
+    //the entries of the list that are only the state of the cow and not a problem: they are shown and counted in the herd numbers, but
+    //the cow does not need attention because of them (a pregnant cow is not a sick cow)
+    private val NOT_PROBLEMS = setOf("pregnant")
+
+    //true when the saved list holds at least one real problem (an empty list, or a list with only a state like "pregnant", has none)
+    fun hasProblem(saved: List<String>): Boolean = saved.any { it !in NOT_PROBLEMS }
 
     private val codesInCatalog = CATALOG.map { it.code }.toSet()
 

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cow picture window (landscape): the picture on one side, and on the other side the title with the close button and the
+     buttons. same ids as the portrait layout, so the same code serves both -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false"
+    android:overScrollMode="never">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_ww_dialog_card_bg"
+            android:elevation="12dp"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="16dp">
+
+            <!-- the picture area: the taken picture, or the big camera to start with (a tap takes the picture), and the busy horseshoe -->
+            <FrameLayout
+                android:id="@+id/flCowPhotoArea"
+                android:layout_width="0dp"
+                android:layout_height="230dp"
+                android:layout_weight="1.1"
+                android:background="@drawable/shape_ww_cow_photo_area"
+                android:padding="3dp">
+
+                <ImageView
+                    android:id="@+id/ivCowPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter" />
+
+                <LinearLayout
+                    android:id="@+id/llCowPhotoEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_camera_badge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/heebo_bold"
+                        android:text="@string/cow_photo_empty"
+                        android:textColor="@color/ww_parchment"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivCowPhotoBusy"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/avd_ww_loading"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <!-- the other side: title + close, the failure message and the buttons -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvCowPhotoTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/heebo_extrabold"
+                        android:textColor="@color/ww_ink"
+                        android:textSize="20sp"
+                        tools:text="צילום פרה 123" />
+
+                    <ImageButton
+                        android:id="@+id/ibCowPhotoClose"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@null"
+                        android:contentDescription="@string/close"
+                        android:padding="0dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_large_close_badge" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvCowPhotoNotice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/heebo_bold"
+                    android:gravity="center"
+                    android:textColor="@color/ww_rust_dark"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/btnCowPhotoTake"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/shape_ww_btn_rect_brass"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/heebo_extrabold"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/take_picture"
+                    android:textColor="@color/ww_iron"
+                    android:textSize="17sp" />
+
+                <LinearLayout
+                    android:id="@+id/llCowPhotoActions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/btnCowPhotoReplace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_ww_btn_rect_brass"
+                        android:drawablePadding="8dp"
+                        android:drawableStart="@drawable/ic_dialog_replace"
+                        android:drawableTint="@color/ww_iron"
+                        android:elevation="4dp"
+                        android:fontFamily="@font/heebo_extrabold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingTop="9dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="9dp"
+                        android:text="@string/cow_photo_replace"
+                        android:textColor="@color/ww_iron"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/heebo_medium"
+                        android:gravity="center"
+                        android:text="@string/cow_photo_replace_hint"
+                        android:textColor="@color/ww_ink_soft"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/btnCowPhotoShare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/shape_ww_btn_rect_sand"
+                        android:drawablePadding="8dp"
+                        android:drawableStart="@drawable/ic_dialog_share"
+                        android:drawableTint="@color/ww_ink"
+                        android:elevation="4dp"
+                        android:fontFamily="@font/heebo_bold"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingTop="9dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="9dp"
+                        android:text="@string/share_picture"
+                        android:textColor="@color/ww_ink"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/btnCowPhotoRetake"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:fontFamily="@font/heebo_bold"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="@string/cow_photo_retake"
+                        android:textColor="@color/ww_saddle_dark"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>

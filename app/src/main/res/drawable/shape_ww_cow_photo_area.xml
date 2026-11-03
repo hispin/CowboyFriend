@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark leather frame behind the picture of the cow photo window (the same dark brown as the large picture screen) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#1B130D" />
+    <corners android:radius="10dp" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/ww_iron" />
+</shape>

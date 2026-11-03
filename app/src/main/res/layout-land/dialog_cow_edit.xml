@@ -115,6 +115,76 @@
                         android:text="@string/marked_tag" />
                 </LinearLayout>
 
+                <!-- first-cow and cow only: the number of calvings with a minus and a plus button (shown by the fragment) -->
+                <LinearLayout
+                    android:id="@+id/llEditCalvings"
+                    style="@style/Ww.EditRow"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/heebo_extrabold"
+                        android:text="@string/number_of_calvings"
+                        android:textColor="@color/ww_ink"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/btnEditCalvingsMinus"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/shape_ww_btn_rect_brass"
+                        android:contentDescription="@string/edit_calvings_minus"
+                        android:fontFamily="@font/heebo_extrabold"
+                        android:gravity="center"
+                        android:text="−"
+                        android:textColor="@color/ww_iron"
+                        android:textSize="26sp"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/tvEditCalvings"
+                        android:layout_width="52dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/rye_regular"
+                        android:gravity="center"
+                        android:textColor="@color/ww_ink"
+                        android:textDirection="ltr"
+                        android:textSize="24sp"
+                        tools:text="3" />
+
+                    <TextView
+                        android:id="@+id/btnEditCalvingsPlus"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/shape_ww_btn_rect_brass"
+                        android:contentDescription="@string/edit_calvings_plus"
+                        android:fontFamily="@font/heebo_extrabold"
+                        android:gravity="center"
+                        android:text="+"
+                        android:textColor="@color/ww_iron"
+                        android:textSize="26sp"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <!-- first-cow and cow only: records a calving whose calf was born dead (the calf is not registered in the app) -->
+                <TextView
+                    android:id="@+id/btnEditCalvingDead"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/shape_ww_btn_rect_sand"
+                    android:fontFamily="@font/heebo_bold"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/calving_dead_button"
+                    android:textColor="@color/ww_ink"
+                    android:textSize="17sp"
+                    android:visibility="gone" />
+
                 <!-- section: health problems (the chips are added by the fragment; "other" shows its text field) -->
                 <TextView
                     style="@style/Ww.Title"

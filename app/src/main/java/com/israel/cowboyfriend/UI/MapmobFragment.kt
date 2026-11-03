@@ -27,6 +27,7 @@ import com.israel.cowboyfriend.classes.CowDetails
 import com.israel.cowboyfriend.classes.MAP_ELEMENT_GATE
 import com.israel.cowboyfriend.classes.MapElement
 import com.israel.cowboyfriend.classes.RanchStats
+import com.israel.cowboyfriend.global.CowIssues
 import com.israel.cowboyfriend.global.CowLabels
 import com.israel.cowboyfriend.global.DialogSizing
 import com.israel.cowboyfriend.global.CURRENT_LATITUDE_PREF
@@ -137,6 +138,31 @@ class MapmobFragment : Fragment() {
     //the pin images are made once from the drawables
     private val cowPinBitmap by lazy { AppCompatResources.getDrawable(requireContext(), R.drawable.ic_map_cow_pin)!!.toBitmap() }
     private val corpsePinBitmap by lazy { AppCompatResources.getDrawable(requireContext(), R.drawable.ic_map_corpse_pin)!!.toBitmap() }
+    //the cow pin with a small badge on its top corner: a health problem (rust cross) / another reason to attend the cow (amber "!")
+    private val healthPinBitmap by lazy { pinWithBadge(R.drawable.ic_map_badge_health) }
+    private val attentionPinBitmap by lazy { pinWithBadge(R.drawable.ic_map_badge_attention) }
+
+    //a copy of the cow pin with the badge [badgeRes] drawn on its top right corner (the size stays the same as the plain pin, so
+    //the tip of the pin and the popup above it do not move)
+    private fun pinWithBadge(badgeRes: Int): android.graphics.Bitmap {
+        val pin = cowPinBitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true)
+        val badge = AppCompatResources.getDrawable(requireContext(), badgeRes)!!
+        val size = (pin.width * 0.4f).toInt()
+        badge.setBounds(pin.width - size, 0, pin.width, size)
+        badge.draw(android.graphics.Canvas(pin))
+        return pin
+    }
+
+    //the pin of a living cow: with the health badge when it has a health problem, with the attention badge when it needs
+    //attention for another reason (a missing location is not counted: the cow is on the map), a plain pin otherwise
+    private fun pinFor(cow: CowDetails): android.graphics.Bitmap {
+        val issues = CowIssues.of(cow).filter { it != "no_location" }
+        return when {
+            "health_issue" in issues -> healthPinBitmap
+            issues.isNotEmpty() -> attentionPinBitmap
+            else -> cowPinBitmap
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -270,7 +296,14 @@ class MapmobFragment : Fragment() {
     private fun gotoMySingleLocation() {
         llLoadLocation?.visibility = View.VISIBLE
         (ivLoadLocation?.drawable as? android.graphics.drawable.Animatable)?.start()
-        activity?.startForegroundService(Intent(context, ServiceFindSingleLocation::class.java))
+        //the phone may not allow a foreground service at this moment (the app is resumed while the screen is still locked): that must
+        //not close the app, the location is asked again the next time the map is shown or the locate button is tapped
+        try {
+            activity?.startForegroundService(Intent(context, ServiceFindSingleLocation::class.java))
+        } catch (e: IllegalStateException) {
+            android.util.Log.w("Map", "the location service could not start now", e)
+            hideLoadLocation()
+        }
     }
 
     private fun hideLoadLocation() {
@@ -495,6 +528,12 @@ class MapmobFragment : Fragment() {
         //the heat map follows the cows
         lastCows = details
         updateHeatLayer()
+        //the map around the cows is saved on the phone (once in a while), so it is there without a network
+        context?.let { ctx ->
+            com.israel.cowboyfriend.offline.OfflineMapRegion.ensureDownloaded(
+                ctx, details.filter { it.latitude != null && it.longitude != null }.map { Point.fromLngLat(it.longitude!!, it.latitude!!) }
+            )
+        }
         if (heatFitPending && heatPoints().isNotEmpty()) {
             fitCameraToHeatPoints()
             heatFitPending = false
@@ -511,7 +550,7 @@ class MapmobFragment : Fragment() {
 
         val options = PointAnnotationOptions()
             .withPoint(Point.fromLngLat(cow.longitude!!, cow.latitude!!))
-            .withIconImage(if (cow.isCorpse) corpsePinBitmap else cowPinBitmap)
+            .withIconImage(if (cow.isCorpse) corpsePinBitmap else pinFor(cow))
             //the tip of the pin is the place of the cow
             .withIconAnchor(IconAnchor.BOTTOM)
         pointAnnotationManager?.create(options)?.let { cowsByAnnotation[it.id] = cow }
